@@ -54,14 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
-        { status: '已上线',  statusType: 'online',  publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8,  comments: 0 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2026/3/1',  shortDesc: '全方位健康追踪，运动、睡眠、饮食一站式管理，数据一目了然。', likes: 1, wants: 0,  comments: 0 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2026/3/1',  shortDesc: '把多个 AI 模型塞进手机里：对话、写作、翻译、代码随时调用。', likes: 5, wants: 8,  comments: 1 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2026/2/26', shortDesc: '不用再打开天气网页啦，自带动态背景和降水提醒的本地天气 App。', likes: 2, wants: 3,  comments: 2 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2026/2/20', shortDesc: '告别随手花钱，记账本帮你养成记录习惯，每月财务状况清清楚楚。', likes: 8, wants: 10, comments: 3 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2025/12/1', shortDesc: '白噪音、冥想课程、呼吸练习和睡眠故事，给大脑做一次 SPA。', likes: 3, wants: 6,  comments: 1 },
-        { status: '开发中',  statusType: 'wip',     publishDate: '2026/2/16', shortDesc: '基于科学记忆曲线的背单词 App，词书覆盖从四六级到 GRE 全阶段（20%）。', likes: 4, wants: 7,  comments: 2 },
-        { status: '已上线',  statusType: 'online',  publishDate: '2025/10/8', shortDesc: '把下厨房的经验都装进口袋，10万+ 食谱和一键购物清单随时用。', likes: 6, wants: 12, comments: 4 }
+        { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8, comments: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -73,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
             <div class="work-card" data-app="${app.id}">
                 <div class="work-card-top">
-                    <span class="status-tag ${statusClass}">${app.status}${app.statusType === 'wip' ? ' (20%)' : ''}</span>
+                    <span class="status-tag ${statusClass}">${app.status}</span>
                     <span class="work-date">${app.publishDate}</span>
                 </div>
                 <h3 class="work-title">「${app.shortName}」${app.title.replace(app.shortName, '').trim()}</h3>
