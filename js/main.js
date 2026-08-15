@@ -28,187 +28,30 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 1,
-            title: 'FitTrack 健康追踪',
-            shortName: '健康追踪',
-            category: '健康应用',
-            date: '2024',
-            rating: '4.8 (5,600 评价)',
-            gradient: 'linear-gradient(135deg, #34c759 0%, #30d158 50%, #30b0c7 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>',
-            desc: '全方位健康管理应用，记录运动、睡眠、饮食数据，提供智能分析和个性化建议。支持连接主流智能手环和体重秤，自动同步健康数据。',
+            title: '脑洞皮蛋',
+            shortName: '脑洞皮蛋',
+            category: '浏览器游戏 · 平台跳跃',
+            date: '2026',
+            rating: '持续开发中',
+            gradient: 'linear-gradient(135deg, #ffffff 0%, #f2f2f2 55%, #d8d8d8 100%)',
+            iconStroke: '#111111',
+            iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
+            desc: '一款黑白手绘风的平台跳跃游戏。操控圆润可爱的皮蛋角色穿越草地与台阶，寻找关卡出口；支持选关、移动、跳跃、暂停、重来和返回选关，角色在待机、行走与跳跃时拥有不同的动态表现。',
             features: [
-                '🏃 运动追踪：跑步、骑行、徒步多种运动模式',
-                '😴 睡眠监测：深睡、浅睡、REM 周期分析',
-                '🍎 饮食记录：卡路里、营养成分自动计算',
-                '📊 智能报告：周月年健康趋势分析',
-                '🎯 目标设定：个性化健康目标提醒',
-                '⌚ 设备连接：支持主流智能穿戴设备'
+                '🥚 手绘主角：圆润皮蛋造型，待机、行走和跳跃动作各不相同',
+                '🎮 平台跳跃：通过移动与跳跃跨越草地、台阶和关卡障碍',
+                '🗺️ 关卡选择：可从选关界面进入不同挑战',
+                '⏸️ 完整控制：支持暂停、继续、重来和返回选关',
+                '🌱 黑白世界：粗线条平台、空心小草与极简手绘视觉',
+                '📱 网页试玩：使用浏览器即可运行，兼顾触控操作'
             ],
-            tags: ['Flutter', 'HealthKit', 'Charts', 'Firebase'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=fitness%20app%20dashboard%20activity%20rings%20steps%20calories%20green%20health%20ui&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=sleep%20tracking%20app%20screen%20sleep%20stages%20chart%20analysis&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=food%20calorie%20tracker%20app%20meal%20logging%20nutrition%20info&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 2,
-            title: 'SmartAI 智能助手',
-            shortName: '智能助手',
-            category: 'AI 应用',
-            date: '2024',
-            rating: '4.9 (8,100 评价)',
-            gradient: 'linear-gradient(135deg, #5856d6 0%, #af52de 50%, #0071e3 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>',
-            desc: '基于大语言模型的个人智能助手，支持对话、写作、翻译、代码生成等多种场景。内置多轮对话记忆，支持自定义角色和场景模板。',
-            features: [
-                '💬 智能对话：多轮上下文理解，自然流畅交流',
-                '✍️ 写作助手：公文、邮件、文案一键生成',
-                '🌐 多语翻译：100+ 语言互译，专业级准确',
-                '💻 代码帮助：多语言代码生成、解释、调试',
-                '🎭 角色模板：翻译官、文案、导师多种人设',
-                '📝 历史记录：云端同步，随时回溯'
-            ],
-            tags: ['Kotlin', 'LLM API', 'Compose', 'MVVM'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=ai%20chat%20assistant%20app%20conversation%20purple%20gradient%20clean%20ui&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=ai%20writing%20tool%20app%20interface%20text%20generation%20options&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=ai%20code%20assistant%20app%20screen%20code%20highlight%20syntax&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 3,
-            title: 'SkyView 天气预报',
-            shortName: '天气预报',
-            category: '工具应用',
-            date: '2023',
-            rating: '4.7 (12,400 评价)',
-            gradient: 'linear-gradient(135deg, #5ac8fa 0%, #0071e3 50%, #64d2ff 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>',
-            desc: '精美的天气应用，实时天气、7天预报、空气质量指数，动态天气背景让查看天气更愉悦。支持全球 200+ 万城市和分钟级降水预报。',
-            features: [
-                '🌤️ 实时天气：温度、体感、湿度、风速',
-                '📅 15日预报：长周期天气趋势预测',
-                '🌧️ 降水提醒：分钟级雨雪预警推送',
-                '🌫️ 空气质量：AQI、PM2.5 等多指标',
-                '🎬 动态背景：根据天气实时变化',
-                '📍 多城市：支持无限城市收藏切换'
-            ],
-            tags: ['Compose', 'OpenWeather', 'Animation', 'Material 3'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=weather%20app%20sunny%20day%20screen%20temperature%20clouds%20blue%20sky&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=weather%20forecast%20app%207%20day%20weekly%20prediction%20list%20ui&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=air%20quality%20weather%20app%20aqi%20index%20colors%20dashboard&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 4,
-            title: 'MoneyBox 记账本',
-            shortName: '记账本',
-            category: '财务管理',
-            date: '2023',
-            rating: '4.8 (3,200 评价)',
-            gradient: 'linear-gradient(135deg, #30d158 0%, #34c759 50%, #00c7be 100%)',
-            iconStroke: 'white',
-            iconSVG: '<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>',
-            desc: '简洁易用的个人财务管理 App，支持多账本、预算管理、消费分类统计和云端同步。帮您养成良好的记账习惯，实现财务自由。',
-            features: [
-                '💰 快速记账：一键录入，支持模板',
-                '📚 多账本：日常、旅行、婚礼等独立账本',
-                '📈 数据报表：分类、月度趋势可视化',
-                '🎯 预算控制：超支智能提醒',
-                '☁️ 云端同步：多设备无缝切换',
-                '🔒 隐私保护：指纹密码锁保障安全'
-            ],
-            tags: ['Android', 'Room DB', 'MVVM', 'DataStore'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=expense%20tracker%20app%20home%20balance%20income%20expense%20summary%20green&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=budgeting%20app%20category%20spending%20pie%20chart%20breakdown&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=add%20expense%20form%20app%20screen%20amount%20category%20input&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 5,
-            title: 'ZenMind 冥想睡眠',
-            shortName: '冥想睡眠',
-            category: '生活方式',
-            date: '2023',
-            rating: '4.9 (6,800 评价)',
-            gradient: 'linear-gradient(135deg, #5e5ce6 0%, #bf5af2 50%, #32ade6 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>',
-            desc: '帮助用户冥想放松、改善睡眠的应用。提供白噪音、冥想课程、呼吸练习和睡眠故事。帮助您减轻压力，获得更好的睡眠质量。',
-            features: [
-                '🧘 冥想课程：初阶到高阶多种主题',
-                '🌊 白噪音：雨声、海浪、篝火等 100+ 种',
-                '🌙 睡眠故事：助眠有声读物',
-                '💨 呼吸练习：多种呼吸法引导',
-                '⏰ 智能唤醒：浅睡眠期轻柔叫醒',
-                '📊 睡眠统计：时长、质量趋势分析'
-            ],
-            tags: ['Compose', 'MediaPlayer', 'Audio', 'Foreground Service'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=meditation%20app%20calm%20breathing%20exercise%20purple%20night%20theme&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=sleep%20sounds%20app%20white%20noise%20ambient%20sound%20selection%20player&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=meditation%20courses%20library%20app%20list%20various%20topics%20calm%20ui&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 6,
-            title: 'WordUp 背单词',
-            shortName: '背单词',
-            category: '教育学习',
-            date: '2024',
-            rating: '4.8 (4,500 评价)',
-            gradient: 'linear-gradient(135deg, #ff375f 0%, #ff2d55 50%, #ff6b6b 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>',
-            desc: '基于艾宾浩斯遗忘曲线的单词记忆 App，支持多种词书、例句发音、学习统计和复习提醒。科学的记忆算法让背单词效率翻倍。',
-            features: [
-                '📖 海量词书：四六级、考研、雅思、托福等',
-                '🧠 科学算法：艾宾浩斯遗忘曲线优化',
-                '🔊 真人发音：英音美音自由切换',
-                '✏️ 多种模式：选择、拼写、听音等',
-                '📊 学习报告：每日、每周进度追踪',
-                '🔔 智能提醒：最佳复习时间推送'
-            ],
-            tags: ['Kotlin', 'DataStore', 'TTS', 'Room'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=vocabulary%20flashcard%20app%20word%20learning%20card%20english%20definition&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=language%20learning%20app%20daily%20goal%20streak%20progress%20stats&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=word%20book%20library%20app%20selection%20cet4%20cet6%20ielts%20toefl&image_size=portrait_4_3'
-            ]
-        },
-        {
-            id: 7,
-            title: 'ChefPal 食谱助手',
-            shortName: '食谱助手',
-            category: '美食生活',
-            date: '2022',
-            rating: '4.7 (9,200 评价)',
-            gradient: 'linear-gradient(135deg, #ff9f0a 0%, #ff6b00 50%, #ff3b30 100%)',
-            iconStroke: 'white',
-            iconSVG: '<path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path><line x1="6" y1="17" x2="18" y2="17"></line>',
-            desc: '美食爱好者的必备 App，海量精选食谱、智能食材推荐、步骤计时器和购物清单功能。让在家做饭变得简单又有趣。',
-            features: [
-                '🍳 海量食谱：中餐、西餐、烘焙等 10万+',
-                '🛒 智能购物：一键生成购物清单',
-                '⏱️ 步骤计时：烹饪时间自动提醒',
-                '🥗 食材推荐：冰箱有啥做啥推荐',
-                '📝 收藏分类：我的食谱本分类管理',
-                '👥 社区分享：美食作品交流互动'
-            ],
-            tags: ['Android', 'Firebase', 'Glide', 'Material Design'],
-            screenshots: [
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=recipe%20cooking%20app%20home%20featured%20dishes%20categories%20orange&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=cooking%20recipe%20detail%20app%20ingredients%20list%20steps%20instructions&image_size=portrait_4_3',
-                'https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=grocery%20shopping%20list%20app%20screen%20items%20ingredients%20checklist&image_size=portrait_4_3'
-            ]
+            tags: ['JavaScript', 'HTML5 Canvas', 'Platformer', 'Web Game', 'Hand-drawn'],
+            screenshots: []
         }
     ];
+
+    const worksCount = document.querySelector('.works-count');
+    if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
         { status: '已上线',  statusType: 'online',  publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8,  comments: 0 },
