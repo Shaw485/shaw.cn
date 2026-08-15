@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+<style>
+.project-docs{margin-top:40px;display:grid;gap:32px}.project-docs section{padding-top:24px;border-top:1px solid #ddd}.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.doc-card,.record-list li{padding:16px;border:1px solid #ddd;border-radius:14px}.doc-card p,.record-list p{margin:7px 0 0;line-height:1.7;color:#666}.record-list{display:grid;gap:10px;padding:0;list-style:none}.record-list li{display:grid;grid-template-columns:140px 1fr}.doc-links{display:flex;flex-wrap:wrap;gap:10px}.doc-links a,.source-link{padding:10px 14px;border-radius:999px;background:#111;color:#fff;text-decoration:none}.empty-shot{min-height:150px;display:grid;place-items:center}.blog-section{background:#f5f5f3}.blog-list{max-width:980px;margin:auto;display:grid;gap:24px}.blog-entry{background:#fff;padding:clamp(24px,4vw,44px);border-radius:24px;border:1px solid #e8e8e8}.blog-entry time{color:#777;font-size:12px}.blog-entry h3{font-size:clamp(24px,3vw,34px)}.blog-entry p{line-height:1.8;color:#555}.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.blog-grid>div,blockquote{padding:18px;background:#f7f7f5;border-radius:14px}blockquote{margin:22px 0 0;border-left:3px solid #ff9500}.params{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.params span{padding:8px 10px;border:1px solid #ddd;border-radius:8px}.source-link{display:block;width:max-content;margin:28px auto 0}@media(max-width:760px){.doc-grid,.blog-grid{grid-template-columns:1fr}.record-list li{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
     <nav class="navbar">
@@ -19,7 +22,7 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#apps" class="nav-link active">首页</a></li>
-                <li><a href="#about" class="nav-link">关于我</a></li>
+                <li><a href="#about" class="nav-link">博客记录</a></li>
                 <li><a href="#contact" class="nav-link">联系我</a></li>
             </ul>
             <button class="nav-toggle" aria-label="菜单">
@@ -142,83 +145,30 @@
                     <span>Android 14</span>
                     <span>Foreground Service</span>
                 </div>
+
+                <div class="project-docs">
+                  <section><h3>01 · PRD 摘要</h3><div class="doc-grid" id="modalPrd"></div></section>
+                  <section><h3>02 · 我是怎么做的</h3><ol class="record-list" id="modalProcess"></ol></section>
+                  <section><h3>03 · 改动记录</h3><ul class="record-list" id="modalChangelog"></ul></section>
+                  <section><h3>04 · 项目资料</h3><div class="doc-links" id="modalLinks"></div></section>
+                </div>
             </div>
         </div>
     </div>
 
-    <section id="about" class="about">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <span class="section-tag">关于我</span>
-                <h2 class="section-title">热爱创造，追求卓越</h2>
-                <p class="section-subtitle">一个对移动应用开发充满热情的独立开发者</p>
-            </div>
-            <div class="about-grid about-grid-simple">
-                <div class="about-content reveal">
-                    <h3 class="about-heading">开发者简介</h3>
-                    <p class="about-text">
-                        从第一次接触编程开始，我就深深被这个可以将想象变为现实的世界所吸引。
-                        过去的几年里，我专注于 Android 平台的移动应用开发，从一名初学者成长为能够独立完成从设计到发布全流程的独立开发者。
-                    </p>
-                    <p class="about-text">
-                        我相信好的 App 不仅仅是功能的堆砌，更是对用户体验的深刻理解。
-                        每一行代码、每一个像素，都应该服务于最终的用户价值。
-                    </p>
-                    <div class="about-tags">
-                        <span class="tag">📱 Android 开发</span>
-                        <span class="tag">🎨 UI/UX 设计</span>
-                        <span class="tag">⚡ Kotlin</span>
-                        <span class="tag">🧩 Jetpack Compose</span>
-                        <span class="tag">🎯 产品思维</span>
-                        <span class="tag">📦 独立发布</span>
-                    </div>
-                </div>
-                <div class="about-highlights reveal">
-                    <div class="highlight-card">
-                        <div class="highlight-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                        </div>
-                        <h4>追求品质</h4>
-                        <p>注重每一个细节，交付超出预期的作品</p>
-                    </div>
-                    <div class="highlight-card">
-                        <div class="highlight-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <h4>高效执行</h4>
-                        <p>快速迭代，按时保质完成每一个功能</p>
-                    </div>
-                    <div class="highlight-card">
-                        <div class="highlight-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                            </svg>
-                        </div>
-                        <h4>持续学习</h4>
-                        <p>紧跟技术前沿，不断提升专业能力</p>
-                    </div>
-                    <div class="highlight-card">
-                        <div class="highlight-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                        </div>
-                        <h4>全栈能力</h4>
-                        <p>从设计到开发到发布，全流程独立完成</p>
-                    </div>
-                </div>
-            </div>
+    <section id="about" class="about blog-section">
+      <div class="section-container">
+        <div class="section-header reveal"><span class="section-tag">Shaw’s Blog</span><h2 class="section-title">博客记录</h2><p class="section-subtitle">不写包装式介绍，只记录做过什么、学到了什么，以及还没解决的问题。</p></div>
+        <div class="blog-list">
+          <article class="blog-entry reveal"><time>2026 / 08 / 13</time><h3>PRD Agent：先跑通，再面对“效果等于没有”</h3><p>想搞 AI 练练手，我用已有 PRD 作为知识库，沿着 RAG 路线做了一个查询 Agent。目前链路已经跑通：能检索 chunk，再交给大模型回答。但是效果还很差，要优化的地方很多。</p><blockquote><strong>真实进度：</strong>这次完成的是知识切分、检索、上下文组装和模型回答的完整链路，也更清楚地看到了评测、召回与排序问题。</blockquote></article>
+          <article class="blog-entry reveal"><time>2026 / 08 / 02</time><h3>RAG 学习记录：查准率、查全率与评测</h3>
+            <div class="blog-grid"><div><h4>Precision / Recall</h4><p>P 是查准率，R 是查全率。资源有限时两者像跷跷板：查得更准可能漏掉更多，查得更全也可能带回无关内容。癌症筛查应优先查全率；检索具体问题时则要优先保证返回内容准确。</p></div><div><h4>幻觉</h4><p>从产品视角看，幻觉往往与上下文查准率不足有关。不同业务需要主动取舍：有时宁愿少回答，也要减少无依据的回答。</p></div><div><h4>RAG</h4><p>先把文档切成 chunk，检索相关内容，再 rerank，最后把最相关的 context 交给模型回答。</p></div></div>
+            <div class="params"><span>Chunk size</span><span>Overlap</span><span>Top-k</span><span>Rerank</span><span>Context</span></div>
+            <blockquote><strong>生产流程：</strong>构建真实测试集；用裁判模型评测 Faithfulness、Precision、Recall、Relevancy；上线后用满意度、点击率等用户指标判断效果。</blockquote>
+          </article>
         </div>
+        <a class="source-link" href="https://bytedance.larkoffice.com/wiki/M3X7w3VBDi1tgmkTM0wcedPgnrf" target="_blank" rel="noopener">查看原始博客记录 ↗</a>
+      </div>
     </section>
 
     <section id="contact" class="contact">
