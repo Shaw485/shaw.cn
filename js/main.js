@@ -50,6 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    const projectDocs = [
+      { prd:[['问题','普通闹钟容易被顺手关闭，用户并没有真正清醒。'],['方案','响铃后生成 a×b+c×d 数学题，答对才能结束。'],['体验','单闹钟、滚轮选时、三种铃声、锁屏提醒与开机恢复。'],['技术','Kotlin、Jetpack Compose、AlarmManager、DataStore。']],
+        process:[['定义闭环','先跑通设置—触发—答题—关闭。'],['系统适配','验证精确闹钟、全屏通知、前台服务和开机恢复。'],['交互打磨','统一黑橙视觉与三行滚轮选时。'],['可靠性','处理跨日、重启和超时兜底。']],
+        changelog:[['需求成型','确定单闹钟与数学题解锁机制。'],['原生实现','完成 Compose 界面、铃声与状态管理。'],['系统适配','补齐 Android 13/14 权限。'],['稳定性','增加开机恢复、跨日计算与异常回流。']],
+        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','https://github.com/Shaw485/math_alarm/blob/main/README.md'],['HANDOFF','https://github.com/Shaw485/math_alarm/blob/main/HANDOFF.md'],['改动记录','https://github.com/Shaw485/math_alarm/blob/main/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt']]},
+      { prd:[['定位','黑白手绘风的平台跳跃小游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','粗线条、空心小草和圆润皮蛋角色。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
+        process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
+        changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[]}
+    ];
+    appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
+
     const worksCount = document.querySelector('.works-count');
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
@@ -115,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalFeatures = document.getElementById('modalFeatures');
     const modalTags = document.getElementById('modalTags');
     const modalScreenshots = document.getElementById('modalScreenshots');
+    const modalPrd=document.getElementById('modalPrd'), modalProcess=document.getElementById('modalProcess'), modalChangelog=document.getElementById('modalChangelog'), modalLinks=document.getElementById('modalLinks');
 
     const worksGrid = document.getElementById('worksGrid');
 
@@ -247,7 +259,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalFeatures.innerHTML = app.features.map(f => `<li>${f}</li>`).join('');
         modalTags.innerHTML = app.tags.map(t => `<span>${t}</span>`).join('');
-        modalScreenshots.innerHTML = app.screenshots.map((url, i) => `<img src="${url}" alt="截图${i + 1}">`).join('');
+        modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
+        modalPrd.innerHTML=app.prd.map(x=>`<div class="doc-card"><strong>${x[0]}</strong><p>${x[1]}</p></div>`).join('');
+        modalProcess.innerHTML=app.process.map(x=>`<li><strong>${x[0]}</strong><p>${x[1]}</p></li>`).join('');
+        modalChangelog.innerHTML=app.changelog.map(x=>`<li><time>${x[0]}</time><p>${x[1]}</p></li>`).join('');
+        modalLinks.innerHTML=app.links.length?app.links.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]} ↗</a>`).join(''):'<span>本地开发中，公开仓库整理中。</span>';
 
         appModal.classList.add('open');
         document.body.style.overflow = 'hidden';
