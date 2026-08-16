@@ -23,7 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshots: [
                 'alarm-home.jpg',
                 'alarm-question.jpg'
-            ]
+            ],
+            apk: {
+                url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v57.apk',
+                label: '下载 APK',
+                meta: 'v57.0 · 12 MB'
+            }
         },
         {
             id: 1,
@@ -120,10 +125,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modalTitle');
     const modalCategory = document.getElementById('modalCategory');
     const modalDate = document.getElementById('modalDate');
-    const modalRating = document.getElementById('modalRating');
+
     const modalDesc = document.getElementById('modalDesc');
     const modalFeatures = document.getElementById('modalFeatures');
     const modalScreenshots = document.getElementById('modalScreenshots');
+    const modalApkDownload = document.getElementById('modalApkDownload');
+    const modalApkLabel = document.getElementById('modalApkLabel');
+    const modalApkMeta = document.getElementById('modalApkMeta');
     const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
 
     const worksGrid = document.getElementById('worksGrid');
@@ -252,11 +260,19 @@ document.addEventListener('DOMContentLoaded', function() {
         modalTitle.textContent = app.title;
         modalCategory.textContent = app.category;
         modalDate.textContent = app.date;
-        modalRating.textContent = app.rating;
+
         modalDesc.textContent = app.desc;
 
         modalFeatures.innerHTML = app.features.map(f => `<li>${f}</li>`).join('');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
+        if (app.apk) {
+            modalApkDownload.href = app.apk.url;
+            modalApkLabel.textContent = app.apk.label;
+            modalApkMeta.textContent = app.apk.meta;
+            modalApkDownload.hidden = false;
+        } else {
+            modalApkDownload.hidden = true;
+        }
         const linkMap=Object.fromEntries(app.links.map(x=>[x[0],x[1]]));
         const resourceCard=(title,href,intro)=>`<div class="doc-card"><strong>${href?`<a href="${href}" target="_blank" rel="noopener">${title} ↗</a>`:title}</strong><p>${intro}</p></div>`;
         modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],app.id===0?'记录产品目标、核心使用流程、数学题解锁规则与系统权限方案，适合快速了解产品为什么这样设计。':'PRD 正在整理中，完成后会在这里公开产品目标、玩法规则与关卡设计。');
