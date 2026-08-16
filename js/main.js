@@ -123,9 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalRating = document.getElementById('modalRating');
     const modalDesc = document.getElementById('modalDesc');
     const modalFeatures = document.getElementById('modalFeatures');
-    const modalTags = document.getElementById('modalTags');
     const modalScreenshots = document.getElementById('modalScreenshots');
-    const modalProcess=document.getElementById('modalProcess'), modalChangelog=document.getElementById('modalChangelog'), modalLinks=document.getElementById('modalLinks');
+    const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
 
     const worksGrid = document.getElementById('worksGrid');
 
@@ -257,11 +256,15 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDesc.textContent = app.desc;
 
         modalFeatures.innerHTML = app.features.map(f => `<li>${f}</li>`).join('');
-        modalTags.innerHTML = app.tags.map(t => `<span>${t}</span>`).join('');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
-        modalProcess.innerHTML=app.process.map(x=>`<li><strong>${x[0]}</strong><p>${x[1]}</p></li>`).join('');
-        modalChangelog.innerHTML=app.changelog.map(x=>`<li><time>${x[0]}</time><p>${x[1]}</p></li>`).join('');
-        modalLinks.innerHTML=app.links.length?app.links.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]} ↗</a>`).join(''):'<span>本地开发中，公开仓库整理中。</span>';
+        const linkMap=Object.fromEntries(app.links.map(x=>[x[0],x[1]]));
+        const resourceCard=(title,href,intro)=>`<div class="doc-card"><strong>${href?`<a href="${href}" target="_blank" rel="noopener">${title} ↗</a>`:title}</strong><p>${intro}</p></div>`;
+        modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],app.id===0?'记录产品目标、核心使用流程、数学题解锁规则与系统权限方案，适合快速了解产品为什么这样设计。':'PRD 正在整理中，完成后会在这里公开产品目标、玩法规则与关卡设计。');
+        modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],app.id===0?'按开发阶段记录功能实现、Android 系统适配和稳定性修复，能看到产品从需求到可用版本的演进过程。':'记录从首个可玩原型到角色动画、关卡系统和视觉重做的完整迭代过程。');
+        modalCodeResources.innerHTML=[
+            resourceCard('GitHub 仓库',linkMap['GitHub'],app.id===0?'查看 Android 项目源码、目录结构与最新提交。':'源码仓库正在整理中，公开后会在这里提供完整项目。'),
+            resourceCard('README',linkMap['README'],app.id===0?'快速了解项目定位、主要功能、运行方式与开发说明。':'README 正在整理中，将补充玩法说明、运行方式和开发记录。')
+        ].join('');
 
         appModal.classList.add('open');
         document.body.style.overflow = 'hidden';
