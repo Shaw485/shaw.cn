@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #1c1c1e 0%, #000000 50%, #2c2c2e 100%)',
             iconStroke: '#FF9500',
             iconSVG: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>',
-            desc: '一款必须答对数学题才能停止响铃的闹钟 App，专治各种起床困难症。每次响铃随机生成「a × b + c × d」格式的题目，且 a、b、c、d 四个数字严格限定在 3–9 之间，确保需要真正清醒计算才能答出。内置「清晨 / 风来 / 钢琴」三款高品质铃声；严格适配 Android 14 精确闹钟与全屏通知权限，开机重启后自动恢复闹钟；响铃超时（10 分钟）自动兜底结束。',
+            desc: '一款必须答对数学题才能停止响铃的闹钟 App，专治各种起床困难症。每次响铃随机生成「a × b + c × d」格式的题目，确保需要真正清醒计算才能答出。内置「清晨 / 风来 / 钢琴」三款高品质铃声；严格适配 Android 14 精确闹钟与全屏通知权限，开机重启后自动恢复闹钟；响铃超时（10 分钟）自动兜底结束。',
             features: [
                 '🔢 数学题解锁：a×b+c×d 形式题目，a/b/c/d 严格 3–9 整数',
                 '🎨 极简深色：纯黑 #000000 背景 + 橙色 #FF9500 主色',
@@ -133,6 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalApkLabel = document.getElementById('modalApkLabel');
     const modalDownloadStats = document.getElementById('modalDownloadStats');
     const modalDownloadCount = document.getElementById('modalDownloadCount');
+    const imageLightbox = document.getElementById('imageLightbox');
+    const imageLightboxImage = document.getElementById('imageLightboxImage');
+    const imageLightboxClose = document.getElementById('imageLightboxClose');
 
     const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
 
@@ -315,6 +318,35 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'hidden';
     }
 
+
+    function openImageLightbox(image) {
+        if (!imageLightbox || !imageLightboxImage) return;
+        imageLightboxImage.src = image.currentSrc || image.src;
+        imageLightboxImage.alt = image.alt || '作品截图';
+        imageLightbox.classList.add('open');
+        imageLightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageLightbox() {
+        if (!imageLightbox || !imageLightboxImage) return;
+        imageLightbox.classList.remove('open');
+        imageLightbox.setAttribute('aria-hidden', 'true');
+        imageLightboxImage.src = '';
+        imageLightboxImage.alt = '';
+        document.body.style.overflow = appModal?.classList.contains('open') ? 'hidden' : '';
+    }
+
+    modalScreenshots?.addEventListener('click', (event) => {
+        const image = event.target.closest('img');
+        if (image) openImageLightbox(image);
+    });
+
+    imageLightboxClose?.addEventListener('click', closeImageLightbox);
+    imageLightbox?.addEventListener('click', (event) => {
+        if (event.target === imageLightbox) closeImageLightbox();
+    });
+
     function closeAppModal() {
         appModal.classList.remove('open');
         document.body.style.overflow = '';
@@ -332,7 +364,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && appModal.classList.contains('open')) {
+        if (e.key === 'Escape' && imageLightbox?.classList.contains('open')) {
+            closeImageLightbox();
+        } else if (e.key === 'Escape' && appModal.classList.contains('open')) {
             closeAppModal();
         }
     });
