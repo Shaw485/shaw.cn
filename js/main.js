@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #1c1c1e 0%, #000000 50%, #2c2c2e 100%)',
             iconStroke: '#FF9500',
             iconSVG: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>',
-            desc: '一款必须答对数学题才能停止响铃的闹钟 App，专治各种起床困难症。每次响铃随机生成「a × b + c × d」格式的题目，且 a、b、c、d 四个数字严格限定在 3–9 之间，确保需要真正清醒计算才能答出。采用 Kotlin + Jetpack Compose 原生开发，纯黑 #000000 背景 + 高饱和橙 #FF9500 主色调；时间选择器基于 LazyColumn 实现 3 行显示滚轮，支持无限滚动与自动吸附；内置「清晨 / 风来 / 钢琴」三款高品质铃声；严格适配 Android 14 精确闹钟与全屏通知权限，开机重启后自动恢复闹钟；响铃超时（10 分钟）自动兜底结束。',
+            desc: '一款必须答对数学题才能停止响铃的闹钟 App，专治各种起床困难症。每次响铃随机生成「a × b + c × d」格式的题目，且 a、b、c、d 四个数字严格限定在 3–9 之间，确保需要真正清醒计算才能答出。内置「清晨 / 风来 / 钢琴」三款高品质铃声；严格适配 Android 14 精确闹钟与全屏通知权限，开机重启后自动恢复闹钟；响铃超时（10 分钟）自动兜底结束。',
             features: [
                 '🔢 数学题解锁：a×b+c×d 形式题目，a/b/c/d 严格 3–9 整数',
                 '🎨 极简深色：纯黑 #000000 背景 + 橙色 #FF9500 主色',
@@ -127,11 +127,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDate = document.getElementById('modalDate');
 
     const modalDesc = document.getElementById('modalDesc');
-    const modalFeatures = document.getElementById('modalFeatures');
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
-    const modalApkMeta = document.getElementById('modalApkMeta');
+
     const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
 
     const worksGrid = document.getElementById('worksGrid');
@@ -263,12 +262,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalDesc.textContent = app.desc;
 
-        modalFeatures.innerHTML = app.features.map(f => `<li>${f}</li>`).join('');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
         if (app.apk) {
             modalApkDownload.href = app.apk.url;
             modalApkLabel.textContent = app.apk.label;
-            modalApkMeta.textContent = app.apk.meta;
+
             modalApkDownload.hidden = false;
         } else {
             modalApkDownload.hidden = true;
