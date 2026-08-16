@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 'alarm-answer.jpg'
             ],
             apk: {
-                url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v57.apk',
+                url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v60.apk',
                 label: '下载应用',
-                meta: 'v57.0 · 12 MB'
+                meta: 'v60.0 · 12 MB'
             }
         },
         {
