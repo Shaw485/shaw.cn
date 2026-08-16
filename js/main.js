@@ -22,11 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['Kotlin', 'Jetpack Compose', 'AlarmManager', 'DataStore', 'Android 14', 'Foreground Service'],
             screenshots: [
                 'alarm-home.jpg',
-                'alarm-question.jpg'
+                'alarm-question.jpg',
+                'alarm-answer.jpg'
             ],
             apk: {
                 url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v57.apk',
-                label: '下载 APK',
+                label: '下载应用',
                 meta: 'v57.0 · 12 MB'
             }
         },
@@ -130,6 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
+    const modalDownloadStats = document.getElementById('modalDownloadStats');
+    const modalDownloadCount = document.getElementById('modalDownloadCount');
 
     const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
 
@@ -250,6 +253,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const downloadCounterUrl = 'https://api.counterapi.dev/v1/shawspace-cn/math-alarm-download';
+
+    function setDownloadCount(data) {
+        const value = Number(data && (data.count ?? data.value));
+        if (Number.isFinite(value)) modalDownloadCount.textContent = value.toLocaleString('zh-CN');
+    }
+
+    async function refreshDownloadCount() {
+        try {
+            const response = await fetch(downloadCounterUrl, { cache: 'no-store' });
+            if (!response.ok) throw new Error('counter unavailable');
+            setDownloadCount(await response.json());
+        } catch (error) {
+            modalDownloadCount.textContent = '—';
+        }
+    }
+
+    modalApkDownload.addEventListener('click', () => {
+        fetch(downloadCounterUrl + '/up', { cache: 'no-store', keepalive: true })
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(setDownloadCount)
+            .catch(() => {});
+    });
+
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
         if (!app) return;
@@ -268,8 +295,11 @@ document.addEventListener('DOMContentLoaded', function() {
             modalApkLabel.textContent = app.apk.label;
 
             modalApkDownload.hidden = false;
+            modalDownloadStats.hidden = false;
+            refreshDownloadCount();
         } else {
             modalApkDownload.hidden = true;
+            modalDownloadStats.hidden = true;
         }
         const linkMap=Object.fromEntries(app.links.map(x=>[x[0],x[1]]));
         const resourceCard=(title,href,intro)=>`<div class="doc-card"><strong>${href?`<a href="${href}" target="_blank" rel="noopener">${title} ↗</a>`:title}</strong><p>${intro}</p></div>`;
