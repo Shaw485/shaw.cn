@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalFeatures = document.getElementById('modalFeatures');
     const modalTags = document.getElementById('modalTags');
     const modalScreenshots = document.getElementById('modalScreenshots');
-    const modalPrd=document.getElementById('modalPrd'), modalProcess=document.getElementById('modalProcess'), modalChangelog=document.getElementById('modalChangelog'), modalLinks=document.getElementById('modalLinks');
+    const modalProcess=document.getElementById('modalProcess'), modalChangelog=document.getElementById('modalChangelog'), modalLinks=document.getElementById('modalLinks');
 
     const worksGrid = document.getElementById('worksGrid');
 
@@ -259,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modalFeatures.innerHTML = app.features.map(f => `<li>${f}</li>`).join('');
         modalTags.innerHTML = app.tags.map(t => `<span>${t}</span>`).join('');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
-        modalPrd.innerHTML=app.prd.map(x=>`<div class="doc-card"><strong>${x[0]}</strong><p>${x[1]}</p></div>`).join('');
         modalProcess.innerHTML=app.process.map(x=>`<li><strong>${x[0]}</strong><p>${x[1]}</p></li>`).join('');
         modalChangelog.innerHTML=app.changelog.map(x=>`<li><time>${x[0]}</time><p>${x[1]}</p></li>`).join('');
         modalLinks.innerHTML=app.links.length?app.links.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]} ↗</a>`).join(''):'<span>本地开发中，公开仓库整理中。</span>';
