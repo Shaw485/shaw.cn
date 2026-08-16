@@ -1687,6 +1687,47 @@ img {
     flex-shrink: 0;
 }
 
+.apk-download-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff9500 0%, #ff7a00 100%);
+    box-shadow: 0 8px 20px rgba(255, 149, 0, 0.24);
+    text-decoration: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.apk-download-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(255, 149, 0, 0.32);
+}
+
+.apk-download-btn[hidden] {
+    display: none;
+}
+
+.apk-download-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+.apk-download-copy strong {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.apk-download-copy small {
+    font-size: 12px;
+    opacity: 0.82;
+}
+
 .app-modal-screenshots {
     padding: 24px 0 24px 32px;
     overflow: hidden;
