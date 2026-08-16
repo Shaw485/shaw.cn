@@ -253,7 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const downloadCounterUrl = 'https://api.counterapi.dev/v1/shawspace-cn/math-alarm-download';
+    const downloadCounterGetUrl = 'https://countapi.mileshilliard.com/api/v1/get/shawspace_cn_math_alarm_v57_downloads';
+    const downloadCounterHitUrl = 'https://countapi.mileshilliard.com/api/v1/hit/shawspace_cn_math_alarm_v57_downloads';
 
     function setDownloadCount(data) {
         const value = Number(data && (data.count ?? data.value));
@@ -262,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function refreshDownloadCount() {
         try {
-            const response = await fetch(downloadCounterUrl, { cache: 'no-store' });
+            const response = await fetch(downloadCounterGetUrl, { cache: 'no-store' });
             if (!response.ok) throw new Error('counter unavailable');
             setDownloadCount(await response.json());
         } catch (error) {
@@ -271,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalApkDownload.addEventListener('click', () => {
-        fetch(downloadCounterUrl + '/up', { cache: 'no-store', keepalive: true })
+        fetch(downloadCounterHitUrl, { cache: 'no-store', keepalive: true })
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(setDownloadCount)
             .catch(() => {});
