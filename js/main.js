@@ -657,31 +657,37 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             date: '08.13', datetime: '2026-08-13', title: '跑通 RAG 基础链路',
             text: '完成知识切分、检索、上下文组装和模型回答；确认下一步重点在评测、召回与排序。',
+            project: 'PRD Agent',
             abilities: ['RAG / Agent', '评测']
         },
         {
             date: '08.16', datetime: '2026-08-16', title: '完成产品迭代与上线',
             text: '推进数学闹钟真机修复、APK 构建、代码合并与个人站部署，用真实交付检查产品闭环。',
+            project: '数学题闹钟',
             abilities: ['AI 产品设计', '工程落地']
         },
         {
             date: '08.18', datetime: '2026-08-18', title: '开始建立 Agent Eval 认知',
             text: '梳理 Outcome、Trajectory、Trace 与错误归因，明确评测要从产品目标和真实任务出发。',
+            project: 'PRD Agent',
             abilities: ['评测与实验']
         },
         {
             date: '08.21', datetime: '2026-08-21', title: '补齐搜索与 RAG 基础',
             text: '学习 Chunking、Embedding、BM25、混合检索、证据边界与 Agentic Search。',
+            project: 'PRD Agent',
             abilities: ['模型与数据', 'RAG / Agent']
         },
         {
             date: '08.22—08.24', datetime: '2026-08-24', title: '手写 Transformer 模块',
             text: '实现 Self-Attention、Multi-Head、Residual、LayerNorm 与 FFN，并梳理到 Logits 的链路。',
+            project: '手撕 GPT',
             abilities: ['模型与数据']
         },
         {
             date: '08.25', datetime: '2026-08-25', title: '校准评测与学习计划',
             text: '用脱敏样例推进分层召回、重排和离线评测，并按 AI 产品要求重新校准 18 周计划。',
+            project: 'PRD Agent',
             abilities: ['业务场景', '评测与实验']
         }
     ];
@@ -922,7 +928,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="ai-recent-node" aria-hidden="true"></span>
                         <time datetime="${item.datetime}">${item.date}</time>
                         <article>
-                            <div class="ai-recent-tags">${item.abilities.map(ability => `<span>${ability}</span>`).join('')}</div>
+                            <div class="ai-recent-labels">
+                                <span class="ai-recent-project">对应项目 · ${item.project}</span>
+                                <div class="ai-recent-tags">${item.abilities.map(ability => `<span>${ability}</span>`).join('')}</div>
+                            </div>
                             <h4>${item.title}</h4>
                             <p>${item.text}</p>
                         </article>
