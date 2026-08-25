@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="搜索引擎评测 Agent Stage 0：体验未优化 BM25 与 Hash Vector 在自建商品样例上的实时排序差异。">
+    <title>搜索引擎评测 Agent · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260825-1">
+</head>
+<body class="search-eval-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">Shaw's Space</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link">AI 学习记录</a></li>
+                <li><a href="blog.html" class="nav-link">博客记录</a></li>
+                <li><a href="contact.html" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="bench-header" aria-labelledby="pageTitle">
+            <div class="bench-header-inner">
+                <a class="bench-brand" href="search-eval.html" aria-label="BenchMart 搜索实验室首页">
+                    <span class="bench-brand-main">Bench<span>Mart</span></span>
+                    <span class="bench-brand-sub">ESCI LAB · SIMULATED STORE</span>
+                </a>
+                <form class="bench-search" id="searchForm" role="search">
+                    <label class="sr-only" for="searchQuery">搜索商品</label>
+                    <select aria-label="搜索分类" disabled>
+                        <option>全部</option>
+                    </select>
+                    <input id="searchQuery" name="query" type="search" value="wireless mouse" maxlength="200" autocomplete="off" placeholder="试试 wireless mouse" required>
+                    <button type="submit" aria-label="搜索">
+                        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
+                    </button>
+                </form>
+                <a class="bench-github" href="https://github.com/Shaw485/search-engine-eva-agent" target="_blank" rel="noopener">查看代码 ↗</a>
+            </div>
+            <div class="bench-subnav">
+                <div>
+                    <span class="live-pill"><i></i> API LIVE</span>
+                    <span>Stage 0 基线</span>
+                    <span>10 条样例</span>
+                    <span>English</span>
+                    <span>Local backend</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="eval-intro" aria-labelledby="pageTitle">
+            <div>
+                <p class="section-eyebrow">SEARCH ENGINE EVALUATION AGENT · 00</p>
+                <h1 id="pageTitle">先看清基线，<br>再谈“优化”。</h1>
+            </div>
+            <div class="eval-intro-copy">
+                <p>这是一个熟悉的电商搜索界面，但背后运行的是项目当前的未优化检索基线。输入英文 Query，观察 BM25 与确定性 Hash Vector 对同一批商品的实时排序差异。</p>
+                <div class="truth-note">
+                    <strong>当前证据边界</strong>
+                    <span>这是产品体验原型，不是正式 ESCI 评测。Stage 1 才会接入完整数据、标签与 nDCG / MRR 指标。</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="dataset-strip" aria-label="当前数据与评测状态">
+            <article><span>商品集</span><strong>10</strong><p>Stage 0 自建 fixture</p></article>
+            <article><span>字段</span><strong>5</strong><p>title / description / brand / category / id</p></article>
+            <article><span>策略</span><strong>2</strong><p>BM25 + Hash Vector 64d</p></article>
+            <article class="not-ready"><span>正式指标</span><strong>—</strong><p>ESCI 标签与 nDCG / MRR 待接入</p></article>
+        </section>
+
+        <section class="search-workbench" aria-labelledby="resultsHeading">
+            <div class="example-bar">
+                <span>试试这些 Query</span>
+                <div id="exampleQueries">
+                    <button type="button" data-query="wireless mouse">wireless mouse</button>
+                    <button type="button" data-query="wired mouse">wired mouse</button>
+                    <button type="button" data-query="phone case">phone case</button>
+                    <button type="button" data-query="running shoes">running shoes</button>
+                    <button type="button" data-query="batteries">batteries</button>
+                </div>
+            </div>
+
+            <div class="workbench-grid">
+                <aside class="filters-panel" aria-label="数据集信息">
+                    <div class="aside-block">
+                        <p class="aside-label">CURRENT CORPUS</p>
+                        <h2>Stage 0 Sample</h2>
+                        <ul>
+                            <li><span>语言</span><strong>English</strong></li>
+                            <li><span>来源</span><strong>Curated</strong></li>
+                            <li><span>价格</span><strong>Not included</strong></li>
+                            <li><span>ESCI 标签</span><strong>Not yet</strong></li>
+                        </ul>
+                    </div>
+                    <div class="aside-block">
+                        <p class="aside-label">CATEGORIES</p>
+                        <div id="categoryList" class="category-list"></div>
+                    </div>
+                    <div class="aside-block learning-block">
+                        <p class="aside-label">必须理解</p>
+                        <strong>“搜得到” ≠ “排得好”</strong>
+                        <p>没有人工相关性标签，就不能用正式指标证明哪个排序更好。</p>
+                    </div>
+                </aside>
+
+                <div class="results-panel">
+                    <div class="results-toolbar">
+                        <div>
+                            <p class="results-kicker">REAL-TIME RESULTS</p>
+                            <h2 id="resultsHeading">“<span id="queryEcho">wireless mouse</span>” 的搜索结果</h2>
+                            <p id="resultMeta" class="result-meta" aria-live="polite">正在连接搜索服务…</p>
+                        </div>
+                        <div class="strategy-switch" role="group" aria-label="排序策略">
+                            <button class="active" type="button" data-strategy="bm25" aria-pressed="true">
+                                <span>未优化基线</span>
+                                <strong>BM25</strong>
+                            </button>
+                            <button type="button" data-strategy="vector" aria-pressed="false">
+                                <span>链路诊断</span>
+                                <strong>Hash Vector</strong>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="strategyNotice" class="strategy-notice">
+                        <strong>BM25</strong> 根据 Query 与商品文本的词项匹配排序；当前没有调字段权重、同义词或业务规则。
+                    </div>
+
+                    <div id="searchState" class="search-state" aria-live="polite">
+                        <span class="state-spinner"></span>
+                        <p>正在运行 Stage 0 搜索…</p>
+                    </div>
+                    <div id="productResults" class="product-results"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="rank-diff-section" aria-labelledby="rankDiffTitle">
+            <div class="section-heading-row">
+                <div>
+                    <p class="section-eyebrow">RANK DIFFERENCE · LIVE</p>
+                    <h2 id="rankDiffTitle">同一 Query，排序为什么不同？</h2>
+                </div>
+                <p>分数只在各自策略内部有意义，不能直接拿 BM25 分数和余弦相似度横向比较。</p>
+            </div>
+            <div id="rankDiff" class="rank-diff-grid"></div>
+        </section>
+
+        <section class="evidence-section" aria-labelledby="evidenceTitle">
+            <div class="section-heading-row">
+                <div>
+                    <p class="section-eyebrow">EVIDENCE BOUNDARY</p>
+                    <h2 id="evidenceTitle">这版证明了什么？</h2>
+                </div>
+                <a href="https://github.com/Shaw485/search-engine-eva-agent/blob/main/docs/STAGE_0_REPORT.md" target="_blank" rel="noopener">查看 Stage 0 验收报告 ↗</a>
+            </div>
+            <div class="evidence-grid">
+                <article class="evidence-positive">
+                    <span>01 · PROVED</span>
+                    <h3>检索链路可以重复运行</h3>
+                    <p>同一输入、同一索引和同一配置下，BM25 与 Hash Vector 能稳定返回无重复商品，并通过本地自动化测试。</p>
+                </article>
+                <article class="evidence-positive">
+                    <span>02 · PROVED</span>
+                    <h3>前端调用真实后端</h3>
+                    <p>本页没有隐藏的静态兜底；API 不可用时会直接报错，避免把模拟结果伪装成线上搜索。</p>
+                </article>
+                <article class="evidence-negative">
+                    <span>03 · NOT PROVED</span>
+                    <h3>尚不能证明搜索质量提升</h3>
+                    <p>当前没有完整 ESCI 标注、冻结测试集和正式指标。Hash Vector 也不是可用的语义模型，只验证向量链路。</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="decision-section" aria-labelledby="decisionTitle">
+            <div class="section-heading-row">
+                <div>
+                    <p class="section-eyebrow">OWNER DECISIONS</p>
+                    <h2 id="decisionTitle">接下来，需要你判断什么？</h2>
+                </div>
+                <p>算法可以自动实验，但“什么才算好搜索”必须由产品目标和业务价值决定。</p>
+            </div>
+            <div class="decision-grid">
+                <article><b>现在</b><span>01</span><h3>产品主要服务谁？</h3><p>偏招聘作品展示、搜索 PM 诊断工具，还是算法评测平台？这会决定下一步是先做体验、诊断，还是严谨实验。</p></article>
+                <article><b>Stage 1</b><span>02</span><h3>哪种错误代价更高？</h3><p>ESCI 中 Substitute 能不能接受？Complement 应该扣多少？权重不同，优化方向就会不同。</p></article>
+                <article><b>Stage 2+</b><span>03</span><h3>质量、延迟和成本怎么取舍？</h3><p>是否允许 Rerank？P95 延迟预算多少？上线门槛与回退条件是什么？</p></article>
+                <article><b>持续</b><span>04</span><h3>哪些 Bad Case 最重要？</h3><p>你对模糊意图、可接受替代品和业务规则的判断，将直接定义 Golden Set 与验收标准。</p></article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="eval-footer">
+        <div>
+            <a href="index.html">← 返回作品集</a>
+            <span>Search Engine EVA Agent · Stage 0</span>
+            <a href="https://github.com/Shaw485/search-engine-eva-agent/blob/main/ROADMAP.md" target="_blank" rel="noopener">Roadmap ↗</a>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="返回顶部">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+    <script src="js/search-eval.js?v=20260825-2"></script>
+</body>
+</html>

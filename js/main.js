@@ -108,6 +108,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 github: '项目涉及企业内部知识与数据，源码仓库暂不公开。',
                 readme: '后续将提供不包含内部信息的架构说明、评测方法与公开 Demo。'
             }
+        },
+        {
+            id: 4,
+            title: '搜索引擎评测 Agent',
+            shortName: '搜索评测 Agent',
+            category: 'AI Agent · Search Evaluation',
+            date: '2026',
+            rating: 'Stage 0 已上线',
+            gradient: 'linear-gradient(135deg, #101820 0%, #182f43 58%, #ff9900 100%)',
+            iconStroke: '#FFFFFF',
+            iconSVG: '<circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path><path d="M7.5 11.5 10 9l2 2 2.5-3"></path>',
+            desc: '一个证据驱动的电商搜索质量评测与诊断项目。当前在线版本部署了 Stage 0 未优化基线：在 10 条自建商品样例上实时执行 BM25 与确定性 Hash Vector 排序，让用户直接观察同一 Query 的排名差异；后续将接入 Amazon ESCI、nDCG / MRR、混合检索、Rerank、Bad Case 诊断以及 Trace / Replay。',
+            features: [
+                '🔎 实时基线：输入英文 Query，在线运行 BM25 并返回商品',
+                '↕️ 排名对比：切换 BM25 与 Hash Vector，查看排名变化',
+                '🧪 评测边界：明确区分体验原型、正式评测与完整 ESCI',
+                '📦 当前数据：10 条 Stage 0 商品样例，字段与限制透明披露',
+                '🧾 证据链：路线图、ADR、验收报告与 GitHub 均可追溯',
+                '🛡️ 后续 Harness：规划 Trace、Replay、超时、重试与预算控制'
+            ],
+            tags: ['BM25', 'Vector Search', 'Amazon ESCI', 'Evaluation', 'FastAPI', 'Agent Harness'],
+            screenshots: ['search-eval-preview.svg'],
+            primaryAction: {
+                url: 'search-eval.html',
+                label: '体验搜索差异',
+                status: 'Stage 0 · Baseline'
+            },
+            resources: {
+                first: {
+                    heading: '01 · 建设路线图',
+                    title: 'Roadmap',
+                    href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/ROADMAP.md',
+                    intro: '查看八阶段建设顺序、每个阶段的交付物、验收门槛和明确不做的范围。'
+                },
+                second: {
+                    heading: '02 · 当前验收证据',
+                    title: 'Stage 0 Report',
+                    href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/docs/STAGE_0_REPORT.md',
+                    intro: '查看本地技术闸门、42 条测试、环境约束、OpenSearch 待验证项与证据边界。'
+                },
+                codeHeading: '03 · 代码与说明',
+                code: [
+                    {
+                        title: 'GitHub 仓库',
+                        href: 'https://github.com/Shaw485/search-engine-eva-agent',
+                        intro: '查看搜索后端、样例数据、测试、Compose 与最新提交。'
+                    },
+                    {
+                        title: 'README',
+                        href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md',
+                        intro: '快速了解项目定位、运行方式、评测边界和下一步计划。'
+                    }
+                ]
+            }
         }
     ];
 
@@ -121,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt']]}
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','https://github.com/Shaw485/create-gpt-step-by-step/blob/main/README.md']]}
       ,{ links:[] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md']] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 
@@ -131,7 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0, wants: 0, comments: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 }
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 },
+        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '实时运行未优化的 BM25 与 Hash Vector 基线，观察同一搜索词在 10 条商品样例中的排名差异，并透明展示数据集与评测边界。', likes: 0, wants: 0, comments: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -196,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageLightboxClose = document.getElementById('imageLightboxClose');
 
     const modalPrdResource=document.getElementById('modalPrdResource'), modalChangelogResource=document.getElementById('modalChangelogResource'), modalCodeResources=document.getElementById('modalCodeResources');
+    const modalPrdHeading=document.getElementById('modalPrdHeading'), modalChangelogHeading=document.getElementById('modalChangelogHeading'), modalCodeHeading=document.getElementById('modalCodeHeading');
 
     const worksGrid = document.getElementById('worksGrid');
 
@@ -337,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -348,17 +405,25 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDesc.textContent = app.desc;
 
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
-        if (app.apk) {
-            modalApkDownload.href = app.apk.url;
-            modalApkLabel.textContent = app.apk.label;
+        const primaryAction = app.apk || app.primaryAction;
+        const platformStatus = modalPlatformActions.querySelector('.app-modal-platform-status');
+        if (primaryAction) {
+            modalApkDownload.href = primaryAction.url;
+            modalApkLabel.textContent = primaryAction.label;
+            if (app.apk) {
+                modalApkDownload.setAttribute('download', '');
+            } else {
+                modalApkDownload.removeAttribute('download');
+            }
+            if (platformStatus) platformStatus.textContent = app.apk ? '苹果版开发中' : primaryAction.status;
 
             modalPlatformActions.hidden = false;
             modalPlatformActions.style.removeProperty('display');
             modalApkDownload.hidden = false;
             modalApkDownload.style.removeProperty('display');
-            modalDownloadStats.hidden = false;
-            modalDownloadStats.style.removeProperty('display');
-            refreshDownloadCount();
+            modalDownloadStats.hidden = !app.apk;
+            modalDownloadStats.style.display = app.apk ? '' : 'none';
+            if (app.apk) refreshDownloadCount();
         } else {
             modalPlatformActions.hidden = true;
             modalPlatformActions.style.display = 'none';
@@ -379,14 +444,26 @@ document.addEventListener('DOMContentLoaded', function() {
             github: '源码仓库正在整理中，公开后会在这里提供完整项目。',
             readme: 'README 正在整理中，将补充玩法说明、运行方式和开发记录。'
         };
-        const resourceCopy = { ...defaultResourceCopy, ...(app.resourceCopy || {}) };
         const resourceCard=(title,href,intro,directDownload=false)=>`<div class="doc-card"><strong>${href?`<a href="${href}"${directDownload?' download':''}${directDownload?'':' target="_blank" rel="noopener"'}>${title}${directDownload?' ↓':' ↗'}</a>`:title}</strong><p>${intro}</p></div>`;
-        modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],resourceCopy.prd,app.id===0);
-        modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog);
-        modalCodeResources.innerHTML=[
-            resourceCard('GitHub 仓库',linkMap['GitHub'],resourceCopy.github),
-            resourceCard('README',linkMap['README'],resourceCopy.readme)
-        ].join('');
+        if (app.resources) {
+            modalPrdHeading.textContent = app.resources.first.heading;
+            modalChangelogHeading.textContent = app.resources.second.heading;
+            modalCodeHeading.textContent = app.resources.codeHeading;
+            modalPrdResource.innerHTML = resourceCard(app.resources.first.title, app.resources.first.href, app.resources.first.intro);
+            modalChangelogResource.innerHTML = resourceCard(app.resources.second.title, app.resources.second.href, app.resources.second.intro);
+            modalCodeResources.innerHTML = app.resources.code.map(item => resourceCard(item.title, item.href, item.intro)).join('');
+        } else {
+            const resourceCopy = { ...defaultResourceCopy, ...(app.resourceCopy || {}) };
+            modalPrdHeading.textContent = '01 · PRD';
+            modalChangelogHeading.textContent = '02 · 改动记录';
+            modalCodeHeading.textContent = '03 · GitHub 与 README';
+            modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],resourceCopy.prd,app.id===0);
+            modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog);
+            modalCodeResources.innerHTML=[
+                resourceCard('GitHub 仓库',linkMap['GitHub'],resourceCopy.github),
+                resourceCard('README',linkMap['README'],resourceCopy.readme)
+            ].join('');
+        }
 
         appModal.classList.add('open');
         document.body.style.overflow = 'hidden';
