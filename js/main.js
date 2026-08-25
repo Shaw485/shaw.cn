@@ -52,6 +52,62 @@ document.addEventListener('DOMContentLoaded', function() {
             ],
             tags: ['JavaScript', 'HTML5 Canvas', 'Platformer', 'Web Game', 'Hand-drawn'],
             screenshots: []
+        },
+        {
+            id: 2,
+            title: '手撕 GPT',
+            shortName: '手撕 GPT',
+            category: 'AI 学习项目 · LLM',
+            date: '2026',
+            rating: '持续开发中',
+            gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
+            iconStroke: '#FFFFFF',
+            iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
+            desc: '一个从零实现 GPT 的学习型项目。用 PyTorch 从字符 Tokenizer、Embedding 与 Bigram 基线开始，逐步手写 Causal Self-Attention、多头注意力、残差连接、LayerNorm、FFN 与 Transformer Block，最终跑通训练和自回归文本生成。',
+            features: [
+                '🧱 从零搭建：按模块实现 GPT，而不是直接调用完整模型',
+                '🧠 注意力机制：手写 Q/K/V、因果遮罩与多头注意力',
+                '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
+                '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
+                '📉 训练闭环：计划补齐 Loss、反向传播与文本生成',
+                '📝 学习记录：代码与原理说明同步沉淀到 GitHub'
+            ],
+            tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
+            screenshots: [],
+            resourceCopy: {
+                prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
+                changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
+                github: '查看从零实现 GPT 的源码、Notebook 与最新学习进度。',
+                readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
+            }
+        },
+        {
+            id: 3,
+            title: 'PRD Agent',
+            shortName: 'PRD Agent',
+            category: 'AI Agent · 企业知识 RAG',
+            date: '2026',
+            rating: '持续开发中',
+            gradient: 'linear-gradient(135deg, #062f2a 0%, #0f766e 58%, #5eead4 100%)',
+            iconStroke: '#FFFFFF',
+            iconSVG: '<path d="M6 3h9l3 3v15H6z"></path><path d="M14 3v4h4M9 11h6M9 15h4"></path><circle cx="17.5" cy="16.5" r="2.5"></circle><path d="m19.3 18.3 1.7 1.7"></path>',
+            desc: '面向企业产品文档的知识检索与问答 Agent。围绕 Parsing、Chunking、混合检索、文档级与 Chunk 级分层召回、Rerank、版本过滤、证据校验和 Trace 持续迭代，用真实 Bad Case 与离线评测提升回答完整性和可信度。',
+            features: [
+                '📚 企业知识检索：面向 PRD 与产品规则构建可追溯问答',
+                '🔎 分层召回：结合文档级、Chunk 级检索与章节扩展',
+                '⚖️ 混合排序：融合向量、关键词检索与 Rerank',
+                '🧾 证据边界：区分可回答、部分证据与证据不足',
+                '🧪 离线评测：用真实 Bad Case 验证召回、重排和答案质量',
+                '🔐 脱敏展示：公开页面不暴露公司内部文档与业务数据'
+            ],
+            tags: ['RAG', 'Agent', 'Hybrid Search', 'Rerank', 'Evaluation', 'Trace'],
+            screenshots: [],
+            resourceCopy: {
+                prd: '产品目标、知识边界、检索链路和评测方案正在脱敏整理，暂不公开内部业务材料。',
+                changelog: '记录从单路向量检索到分层召回、重排、证据校验与离线评测的迭代过程。',
+                github: '项目涉及企业内部知识与数据，源码仓库暂不公开。',
+                readme: '后续将提供不包含内部信息的架构说明、评测方法与公开 Demo。'
+            }
         }
     ];
 
@@ -63,6 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
       { prd:[['定位','黑白手绘风的平台跳跃小游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','粗线条、空心小草和圆润皮蛋角色。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
         changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt']]}
+      ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','https://github.com/Shaw485/create-gpt-step-by-step/blob/main/README.md']]}
+      ,{ links:[] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 
@@ -71,7 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const appCardFields = [
         { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8, comments: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 }
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0, wants: 0, comments: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -314,12 +374,24 @@ document.addEventListener('DOMContentLoaded', function() {
             modalDownloadStats.style.display = 'none';
         }
         const linkMap=Object.fromEntries(app.links.map(x=>[x[0],x[1]]));
+        const defaultResourceCopy = app.id === 0 ? {
+            prd: '记录产品目标、核心使用流程、数学题解锁规则与系统权限方案，适合快速了解产品为什么这样设计。',
+            changelog: '按开发阶段记录功能实现、Android 系统适配和稳定性修复，能看到产品从需求到可用版本的演进过程。',
+            github: '查看 Android 项目源码、目录结构与最新提交。',
+            readme: '快速了解项目定位、主要功能、运行方式与开发说明。'
+        } : {
+            prd: 'PRD 正在整理中，完成后会在这里公开产品目标、玩法规则与关卡设计。',
+            changelog: '记录从首个可玩原型到角色动画、关卡系统和视觉重做的完整迭代过程。',
+            github: '源码仓库正在整理中，公开后会在这里提供完整项目。',
+            readme: 'README 正在整理中，将补充玩法说明、运行方式和开发记录。'
+        };
+        const resourceCopy = { ...defaultResourceCopy, ...(app.resourceCopy || {}) };
         const resourceCard=(title,href,intro,directDownload=false)=>`<div class="doc-card"><strong>${href?`<a href="${href}"${directDownload?' download':''}${directDownload?'':' target="_blank" rel="noopener"'}>${title}${directDownload?' ↓':' ↗'}</a>`:title}</strong><p>${intro}</p></div>`;
-        modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],app.id===0?'记录产品目标、核心使用流程、数学题解锁规则与系统权限方案，适合快速了解产品为什么这样设计。':'PRD 正在整理中，完成后会在这里公开产品目标、玩法规则与关卡设计。',app.id===0);
-        modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],app.id===0?'按开发阶段记录功能实现、Android 系统适配和稳定性修复，能看到产品从需求到可用版本的演进过程。':'记录从首个可玩原型到角色动画、关卡系统和视觉重做的完整迭代过程。');
+        modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],resourceCopy.prd,app.id===0);
+        modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog);
         modalCodeResources.innerHTML=[
-            resourceCard('GitHub 仓库',linkMap['GitHub'],app.id===0?'查看 Android 项目源码、目录结构与最新提交。':'源码仓库正在整理中，公开后会在这里提供完整项目。'),
-            resourceCard('README',linkMap['README'],app.id===0?'快速了解项目定位、主要功能、运行方式与开发说明。':'README 正在整理中，将补充玩法说明、运行方式和开发记录。')
+            resourceCard('GitHub 仓库',linkMap['GitHub'],resourceCopy.github),
+            resourceCard('README',linkMap['README'],resourceCopy.readme)
         ].join('');
 
         appModal.classList.add('open');
@@ -432,10 +504,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getAgentReply(userMsg) {
         const msg = userMsg.toLowerCase();
-        const appsList = appsData.map(a => `📱 ${a.title}`).join('\n');
+        const appsList = appsData.map(a => `${a.statusType === 'online' ? '✅' : '🛠️'} ${a.title} · ${a.status}`).join('\n');
 
         if (msg.includes('app') || msg.includes('作品') || msg.includes('哪些') || msg.includes('有什么')) {
-            return `目前已发布 ${appsData.length} 款 App：\n${appsList}\n\n你可以点击页面上的图标查看每款的详情哦～`;
+            return `目前作品集共有 ${appsData.length} 个项目：\n${appsList}\n\n你可以点击项目卡片查看详情与当前进度。`;
         }
         if (msg.includes('技术') || msg.includes('会什么') || msg.includes('技能') || msg.includes('栈')) {
             return '我主要精通以下技术方向：\n📱 Android：Kotlin、Jetpack Compose、原生开发\n🎨 UI/UX：Figma、交互动效设计\n🧠 架构：MVVM、Clean Architecture、模块化\n☁️ 后端：Firebase、REST API\n🎯 还有产品思维，从设计到发布全流程独立完成';
@@ -452,6 +524,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (msg.includes('闹钟') || msg.includes('数学')) {
             const app = appsData[0];
             return `关于「${app.title}」：\n${app.desc}\n\n主要特点：\n${app.features.slice(0, 4).map(f => f).join('\n')}\n技术栈：${app.tags.join('、')}`;
+        }
+        if (msg.includes('gpt') || msg.includes('transformer') || msg.includes('手撕')) {
+            const app = appsData[2];
+            return `关于「${app.title}」：\n${app.desc}\n\n当前重点：\n${app.features.slice(0, 4).join('\n')}\n技术栈：${app.tags.join('、')}`;
+        }
+        if (msg.includes('prd') || msg.includes('rag') || msg.includes('知识库')) {
+            const app = appsData[3];
+            return `关于「${app.title}」：\n${app.desc}\n\n当前重点：\n${app.features.slice(0, 4).join('\n')}\n技术栈：${app.tags.join('、')}`;
         }
         if (msg.includes('是谁') || msg.includes('Shaw') || msg.includes('shaw.cn') || msg.includes('介绍')) {
             return 'Shaw 是一名有 5 年经验的独立 Android 开发者 🧑‍💻\n\n• 累计发布 8 款 App，总用户超 10 万\n• 主打简洁优雅的设计风格，注重细节\n• 从产品设计→开发→发布→运营全流程独立完成\n• 信奉「好产品自己会说话」\n\n个人官网：shaw.cn（即将上线）\n想进一步了解，可以浏览上面的 App 作品集～';

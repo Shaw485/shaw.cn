@@ -4240,3 +4240,14 @@ body {
         padding-inline: 11px;
     }
 }
+
+/* Four-project portfolio: keep the cards balanced as a 2 × 2 grid. */
+.works-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+    .works-grid {
+        grid-template-columns: 1fr;
+    }
+}
