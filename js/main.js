@@ -249,19 +249,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleNavbarScroll() {
         if (window.scrollY > 20) {
-            navbar.classList.add('scrolled');
+            navbar?.classList.add('scrolled');
         } else {
-            navbar.classList.remove('scrolled');
+            navbar?.classList.remove('scrolled');
         }
         if (window.scrollY > 500) {
-            backToTop.classList.add('visible');
+            backToTop?.classList.add('visible');
         } else {
-            backToTop.classList.remove('visible');
+            backToTop?.classList.remove('visible');
         }
         updateActiveNavLink();
     }
 
     function updateActiveNavLink() {
+        if (!document.body.classList.contains('page-portfolio')) return;
         const sections = document.querySelectorAll('section[id]');
         const scrollY = window.scrollY + 200;
         sections.forEach(section => {
@@ -271,7 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
                 navLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + sectionId) {
+                    const href = link.getAttribute('href') || '';
+                    if ((sectionId === 'apps' && href === 'index.html') || href.endsWith('#' + sectionId)) {
                         link.classList.add('active');
                     }
                 });
@@ -325,10 +327,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function setDownloadCount(data) {
         const value = Number(data && (data.count ?? data.value));
-        if (Number.isFinite(value)) modalDownloadCount.textContent = value.toLocaleString('zh-CN');
+        if (Number.isFinite(value) && modalDownloadCount) modalDownloadCount.textContent = value.toLocaleString('zh-CN');
     }
 
     async function refreshDownloadCount() {
+        if (!modalDownloadCount) return;
         try {
             const response = await fetch(downloadCounterGetUrl, { cache: 'no-store' });
             if (!response.ok) throw new Error('counter unavailable');
@@ -338,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    modalApkDownload.addEventListener('click', () => {
+    modalApkDownload?.addEventListener('click', () => {
         fetch(downloadCounterHitUrl, { cache: 'no-store', keepalive: true })
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(setDownloadCount)
@@ -347,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -428,6 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function closeAppModal() {
+        if (!appModal) return;
         appModal.classList.remove('open');
         document.body.style.overflow = '';
     }
@@ -446,12 +450,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && imageLightbox?.classList.contains('open')) {
             closeImageLightbox();
-        } else if (e.key === 'Escape' && appModal.classList.contains('open')) {
+        } else if (e.key === 'Escape' && appModal?.classList.contains('open')) {
             closeAppModal();
         }
     });
 
     function toggleChat(open) {
+        if (!chatWidget) return;
         const shouldOpen = typeof open === 'boolean' ? open : !chatWidget.classList.contains('open');
         chatWidget.classList.toggle('open', shouldOpen);
         if (shouldOpen) {
@@ -532,6 +537,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (msg.includes('prd') || msg.includes('rag') || msg.includes('知识库')) {
             const app = appsData[3];
             return `关于「${app.title}」：\n${app.desc}\n\n当前重点：\n${app.features.slice(0, 4).join('\n')}\n技术栈：${app.tags.join('、')}`;
+        }
+        if (msg.includes('最近') || msg.includes('进展') || msg.includes('学了什么')) {
+            return '最近两周主要推进了四件事：\n• 完成数学闹钟迭代与云端部署\n• 系统学习 RAG、混合检索与 Agent Eval\n• 手写 Transformer 的 Attention、Residual、LayerNorm 与 FFN\n• 用脱敏案例推进分层召回、重排和离线评测\n\n详细日期和验收标准都在「AI 成长历程」页面。';
         }
         if (msg.includes('是谁') || msg.includes('Shaw') || msg.includes('shaw.cn') || msg.includes('介绍')) {
             return 'Shaw 是一名有 5 年经验的独立 Android 开发者 🧑‍💻\n\n• 累计发布 8 款 App，总用户超 10 万\n• 主打简洁优雅的设计风格，注重细节\n• 从产品设计→开发→发布→运营全流程独立完成\n• 信奉「好产品自己会说话」\n\n个人官网：shaw.cn（即将上线）\n想进一步了解，可以浏览上面的 App 作品集～';
@@ -628,33 +636,45 @@ document.addEventListener('DOMContentLoaded', function() {
     /* AI Growth Journey -------------------------------------------------- */
     const aiAbilities = [
         {
-            name: '业务与场景判断', short: '业务场景', current: 84, target: 92,
+            name: '业务与场景判断', short: '业务场景', current: 72, target: 92,
             focus: '把电商经验转成可量化的 AI 机会地图。',
+            recentDate: '08.25',
+            recentWork: '把电商产品经验整理成 AI PM 能力地图与四个月学习主线，明确以真实业务结果作为学习终点。',
             acceptance: '能从用户痛点、数据可得性、模型边界、ROI 与风险五方面筛选场景，并给出“不做什么”的理由。'
         },
         {
-            name: 'AI 产品设计', short: 'AI产品设计', current: 78, target: 90,
+            name: 'AI 产品设计', short: 'AI产品设计', current: 64, target: 90,
             focus: '补齐 Human-in-the-loop、可信交互与失败路径设计。',
+            recentDate: '08.16–08.25',
+            recentWork: '完成数学闹钟迭代、作品站与 AI 成长页上线，持续用真实交付检验产品闭环。',
             acceptance: '能独立交付 AI PRD、交互原型、反馈闭环、护栏指标及灰度/回滚方案，并完成真实用户验证。'
         },
         {
-            name: '模型与数据理解', short: '模型与数据', current: 61, target: 80,
+            name: '模型与数据理解', short: '模型与数据', current: 40, target: 80,
             focus: '已到 Transformer Block；下一步打通训练、SFT 与多模态。',
+            recentDate: '08.22–08.24',
+            recentWork: '手写 Self-Attention、Multi-Head、残差、LayerNorm 与 FFN，并梳理从 Transformer 到 Logits 的链路。',
             acceptance: '能讲清模型训练到推理全链路，并在 Prompt、RAG、微调和多模态方案之间做有依据的选择。'
         },
         {
-            name: 'RAG / Agent 方案设计', short: 'RAG / Agent', current: 58, target: 88,
+            name: 'RAG / Agent 方案设计', short: 'RAG / Agent', current: 46, target: 88,
             focus: 'RAG 已有工程原型；Agent 的工具循环、状态和评测待落地。',
+            recentDate: '08.13–08.25',
+            recentWork: '先跑通知识切分、检索、上下文组装与回答链路，再学习混合检索、证据边界，并用脱敏案例推进分层召回与重排。',
             acceptance: '能设计并搭建带检索、工具、记忆、审批、回退与 Trace 的 Agent，复杂任务成功率达到 85%。'
         },
         {
-            name: '评测与实验', short: '评测实验', current: 59, target: 86,
+            name: '评测与实验', short: '评测实验', current: 40, target: 86,
             focus: '已开始用 Bad Case 与离线指标优化检索，下一步扩充正式评测集。',
+            recentDate: '08.18–08.25',
+            recentWork: '建立 Outcome、Trajectory、Trace 的基础认知，开始用离线评测定位召回与重排问题。',
             acceptance: '能建立覆盖质量、忠实度、任务成功、延迟、成本与安全的评测体系，并用实验驱动迭代。'
         },
         {
-            name: '工程落地与治理', short: '工程治理', current: 64, target: 84,
+            name: '工程落地与治理', short: '工程治理', current: 50, target: 84,
             focus: '已有 App 与网站上线能力；需补齐 CI、Secret、权限和跨仓治理。',
+            recentDate: '08.16–08.25',
+            recentWork: '完成 Android 构建、代码合并、云服务器部署与个人站多轮上线验证。',
             acceptance: '能与算法/工程团队共同完成架构评审、SLA、权限边界、成本预算、监控告警和上线复盘。'
         }
     ];
@@ -893,6 +913,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="ai-ability-meta"><span class="ai-ability-name">${item.name}</span><span class="ai-ability-score">${item.current} / ${item.target}</span></div>
                 <div class="ai-ability-track"><i class="ai-ability-target" style="width:${item.target}%"></i><i class="ai-ability-current" style="width:${item.current}%"></i></div>
                 <p class="ai-ability-focus">当前重点：${item.focus}</p>
+                <div class="ai-ability-recent"><time>${item.recentDate}</time><p>${item.recentWork}</p></div>
                 <p class="ai-ability-acceptance"><strong>目标验收：</strong>${item.acceptance}</p>
             </article>`).join('');
     }

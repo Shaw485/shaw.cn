@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shaw 的 AI 成长之路：四个月 AI 产品经理学习路线、近期进展与验收标准。">
+    <title>AI 成长历程 · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-pages4">
+</head>
+<body class="page-ai-growth">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">Shaw's Space</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link active" aria-current="page">AI 成长历程</a></li>
+                <li><a href="blog.html" class="nav-link">博客记录</a></li>
+                <li><a href="index.html#contact" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="page-layout">
+        <main class="page-main">
+            <section id="ai-growth" class="ai-growth-section">
+                <div class="section-container ai-growth-container">
+                    <header class="ai-growth-hero reveal">
+                        <div class="ai-growth-kicker">
+                            <span class="ai-growth-live-dot"></span>
+                            2026.08.25 — 12.25 · 18 WEEKS
+                        </div>
+                        <div class="ai-growth-title-row">
+                            <div>
+                                <p class="ai-growth-overline">FROM E-COMMERCE PM TO AI PM</p>
+                                <h2><span class="ai-growth-name">Shaw 的</span><span class="ai-growth-main-title">AI 成长之路</span></h2>
+                            </div>
+                            <p class="ai-growth-intro">从 TikTok Shop 电商产品实践出发，系统补齐模型原理、RAG、Agent、后训练与多模态，并用一个可上线的电商 AI Copilot 完成四个月闭环。</p>
+                        </div>
+                        <div class="ai-growth-status-grid">
+                            <div class="ai-status-card ai-status-card-primary">
+                                <span>NOW · 当前坐标</span>
+                                <strong>Transformer Block + RAG Eval</strong>
+                                <p>正在从手写 Self-Attention 进入完整 Transformer Block；同时用脱敏案例推进分层检索、重排与离线评测。</p>
+                            </div>
+                            <div class="ai-status-card">
+                                <span>NEXT CHECK-IN</span>
+                                <strong>周五 21:00</strong>
+                                <p id="nextCheckinText">每周固定复盘：学到了什么、做出了什么、下周改什么。</p>
+                            </div>
+                            <div class="ai-status-card">
+                                <span>NORTH STAR</span>
+                                <strong>业务落地能力</strong>
+                                <p>不是“懂术语”，而是能定义场景、搭出原型、建立评测并推动真实业务结果。</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <nav class="ai-learning-arc reveal" aria-label="AI 成长四阶段">
+                        <div class="ai-learning-arc-heading">
+                            <span>LEARNING ARC</span>
+                            <strong>四个月，从原理走向业务落地</strong>
+                        </div>
+                        <ol>
+                            <li class="active">
+                                <span class="ai-arc-index">01</span>
+                                <span><strong>模型基础</strong><small>W01—W04 · 当前主线</small></span>
+                            </li>
+                            <li>
+                                <span class="ai-arc-index">02</span>
+                                <span><strong>RAG 与评测</strong><small>W05—W08</small></span>
+                            </li>
+                            <li>
+                                <span class="ai-arc-index">03</span>
+                                <span><strong>微调与多模态</strong><small>W09—W12</small></span>
+                            </li>
+                            <li>
+                                <span class="ai-arc-index">04</span>
+                                <span><strong>Agent 产品化</strong><small>W13—W18</small></span>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <div class="ai-dashboard-grid reveal">
+                        <article class="ai-panel ai-radar-panel">
+                            <div class="ai-panel-heading">
+                                <div><span>01 · CAPABILITY MAP</span><h3>AI 六边形能力图</h3></div>
+                                <div class="ai-radar-legend"><span><i class="legend-current"></i>当前自评</span><span><i class="legend-target"></i>四个月目标</span></div>
+                            </div>
+                            <div class="ai-radar-wrap">
+                                <svg id="aiRadarChart" class="ai-radar-chart" viewBox="0 0 520 430" role="img" aria-label="AI 六边形能力雷达图"></svg>
+                            </div>
+                            <p class="ai-chart-note">基于 8 月 16 日至 25 日的学习、代码与上线记录做保守自评；分数用于找差距，不代表考试成绩。</p>
+                        </article>
+
+                        <article class="ai-panel ai-progress-panel">
+                            <div class="ai-panel-heading">
+                                <div><span>02 · LAST 14 DAYS</span><h3>近两周能力进展</h3></div>
+                                <strong id="abilityAverage">—</strong>
+                            </div>
+                            <div id="aiAbilityList" class="ai-ability-list"></div>
+                        </article>
+                    </div>
+
+                    <section class="ai-evidence-section reveal" aria-labelledby="aiEvidenceTitle">
+                        <div class="ai-subsection-heading">
+                            <div><span>03 · LEARNING EVIDENCE</span><h3 id="aiEvidenceTitle">不是从零开始</h3></div>
+                            <p>代码、对话与上线结果共同构成当前能力基线。</p>
+                        </div>
+                        <div id="aiEvidenceGrid" class="ai-evidence-grid"></div>
+                    </section>
+
+                    <section class="ai-roadmap-section reveal" aria-labelledby="aiRoadmapTitle">
+                        <div class="ai-subsection-heading ai-roadmap-heading">
+                            <div><span>04 · 18-WEEK ROADMAP</span><h3 id="aiRoadmapTitle">四个月，按周交付</h3></div>
+                            <div class="ai-roadmap-progress" aria-live="polite">
+                                <span id="roadmapProgressText">0 / 18 周完成</span>
+                                <div class="ai-roadmap-progress-track"><i id="roadmapProgressBar"></i></div>
+                            </div>
+                        </div>
+                        <div class="ai-phase-filters" id="aiPhaseFilters" aria-label="路线图阶段筛选"></div>
+                        <div class="ai-roadmap-list" id="aiRoadmapList"></div>
+                    </section>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="section-container">
+                    <div class="footer-content">
+                        <div class="footer-brand"><span class="logo-mark"></span><span class="logo-text">Shaw's Space</span></div>
+                        <p class="footer-text">持续学习，持续交付，持续复盘</p>
+                        <p class="footer-copyright">© 2026 Shaw · shaw.cn. 保留所有权利.</p>
+                    </div>
+                </div>
+            </footer>
+        </main>
+
+        <aside class="page-sidebar">
+            <div class="chat-widget open sidebar-mode" id="chatWidget">
+                <button class="chat-toggle" id="chatToggle" aria-label="展开/收起 Agent 助手">
+                    <svg class="chat-icon-open" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <svg class="chat-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <div class="chat-panel" id="chatPanel">
+                    <div class="chat-header">
+                        <div class="chat-header-left">
+                            <div class="chat-avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 1 1-8 0V6a4 4 0 0 1 4-4z"></path><path d="M20 21a8 8 0 1 0-16 0"></path></svg></div>
+                            <div><div class="chat-title">我的 AI Agent</div><div class="chat-subtitle"><span class="chat-status-dot"></span> 在线</div></div>
+                        </div>
+                        <button class="chat-panel-close" id="chatPanelClose" aria-label="收起"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message agent-message"><div class="chat-bubble">
+                            <p>👋 你好！我是 Shaw 的 AI 助手（shaw.cn 即将上线）。</p>
+                            <p>你可以问我关于他的 App 作品、AI 学习进展或合作意向。</p>
+                            <div class="chat-quick-replies"><button class="quick-reply">最近学了什么？</button><button class="quick-reply">有哪些 App？</button><button class="quick-reply">能合作吗？</button></div>
+                        </div></div>
+                    </div>
+                    <form class="chat-input-area" id="chatForm">
+                        <div class="chat-input-wrapper"><input type="text" id="chatInput" placeholder="输入消息..." autocomplete="off"><button type="submit" class="chat-send-btn" aria-label="发送"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button></div>
+                        <p class="chat-disclaimer">Agent 回复仅供参考</p>
+                    </form>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <button class="back-to-top" id="backToTop" aria-label="返回顶部"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+    <script src="js/main.js?v=20260825-pages4"></script>
+</body>
+</html>

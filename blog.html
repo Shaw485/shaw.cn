@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shaw 的博客记录：真实记录 AI 产品、RAG 与独立开发中的进展和问题。">
+    <title>博客记录 · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-pages4">
+</head>
+<body class="page-blog">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">Shaw's Space</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link">AI 成长历程</a></li>
+                <li><a href="blog.html" class="nav-link active" aria-current="page">博客记录</a></li>
+                <li><a href="index.html#contact" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="page-layout">
+        <main class="page-main">
+            <section id="blog" class="about blog-section">
+                <div class="section-container">
+                    <div class="section-header reveal">
+                        <span class="section-tag">SHAW'S BLOG</span>
+                        <h1 class="section-title">博客记录</h1>
+                        <p class="section-subtitle">不写包装式介绍，只记录做过什么、学到了什么，以及还没解决的问题。</p>
+                    </div>
+                    <div class="blog-list">
+                        <article class="blog-entry reveal">
+                            <time datetime="2026-08-13">2026 / 08 / 13</time>
+                            <h2>PRD Agent：先跑通，再面对“效果等于没有”</h2>
+                            <p>想搞 AI 练练手，我用已有 PRD 作为知识库，沿着 RAG 路线做了一个查询 Agent。目前链路已经跑通：能检索 chunk，再交给大模型回答。但是效果还很差，要优化的地方很多。</p>
+                            <blockquote><strong>真实进度：</strong>这次完成的是知识切分、检索、上下文组装和模型回答的完整链路，也更清楚地看到了评测、召回与排序问题。</blockquote>
+                        </article>
+                        <article class="blog-entry reveal">
+                            <time datetime="2026-08-02">2026 / 08 / 02</time>
+                            <h2>RAG 学习记录：查准率、查全率与评测</h2>
+                            <div class="blog-grid">
+                                <div><h3>Precision / Recall</h3><p>P 是查准率，R 是查全率。资源有限时两者像跷跷板：查得更准可能漏掉更多，查得更全也可能带回无关内容。癌症筛查应优先查全率；检索具体问题时则要优先保证返回内容准确。</p></div>
+                                <div><h3>幻觉</h3><p>从产品视角看，幻觉往往与上下文查准率不足有关。不同业务需要主动取舍：有时宁愿少回答，也要减少无依据的回答。</p></div>
+                                <div><h3>RAG</h3><p>先把文档切成 chunk，检索相关内容，再 rerank，最后把最相关的 context 交给模型回答。</p></div>
+                            </div>
+                            <div class="params"><span>Chunk size</span><span>Overlap</span><span>Top-k</span><span>Rerank</span><span>Context</span></div>
+                            <blockquote><strong>生产流程：</strong>构建真实测试集；用裁判模型评测 Faithfulness、Precision、Recall、Relevancy；上线后用满意度、点击率等用户指标判断效果。</blockquote>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="section-container">
+                    <div class="footer-content">
+                        <div class="footer-brand"><span class="logo-mark"></span><span class="logo-text">Shaw's Space</span></div>
+                        <p class="footer-text">记录真实过程，不包装还没做到的事</p>
+                        <p class="footer-copyright">© 2026 Shaw · shaw.cn. 保留所有权利.</p>
+                    </div>
+                </div>
+            </footer>
+        </main>
+
+        <aside class="page-sidebar">
+            <div class="chat-widget open sidebar-mode" id="chatWidget">
+                <button class="chat-toggle" id="chatToggle" aria-label="展开/收起 Agent 助手">
+                    <svg class="chat-icon-open" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <svg class="chat-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <div class="chat-panel" id="chatPanel">
+                    <div class="chat-header">
+                        <div class="chat-header-left">
+                            <div class="chat-avatar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 1 1-8 0V6a4 4 0 0 1 4-4z"></path><path d="M20 21a8 8 0 1 0-16 0"></path></svg></div>
+                            <div><div class="chat-title">我的 AI Agent</div><div class="chat-subtitle"><span class="chat-status-dot"></span> 在线</div></div>
+                        </div>
+                        <button class="chat-panel-close" id="chatPanelClose" aria-label="收起"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message agent-message"><div class="chat-bubble">
+                            <p>👋 你好！我是 Shaw 的 AI 助手（shaw.cn 即将上线）。</p>
+                            <p>你可以问我关于他的 App 作品、AI 学习进展或合作意向。</p>
+                            <div class="chat-quick-replies"><button class="quick-reply">最近写了什么？</button><button class="quick-reply">有哪些 App？</button><button class="quick-reply">能合作吗？</button></div>
+                        </div></div>
+                    </div>
+                    <form class="chat-input-area" id="chatForm">
+                        <div class="chat-input-wrapper"><input type="text" id="chatInput" placeholder="输入消息..." autocomplete="off"><button type="submit" class="chat-send-btn" aria-label="发送"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button></div>
+                        <p class="chat-disclaimer">Agent 回复仅供参考</p>
+                    </form>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <button class="back-to-top" id="backToTop" aria-label="返回顶部"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+    <script src="js/main.js?v=20260825-pages4"></script>
+</body>
+</html>
