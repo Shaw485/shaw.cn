@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Shaw 的 AI 成长之路：四个月 AI 产品经理学习路线、近期进展与验收标准。">
-    <title>AI 成长历程 · Shaw's Space</title>
+    <meta name="description" content="Shaw 的 AI 学习记录：18 周学习计划、近期实践与每周验收标准。">
+    <title>AI 学习记录 · Shaw's Space</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260825-pages4">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-learning5">
 </head>
 <body class="page-ai-growth">
     <nav class="navbar">
@@ -19,9 +19,9 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html" class="nav-link">作品集</a></li>
-                <li><a href="ai-growth.html" class="nav-link active" aria-current="page">AI 成长历程</a></li>
+                <li><a href="ai-growth.html" class="nav-link active" aria-current="page">AI 学习记录</a></li>
                 <li><a href="blog.html" class="nav-link">博客记录</a></li>
-                <li><a href="index.html#contact" class="nav-link">联系我</a></li>
+                <li><a href="contact.html" class="nav-link">联系我</a></li>
             </ul>
             <button class="nav-toggle" aria-label="菜单">
                 <span></span>
@@ -38,91 +38,83 @@
                     <header class="ai-growth-hero reveal">
                         <div class="ai-growth-kicker">
                             <span class="ai-growth-live-dot"></span>
-                            2026.08.25 — 12.25 · 18 WEEKS
+                            2026.08.25 — 12.25 · 18 周计划
                         </div>
                         <div class="ai-growth-title-row">
                             <div>
-                                <p class="ai-growth-overline">FROM E-COMMERCE PM TO AI PM</p>
-                                <h2><span class="ai-growth-name">Shaw 的</span><span class="ai-growth-main-title">AI 成长之路</span></h2>
+                                <p class="ai-growth-overline">LEARNING LOG · 2026</p>
+                                <h1>我的 AI 学习记录</h1>
                             </div>
-                            <p class="ai-growth-intro">从 TikTok Shop 电商产品实践出发，系统补齐模型原理、RAG、Agent、后训练与多模态，并用一个可上线的电商 AI Copilot 完成四个月闭环。</p>
+                            <p class="ai-growth-intro">记录接下来四个月的学习计划、每周任务和复盘。重点包括模型基础、RAG 与评测、模型适配、多模态、Agent，以及 AI 产品落地；计划通过一个电商方向的 AI Copilot 项目检验学习结果。</p>
                         </div>
                         <div class="ai-growth-status-grid">
                             <div class="ai-status-card ai-status-card-primary">
-                                <span>NOW · 当前坐标</span>
+                                <span>本周学习</span>
                                 <strong>Transformer Block + RAG Eval</strong>
                                 <p>正在从手写 Self-Attention 进入完整 Transformer Block；同时用脱敏案例推进分层检索、重排与离线评测。</p>
                             </div>
                             <div class="ai-status-card">
-                                <span>NEXT CHECK-IN</span>
+                                <span>下次复盘</span>
                                 <strong>周五 21:00</strong>
                                 <p id="nextCheckinText">每周固定复盘：学到了什么、做出了什么、下周改什么。</p>
                             </div>
                             <div class="ai-status-card">
-                                <span>NORTH STAR</span>
-                                <strong>业务落地能力</strong>
-                                <p>不是“懂术语”，而是能定义场景、搭出原型、建立评测并推动真实业务结果。</p>
+                                <span>学习目标</span>
+                                <strong>形成可验证的项目能力</strong>
+                                <p>能从场景判断出发，完成原型、评测、风险控制与真实用户验证。</p>
                             </div>
                         </div>
                     </header>
 
-                    <nav class="ai-learning-arc reveal" aria-label="AI 成长四阶段">
+                    <nav class="ai-learning-arc reveal" aria-label="18 周学习五阶段">
                         <div class="ai-learning-arc-heading">
-                            <span>LEARNING ARC</span>
-                            <strong>四个月，从原理走向业务落地</strong>
+                            <span>LEARNING PLAN</span>
+                            <strong>18 周学习安排</strong>
+                            <small id="aiLearningTimeText">计算时间进度…</small>
                         </div>
-                        <ol>
-                            <li class="active">
-                                <span class="ai-arc-index">01</span>
-                                <span><strong>模型基础</strong><small>W01—W04 · 当前主线</small></span>
-                            </li>
-                            <li>
-                                <span class="ai-arc-index">02</span>
-                                <span><strong>RAG 与评测</strong><small>W05—W08</small></span>
-                            </li>
-                            <li>
-                                <span class="ai-arc-index">03</span>
-                                <span><strong>微调与多模态</strong><small>W09—W12</small></span>
-                            </li>
-                            <li>
-                                <span class="ai-arc-index">04</span>
-                                <span><strong>Agent 产品化</strong><small>W13—W18</small></span>
-                            </li>
-                        </ol>
+                        <div class="ai-learning-arc-body">
+                            <div class="ai-learning-time-progress" id="aiLearningTimeProgress" role="progressbar" aria-label="18 周计划时间进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="aiLearningTimeFill"></i></div>
+                            <ol id="aiLearningPhases"></ol>
+                            <p class="ai-learning-crosscut"><span>全程复盘</span> 场景价值 · Human-AI 交互 · 持续评测 · 安全治理 · 成本与 ROI</p>
+                        </div>
                     </nav>
 
                     <div class="ai-dashboard-grid reveal">
                         <article class="ai-panel ai-radar-panel">
                             <div class="ai-panel-heading">
-                                <div><span>01 · CAPABILITY MAP</span><h3>AI 六边形能力图</h3></div>
+                                <div><span>01 · CAPABILITY MAP</span><h3>阶段性能力自评</h3></div>
                                 <div class="ai-radar-legend"><span><i class="legend-current"></i>当前自评</span><span><i class="legend-target"></i>四个月目标</span></div>
                             </div>
                             <div class="ai-radar-wrap">
                                 <svg id="aiRadarChart" class="ai-radar-chart" viewBox="0 0 520 430" role="img" aria-label="AI 六边形能力雷达图"></svg>
                             </div>
                             <p class="ai-chart-note">基于 8 月 16 日至 25 日的学习、代码与上线记录做保守自评；分数用于找差距，不代表考试成绩。</p>
+                            <details class="ai-capability-standards">
+                                <summary>查看六项能力的目标与验收标准</summary>
+                                <div id="aiCapabilityStandards"></div>
+                            </details>
                         </article>
 
                         <article class="ai-panel ai-progress-panel">
                             <div class="ai-panel-heading">
-                                <div><span>02 · LAST 14 DAYS</span><h3>近两周能力进展</h3></div>
-                                <strong id="abilityAverage">—</strong>
+                                <div><span>02 · LAST 14 DAYS</span><h3>最近学习记录</h3></div>
+                                <strong id="recentTimelineSummary">—</strong>
                             </div>
-                            <div id="aiAbilityList" class="ai-ability-list"></div>
+                            <div id="aiRecentTimeline" class="ai-recent-timeline"></div>
                         </article>
                     </div>
 
                     <section class="ai-evidence-section reveal" aria-labelledby="aiEvidenceTitle">
                         <div class="ai-subsection-heading">
-                            <div><span>03 · LEARNING EVIDENCE</span><h3 id="aiEvidenceTitle">不是从零开始</h3></div>
-                            <p>代码、对话与上线结果共同构成当前能力基线。</p>
+                            <div><span>03 · CURRENT PRACTICE</span><h3 id="aiEvidenceTitle">当前实践基础</h3></div>
+                            <p>用已有代码、学习记录与上线结果作为阶段性参考。</p>
                         </div>
                         <div id="aiEvidenceGrid" class="ai-evidence-grid"></div>
                     </section>
 
                     <section class="ai-roadmap-section reveal" aria-labelledby="aiRoadmapTitle">
                         <div class="ai-subsection-heading ai-roadmap-heading">
-                            <div><span>04 · 18-WEEK ROADMAP</span><h3 id="aiRoadmapTitle">四个月，按周交付</h3></div>
+                            <div><span>04 · 18-WEEK ROADMAP</span><h3 id="aiRoadmapTitle">18 周学习计划</h3></div>
                             <div class="ai-roadmap-progress" aria-live="polite">
                                 <span id="roadmapProgressText">0 / 18 周完成</span>
                                 <div class="ai-roadmap-progress-track"><i id="roadmapProgressBar"></i></div>
@@ -161,7 +153,7 @@
                     </div>
                     <div class="chat-messages" id="chatMessages">
                         <div class="chat-message agent-message"><div class="chat-bubble">
-                            <p>👋 你好！我是 Shaw 的 AI 助手（shaw.cn 即将上线）。</p>
+                            <p>👋 你好！我是 Shaw 的 AI 助手。</p>
                             <p>你可以问我关于他的 App 作品、AI 学习进展或合作意向。</p>
                             <div class="chat-quick-replies"><button class="quick-reply">最近学了什么？</button><button class="quick-reply">有哪些 App？</button><button class="quick-reply">能合作吗？</button></div>
                         </div></div>
@@ -176,6 +168,6 @@
     </div>
 
     <button class="back-to-top" id="backToTop" aria-label="返回顶部"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
-    <script src="js/main.js?v=20260825-pages4"></script>
+    <script src="js/main.js?v=20260825-learning5"></script>
 </body>
 </html>

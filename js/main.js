@@ -178,9 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const revealElements = document.querySelectorAll('.reveal');
     const statNumbers = document.querySelectorAll('.stat-number');
     const typewriterElement = document.querySelector('.typewriter');
-    const contactForm = document.getElementById('contactForm');
-    const formSuccess = document.getElementById('formSuccess');
-
     const appModal = document.getElementById('appModal');
     const modalIcon = document.getElementById('modalIcon');
     const modalTitle = document.getElementById('modalTitle');
@@ -518,13 +515,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return '我主要精通以下技术方向：\n📱 Android：Kotlin、Jetpack Compose、原生开发\n🎨 UI/UX：Figma、交互动效设计\n🧠 架构：MVVM、Clean Architecture、模块化\n☁️ 后端：Firebase、REST API\n🎯 还有产品思维，从设计到发布全流程独立完成';
         }
         if (msg.includes('合作') || msg.includes('接单') || msg.includes('联系') || msg.includes('联系方式')) {
-            return '欢迎合作！可以通过以下方式联系我：\n📧 邮箱：hello@example.com\n💬 也可以在页面底部的「联系我」表单留言\n\n合作类型包括：\n• 定制 Android App 开发\n• 技术咨询和架构设计\n• UI/UX 设计服务\n期待与你合作！✨';
+            return '可以通过以下方式联系 Shaw：\n👤 何霄宇\n📧 767271878@qq.com\n📱 18725966519\n\n也可以打开导航中的「联系我」页面查看。';
         }
         if (msg.includes('价格') || msg.includes('报价') || msg.includes('多少钱')) {
             return '项目报价根据需求复杂度和周期而定，一般范围参考：\n💰 小型工具 App：2 - 5 万\n💰 中等功能 App：5 - 15 万\n💰 大型平台类 App：15 万起\n\n欢迎把你的需求发给我，我会给出详细的方案和报价～';
         }
         if (msg.includes('你好') || msg.includes('hi') || msg.includes('hello') || msg.includes('嗨')) {
-            return '你好呀！👋 我是 Shaw 的 AI 助手，个人官网即将上线 shaw.cn。有什么想了解的吗？\n\n比如：\n• 他有哪些 App 作品？\n• 技术能力怎么样？\n• 可以合作吗？\n直接点击下方的快捷回复也可以哦～';
+            return '你好呀！👋 我是 Shaw 的 AI 助手。有什么想了解的吗？\n\n比如：\n• 他有哪些 App 作品？\n• 最近在学什么？\n• 可以合作吗？\n直接点击下方的快捷回复也可以。';
         }
         if (msg.includes('闹钟') || msg.includes('数学')) {
             const app = appsData[0];
@@ -539,13 +536,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return `关于「${app.title}」：\n${app.desc}\n\n当前重点：\n${app.features.slice(0, 4).join('\n')}\n技术栈：${app.tags.join('、')}`;
         }
         if (msg.includes('最近') || msg.includes('进展') || msg.includes('学了什么')) {
-            return '最近两周主要推进了四件事：\n• 完成数学闹钟迭代与云端部署\n• 系统学习 RAG、混合检索与 Agent Eval\n• 手写 Transformer 的 Attention、Residual、LayerNorm 与 FFN\n• 用脱敏案例推进分层召回、重排和离线评测\n\n详细日期和验收标准都在「AI 成长历程」页面。';
+            return '最近两周主要推进了四件事：\n• 完成数学闹钟迭代与云端部署\n• 系统学习 RAG、混合检索与 Agent Eval\n• 手写 Transformer 的 Attention、Residual、LayerNorm 与 FFN\n• 用脱敏案例推进分层召回、重排和离线评测\n\n详细日期和验收标准都在「AI 学习记录」页面。';
         }
         if (msg.includes('是谁') || msg.includes('Shaw') || msg.includes('shaw.cn') || msg.includes('介绍')) {
-            return 'Shaw 是一名有 5 年经验的独立 Android 开发者 🧑‍💻\n\n• 累计发布 8 款 App，总用户超 10 万\n• 主打简洁优雅的设计风格，注重细节\n• 从产品设计→开发→发布→运营全流程独立完成\n• 信奉「好产品自己会说话」\n\n个人官网：shaw.cn（即将上线）\n想进一步了解，可以浏览上面的 App 作品集～';
+            return 'Shaw 是一名 TikTok Shop 电商产品经理，目前在系统学习 AI 产品。\n\n• 有真实电商业务与产品实践\n• 正在学习 LLM、RAG、评测、Agent 与多模态\n• 通过 Android App、AI 原型和个人站练习从定义到上线的完整过程\n\n想进一步了解，可以浏览作品集和「AI 学习记录」。';
         }
 
-        return '好的，我已记下你的问题～ 📝\n\n建议你可以：\n1️⃣ 浏览上方的 App 图标，查看作品详情\n2️⃣ 使用快捷回复提问更精准的问题\n3️⃣ 或在页面底部的联系表单留言\n\n如果你想和开发者本人直接沟通，欢迎发邮件到 shaw@shaw.cn 📧';
+        return '好的，我已记下你的问题。\n\n建议你可以：\n1️⃣ 浏览作品集，查看项目详情\n2️⃣ 打开「AI 学习记录」查看最近进展\n3️⃣ 打开「联系我」页面获取公开联系方式\n\n邮箱：767271878@qq.com';
     }
 
     chatForm?.addEventListener('submit', (e) => {
@@ -605,34 +602,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    contactForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const submitBtn = contactForm.querySelector('.btn-submit');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `
-            <svg class="loading-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
-                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
-            </svg>
-            发送中...
-        `;
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-            formSuccess.classList.add('show');
-            contactForm.reset();
-            setTimeout(() => formSuccess.classList.remove('show'), 4000);
-        }, 1500);
-    });
-
-    const style = document.createElement('style');
-    style.textContent = `
-        .loading-spinner { animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    `;
-    document.head.appendChild(style);
-
     /* AI Growth Journey -------------------------------------------------- */
     const aiAbilities = [
         {
@@ -679,6 +648,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    const aiRecentActivities = [
+        {
+            date: '08.13', datetime: '2026-08-13', title: '跑通 RAG 基础链路',
+            text: '完成知识切分、检索、上下文组装和模型回答；确认下一步重点在评测、召回与排序。',
+            abilities: ['RAG / Agent', '评测']
+        },
+        {
+            date: '08.16', datetime: '2026-08-16', title: '完成产品迭代与上线',
+            text: '推进数学闹钟真机修复、APK 构建、代码合并与个人站部署，用真实交付检查产品闭环。',
+            abilities: ['AI 产品设计', '工程落地']
+        },
+        {
+            date: '08.18', datetime: '2026-08-18', title: '开始建立 Agent Eval 认知',
+            text: '梳理 Outcome、Trajectory、Trace 与错误归因，明确评测要从产品目标和真实任务出发。',
+            abilities: ['评测与实验']
+        },
+        {
+            date: '08.21', datetime: '2026-08-21', title: '补齐搜索与 RAG 基础',
+            text: '学习 Chunking、Embedding、BM25、混合检索、证据边界与 Agentic Search。',
+            abilities: ['模型与数据', 'RAG / Agent']
+        },
+        {
+            date: '08.22—08.24', datetime: '2026-08-24', title: '手写 Transformer 模块',
+            text: '实现 Self-Attention、Multi-Head、Residual、LayerNorm 与 FFN，并梳理到 Logits 的链路。',
+            abilities: ['模型与数据']
+        },
+        {
+            date: '08.25', datetime: '2026-08-25', title: '校准评测与学习计划',
+            text: '用脱敏样例推进分层召回、重排和离线评测，并按 AI 产品要求重新校准 18 周计划。',
+            abilities: ['业务场景', '评测与实验']
+        }
+    ];
+
     const aiEvidence = [
         {
             title: 'TikTok Shop 产品实践',
@@ -703,139 +705,139 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const aiPhases = [
-        { id: 'foundation', label: 'P1 · 模型与应用底座' },
-        { id: 'rag', label: 'P2 · 生产级 RAG' },
-        { id: 'adaptation', label: 'P3 · 模型适配与多模态' },
-        { id: 'agent', label: 'P4 · Agent 系统' },
-        { id: 'product', label: 'P5 · AI 产品化与毕业项目' }
+        { id: 'foundation', code: 'P1', title: '模型与 AI 应用基础', label: 'P1 · 模型与 AI 应用基础', fromWeek: 1, toWeek: 3 },
+        { id: 'rag', code: 'P2', title: '数据、RAG 与持续评测', label: 'P2 · 数据、RAG 与持续评测', fromWeek: 4, toWeek: 8 },
+        { id: 'adaptation', code: 'P3', title: '模型适配与多模态', label: 'P3 · 模型适配与多模态', fromWeek: 9, toWeek: 11 },
+        { id: 'agent', code: 'P4', title: 'Agent 可靠性与安全', label: 'P4 · Agent 可靠性与安全', fromWeek: 12, toWeek: 14 },
+        { id: 'product', code: 'P5', title: '产品化、试点与作品', label: 'P5 · 产品化、试点与作品', fromWeek: 15, toWeek: 18 }
     ];
 
     const aiRoadmap = [
         {
             week: 1, phase: 'foundation', start: '2026-08-25', end: '2026-08-31', review: '08/28 21:00', title: 'Transformer Block 与能力基线',
-            learn: ['Multi-Head Attention、Residual、LayerNorm 与 FFN 的组合', 'Block 堆叠、反向传播、Loss 与参数更新', 'AI 产品从场景、数据、模型到评测的完整链路'],
-            business: ['绘制 TikTok Shop 商家 Copilot 机会地图', '把已有 RAG Bad Case 整理成首批可重复评测题'],
-            output: '双 Transformer Block 可运行代码 + 20 道脱敏电商/RAG 基准题 + 能力基线。',
-            acceptance: '双 Block 前向与反向传播通过；能讲清张量 Shape 和每层职责；20 道题可重复运行并记录首轮结果。'
+            learn: ['Multi-Head Attention、Residual、LayerNorm 与 FFN 的组合', 'Block 堆叠、反向传播、Loss 与参数更新', 'AI 场景从用户任务、数据、价值、风险到评测的完整链路'],
+            business: ['用价值、可行动性、数据/技术可行性、ROI 与风险给商家 Copilot 场景打分', '记录现有工作流基线，并明确至少一个“不该用 AI”的场景'],
+            output: '双 Transformer Block 代码 + 20 道脱敏基准题 + 场景评分卡、现状基线与风险台账。',
+            acceptance: '代码前向/反向通过并能讲清每层职责；20 道题可重复运行；能用证据选出 1 个场景、放弃 1 个场景，并定义价值与护栏指标。'
         },
         {
-            week: 2, phase: 'foundation', start: '2026-09-01', end: '2026-09-07', review: '09/04 21:00', title: '完整 Mini GPT：训练与生成',
+            week: 2, phase: 'foundation', start: '2026-09-01', end: '2026-09-07', review: '09/04 21:00', title: 'Mini GPT 限时实验：理解训练与生成',
             learn: ['Tokenizer、Embedding、位置编码与完整 Decoder Stack', 'LM Head、Cross Entropy、训练循环与采样', 'Checkpoint、过拟合、验证集与 Loss 曲线'],
-            business: ['解释领域语料、词表和上下文如何影响生成质量', '识别训练成本、推理成本与效果之间的关系'],
-            output: '可训练、保存、加载并生成文本的 Mini GPT + Loss 曲线 + 学习记录。',
-            acceptance: '训练 Loss 明显下降且验证集指标可解释；Checkpoint 可恢复；展示 3 组生成样例并分析失败原因。'
+            business: ['解释领域语料、词表、上下文和采样如何影响模型行为', '形成训练成本、推理成本、质量与失败边界的产品判断'],
+            output: '可训练、保存和生成文本的 Mini GPT + Loss 曲线 + 模型行为与成本说明。',
+            acceptance: '限定一周内完成；Loss 与验证结果可解释、Checkpoint 可恢复；用 3 组样例说明能力边界，并讲清为何真实产品通常不从零训练模型。'
         },
         {
             week: 3, phase: 'foundation', start: '2026-09-08', end: '2026-09-14', review: '09/11 21:00', title: 'Prompt、结构化输出与工具调用',
-            learn: ['System Prompt 与上下文工程', 'JSON Schema、Function Calling 与错误恢复', '模型路由、缓存、重试和成本控制'],
-            business: ['商品文案、问题归类、运营建议三条 Copilot 流程', '定义每条流程的输入、输出与失败路径'],
-            output: '电商 Copilot v0：三条流程均可演示并记录 Trace。',
-            acceptance: '三条流程端到端可运行；结构化输出成功率 ≥90%；每次请求记录延迟与估算成本。'
+            learn: ['System Prompt、上下文工程与能力边界', 'JSON Schema、Function Calling、错误恢复与 Prompt Injection 基础', '模型路由、缓存、重试和成本控制'],
+            business: ['为商品文案、问题归类、运营建议三条流程写 AI PRD', '设计不确定性提示、编辑/撤销、人工确认、反馈入口与失败回退'],
+            output: '电商 Copilot v0 + AI PRD + 三条流程的 Trace 与失败路径清单。',
+            acceptance: '三条流程端到端可运行；结构化输出成功率 ≥90%；至少测试 10 条失败/注入路径；每次请求记录质量、延迟和估算成本。'
         },
         {
-            week: 4, phase: 'foundation', start: '2026-09-15', end: '2026-09-21', review: '09/18 21:00', title: 'RAG 正式基线与错误分类',
-            learn: ['文档级与 Chunk 级分层检索', '版本、Metadata、Top-k 与证据组合', '检索、生成、引用、拒答和错误归因'],
-            business: ['以脱敏政策/帮助文档验证知识助手价值', '定义过期、冲突、部分证据和无答案场景'],
-            output: '≥50 题正式黄金集 + 当前系统基线报告 + 失败样本分类。',
-            acceptance: '黄金集有标准答案和证据；记录 Recall@k、Evidence Coverage、正确率与延迟；失败可归因到数据/召回/排序/生成。'
+            week: 4, phase: 'rag', start: '2026-09-15', end: '2026-09-21', review: '09/18 21:00', title: 'RAG 正式基线、数据规范与错误分类',
+            learn: ['文档级与 Chunk 级分层检索', '版本、Metadata、Top-k、证据组合与数据规格', '检索、生成、引用、拒答和错误归因'],
+            business: ['以脱敏政策/帮助文档验证知识助手价值', '记录数据来源、权限、隐私/版权、更新责任人与保留策略'],
+            output: '≥50 题黄金集 + 标注规范与数据说明 + 系统基线报告 + 失败样本分类。',
+            acceptance: '黄金集有答案、证据、场景切片和双人抽样复核；记录质量、延迟和成本基线；形成继续、调整或停止的阶段结论。'
         },
         {
             week: 5, phase: 'rag', start: '2026-09-22', end: '2026-09-28', review: '09/25 21:00', title: '混合检索与 Rerank',
             learn: ['Dense + BM25 混合检索', 'Query Rewrite 与 Metadata Filter', 'Cross-encoder Rerank 与消融实验'],
             business: ['跨站点、国家和类目政策的精确命中', '分析查准率与查全率的业务取舍'],
             output: 'Baseline / Hybrid / Rerank 三组配置对比报告。',
-            acceptance: '黄金集 Recall@5 相对基线提升 ≥15 个百分点；能解释质量、延迟、成本三者的取舍。'
+            acceptance: '先根据 W4 基线预注册目标；用消融实验说明各模块增益，并给出质量、延迟、成本三者的配置决策。'
         },
         {
             week: 6, phase: 'rag', start: '2026-09-29', end: '2026-10-05', review: '10/02 21:00', title: 'RAG 评测、幻觉与可信回答',
-            learn: ['Context Precision / Recall、Faithfulness、Relevance', '引用校验、置信度与拒答策略', 'Trace、回归测试与错误分类'],
+            learn: ['Context Precision / Recall、Faithfulness、Relevance', '引用校验、置信度与拒答策略', '人工评审、LLM Judge 校准、Trace 与回归测试'],
             business: ['政策问答中的过期、冲突、无依据和敏感问题处理', '把错误分为数据、检索、生成、交互四层'],
             output: '≥50 题自动评测集 + 评测脚本 + 失败样本看板。',
-            acceptance: '引用覆盖率 ≥90%；无依据问题拒答率 ≥85%；每次修改可一键回归并输出对比。'
+            acceptance: '自动 grader 与人工抽样的一致性可解释；引用和拒答按场景切片评估；每次修改可一键回归并输出质量、延迟、成本对比。'
         },
         {
             week: 7, phase: 'rag', start: '2026-10-06', end: '2026-10-12', review: '10/09 21:00', title: '知识工程与数据管线',
-            learn: ['PDF、OCR、表格与版面解析', '版本、去重、增量索引和数据血缘', '权限、时效性与知识治理'],
-            business: ['多站点政策频繁变化时保证最新与权限隔离', '定义知识更新 SLA 与责任人'],
-            output: '支持新增、更新、下线和版本追溯的增量索引管线。',
-            acceptance: '新增文档 5 分钟内可检索；重复内容可去重；旧版本可追溯；越权查询被阻断。'
+            learn: ['PDF、OCR、表格与版面解析', '版本、去重、增量索引和数据血缘', '权限、PII、版权、保留/删除与知识治理'],
+            business: ['多站点政策频繁变化时保证最新与权限隔离', '定义数据 Owner、更新 SLA 与异常更新 Runbook'],
+            output: '支持新增、更新、下线和版本追溯的增量索引管线 + 数据治理清单。',
+            acceptance: '新增文档可在目标 SLA 内检索；重复内容可去重、旧版本可追溯、越权查询被阻断；完成一次数据异常处置演练。'
         },
         {
             week: 8, phase: 'rag', start: '2026-10-13', end: '2026-10-19', review: '10/16 21:00', title: 'RAG 产品化里程碑',
             learn: ['流式 UX、追问、引用和反馈闭环', '缓存、降级、监控与成本预算', '离线评测、线上行为与业务指标'],
             business: ['自助解决政策问题，复杂问题无缝转人工', '定义满意度、解决率、转人工率和节省时长'],
             output: 'TikTok Shop 政策 Copilot Demo + PRD + 评测报告。',
-            acceptance: '核心题正确率 ≥80%；引用覆盖 ≥90%；p95 ≤4 秒；完成 5 位目标用户可用性测试。'
+            acceptance: '完成 5 位目标用户测试，报告任务完成率、信任度、转人工体验、采用意愿和单位成本；结合质量与延迟基线做 Go / Iterate / Stop 决策。'
         },
         {
             week: 9, phase: 'adaptation', start: '2026-10-20', end: '2026-10-26', review: '10/23 21:00', title: '预训练认知、SFT 与 LoRA',
             learn: ['预训练、继续预训练和 SFT 的目标差异', 'Instruction Data 设计、清洗与划分', 'PEFT、LoRA / QLoRA 及何时不该微调'],
-            business: ['统一商家客服语气、意图分类和回复格式', '建立 Prompt / RAG / 微调选择决策树'],
-            output: '300–500 条电商指令数据 + 小模型 LoRA 适配实验。',
-            acceptance: '训练过程可复现；与基线盲评 ≥50 条；清楚说明为何此任务适合或不适合微调。'
+            business: ['统一商家客服语气、意图分类和回复格式', '先建立 Prompt / RAG / 微调选择决策树，再决定是否训练'],
+            output: '模型选择决策 Memo + 50–100 条高质量指令样本；有必要时再做小模型 LoRA 实验。',
+            acceptance: '用证据说明是否需要微调；若训练则过程可复现并与基线盲评 ≥50 条；若不训练，也要给出替代方案和成本判断。'
         },
         {
             week: 10, phase: 'adaptation', start: '2026-10-27', end: '2026-11-02', review: '10/30 21:00', title: '后训练、DPO 与模型评测',
             learn: ['RLHF / RLAIF、Reward Model、DPO 的原理与边界', 'Pairwise Preference Data', '能力、安全、偏差与稳定性评测'],
-            business: ['让运营建议更有帮助、合规且不过度承诺', '定义偏好标注规则和冲突处理'],
-            output: '≥100 对偏好数据 + 轻量 DPO / 偏好排序实验 + 模型卡。',
-            acceptance: '盲评胜率较基线提升；完成 20 条红队用例；模型卡记录适用范围、限制与残余风险。'
+            business: ['让运营建议更有帮助、合规且不过度承诺', '定义偏好标注规则、受影响人群与冲突处理'],
+            output: '偏好数据规范 + 盲评实验 + 模型/系统卡与风险台账；DPO 实现作为可选项。',
+            acceptance: '能解释 RLHF / DPO 的适用边界；完成 20 条红队用例；模型/系统卡记录适用范围、限制、责任人和残余风险。'
         },
         {
             week: 11, phase: 'adaptation', start: '2026-11-03', end: '2026-11-09', review: '11/06 21:00', title: '多模态与 Multimodal RAG',
             learn: ['Vision Encoder、CLIP 与 VLM 基础', 'OCR、版面理解与图文 Embedding', '多模态检索、Grounding 与评测'],
             business: ['商品主图违规识别、信息缺失检查和卖点生成', '将图片证据与政策文本联合检索'],
             output: '商品图合规检查 + 卖点生成 Demo，支持证据定位。',
-            acceptance: '≥50 张图片测试集；关键违规召回率 ≥80%；输出带证据区域/理由；失败样本完成分类。'
+            acceptance: '≥50 张公开或合成图片测试集；按图片质量、语言和类目切片；输出证据区域与失败解释，并评估隐私、可访问性、延迟和误判处置。'
         },
         {
             week: 12, phase: 'agent', start: '2026-11-10', end: '2026-11-16', review: '11/13 21:00', title: 'Agent 基础：循环、状态、记忆与工具',
             learn: ['Observe → Plan → Act → Reflect', 'Workflow 与 Agent 的边界', '短期状态、长期记忆、工具契约与 MCP'],
-            business: ['输入店铺问题，自动查政策、分析指标并给动作建议', '识别哪些步骤必须由规则或人控制'],
+            business: ['输入店铺问题，自动查政策、分析指标并给动作建议', '先判断固定 Workflow 是否足够，并对工具动作分级、设置人工控制点'],
             output: '商家运营 Agent v1：检索、计算、数据查询、报告四类工具。',
-            acceptance: '10 个脚本任务成功率 ≥80%；每一步有 Trace；参数校验、超时、重试和失败回退有效。'
+            acceptance: '10 个脚本任务多次运行并报告一致性；每一步有 Trace；停止条件、参数校验、超时、重试、失败回退和高风险确认有效。'
         },
         {
             week: 13, phase: 'agent', start: '2026-11-17', end: '2026-11-23', review: '11/20 21:00', title: '高级 Agent：规划、协作与人工审批',
-            learn: ['Task Decomposition、Planning 与 Replanning', '多 Agent 角色、通信与上下文共享', '权限、审批、持久记忆和中断恢复'],
-            business: ['选品研究与活动报名：搜集、分析、审核、执行', '设计高风险动作的人机协同界面'],
-            output: '研究员 → 分析师 → 审核员协作链路。',
-            acceptance: '10 个复杂任务成功率 ≥80%；未经确认不能执行高风险动作；中断后可从检查点继续。'
+            learn: ['Task Decomposition、Planning 与 Replanning', '单 Agent 基线与多 Agent 的收益/代价', '权限、审批、持久记忆和中断恢复'],
+            business: ['选品研究与活动报名：搜集、分析、审核、执行', '先做单 Agent 基线；只有质量或维护性证明确有收益才拆分角色'],
+            output: '带审批和断点恢复的单 Agent 链路；多 Agent 作为有证据时的扩展。',
+            acceptance: '10 个复杂任务多次运行；高风险动作未经确认 0 次执行；中断后可继续；若使用多 Agent，必须证明相对基线的净收益。'
         },
         {
             week: 14, phase: 'agent', start: '2026-11-24', end: '2026-11-30', review: '11/27 21:00', title: 'Agent 评测、可观测性与安全',
             learn: ['Task Success、Trajectory Eval 与错误归因', 'Prompt Injection、数据泄露和最小权限', '延迟、成本、并发、缓存与降级'],
             business: ['确保运营 Agent 可控、可解释、可运营', '为线上故障定义告警、止损和人工接管'],
-            output: 'Agent 评测台 + Trace 看板 + 安全攻击集 + 预算控制。',
-            acceptance: '≥30 个端到端任务；成功率 ≥85%；高风险攻击阻断率 ≥90%；展示 p95 和单任务成本。'
+            output: 'Agent 评测台 + Trace 看板 + 威胁模型、安全攻击集、事故响应与预算控制。',
+            acceptance: '≥30 个代表性任务并多次运行，报告 pass@1、一致性和错误分层；高风险写操作 100% 人工审批且无未授权执行；展示 p95 与单任务成本。'
         },
         {
-            week: 15, phase: 'agent', start: '2026-12-01', end: '2026-12-07', review: '12/04 21:00', title: '生产架构与 Agent 平台化',
-            learn: ['模型网关、工具注册、身份与权限', 'Memory / RAG / Workflow 分层架构', '版本、可观测性、SLA 与灾备'],
-            business: ['从单点 Demo 走向可被多个业务复用的平台能力', '明确自建、采购和混合方案边界'],
-            output: '电商 Agent 生产架构图 + API / 工具契约 + 运维 Runbook。',
-            acceptance: '能完成架构评审；关键组件有 SLA 与 Owner；提供限流、降级、回滚、数据隔离方案。'
+            week: 15, phase: 'product', start: '2026-12-01', end: '2026-12-07', review: '12/04 21:00', title: '生产就绪评审与 Agent 架构',
+            learn: ['模型网关、工具注册、身份与权限', 'Build / Buy、模型供应商、容量与单位成本', '版本、可观测性、SLO、灰度与灾备'],
+            business: ['从单点 Demo 走向可运营的业务能力', '明确自建、采购、混合与可迁移方案边界'],
+            output: '生产架构与 Build / Buy 决策 + API / 工具契约 + 上线及事故 Runbook。',
+            acceptance: '完成生产就绪评审；关键组件有 SLO 与 Owner；完成一次灰度、降级或回滚演练，并给出成本上限和供应商迁移方案。'
         },
         {
             week: 16, phase: 'product', start: '2026-12-08', end: '2026-12-14', review: '12/11 21:00', title: 'AI 产品策略、实验与 ROI',
-            learn: ['AI-native 场景筛选和任务重构', 'Human-AI UX、信任、可控性与反馈', '北极星指标、A/B、单位经济与发布策略'],
-            business: ['从点状工具升级为商家经营决策助手', '量化节省时长、解决率、GMV 机会与风险成本'],
-            output: '商家经营 Copilot PRD + 指标树 + 实验方案 + ROI + 风险清单。',
-            acceptance: '≥3 次用户访谈；1 个北极星指标及护栏指标；收益/成本量化；有灰度和回滚方案。'
+            learn: ['汇总用户证据并重构任务，而不是从本周才开始用户发现', 'Human-AI UX、信任、可控性、反馈与采用', '北极星指标、A/B、ROI 敏感性与发布策略'],
+            business: ['从点状工具升级为商家经营决策助手', '用现状基线量化节省时长、解决率、GMV 机会、风险成本与净价值'],
+            output: '商家经营 Copilot PRD + 指标树 + 实验、ROI 敏感性、发布与采用计划。',
+            acceptance: '汇总前期访谈/测试证据；定义北极星和护栏指标；量化收益/成本与停止条件；明确灰度、回滚和组织采用方案。'
         },
         {
             week: 17, phase: 'product', start: '2026-12-15', end: '2026-12-20', review: '12/18 21:00', title: '毕业作品：端到端交付',
             learn: ['系统取舍、指标复盘与失败修正', '产品、模型、评测、工程材料的统一叙事', '面向管理者与技术团队的双版本表达'],
             business: ['证明自己能定义场景、选技术、搭系统、做评测并推动落地', '邀请目标用户、算法和产品同行评审'],
-            output: '在线 Demo、源码、架构图、PRD、评测报告与 3 个案例页。',
-            acceptance: '端到端 Demo 稳定；核心指标达标；邀请 3 位同行评审；问题清单均有结论或后续计划。'
+            output: '聚焦一个高价值任务的在线 Demo、源码、架构图、PRD、评测报告与案例页。',
+            acceptance: '完成真实目标用户试点并保留脱敏运行日志；核心指标与原基线对比；邀请 3 位用户/同行评审；每个问题都有结论或后续计划。'
         },
         {
             week: 18, phase: 'product', start: '2026-12-21', end: '2026-12-25', review: '12/25 21:00', title: '发布、路演与下一程',
             learn: ['AI PM Portfolio 与面试叙事', '10 分钟路演：Why / What / How / Impact', '建立下一季度学习飞轮'],
             business: ['把四个月成果转成可公开验证的职业转型证据', '制定入岗 30 / 60 / 90 天计划'],
-            output: '公开作品集、Demo 视频、10 分钟路演与下一季度 OKR。',
-            acceptance: '作品公开可访问；10 分钟独立讲清全案；完成一次模拟面试；形成量化复盘和下一阶段路线。'
+            output: '公开作品集、Demo 视频、10 分钟路演、失败实验复盘与下一季度 OKR。',
+            acceptance: '公开前完成脱敏与安全检查；能讲清假设、关键取舍、失败证据、业务影响和遗留风险；完成模拟面试与 30 / 60 / 90 天计划。'
         }
     ];
 
@@ -902,19 +904,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function renderAiAbilities() {
-        const list = document.getElementById('aiAbilityList');
-        const average = document.getElementById('abilityAverage');
-        if (!list || !average) return;
-        const score = Math.round(aiAbilities.reduce((sum, item) => sum + item.current, 0) / aiAbilities.length);
-        average.textContent = `${score}%`;
-        list.innerHTML = aiAbilities.map(item => `
-            <article class="ai-ability-item">
-                <div class="ai-ability-meta"><span class="ai-ability-name">${item.name}</span><span class="ai-ability-score">${item.current} / ${item.target}</span></div>
-                <div class="ai-ability-track"><i class="ai-ability-target" style="width:${item.target}%"></i><i class="ai-ability-current" style="width:${item.current}%"></i></div>
-                <p class="ai-ability-focus">当前重点：${item.focus}</p>
-                <div class="ai-ability-recent"><time>${item.recentDate}</time><p>${item.recentWork}</p></div>
-                <p class="ai-ability-acceptance"><strong>目标验收：</strong>${item.acceptance}</p>
+    function renderAiRecentTimeline() {
+        const timeline = document.getElementById('aiRecentTimeline');
+        const summary = document.getElementById('recentTimelineSummary');
+        if (!timeline || !summary) return;
+        summary.textContent = `${aiRecentActivities.length} 条`;
+        timeline.innerHTML = `
+            <div class="ai-recent-range"><span>08.13</span><strong>时间进度</strong><span>08.25</span></div>
+            <ol role="progressbar" aria-label="8 月 13 日至 25 日学习时间进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                ${aiRecentActivities.map((item, index) => `
+                    <li class="${index === aiRecentActivities.length - 1 ? 'current' : 'completed'}">
+                        <span class="ai-recent-node" aria-hidden="true"></span>
+                        <time datetime="${item.datetime}">${item.date}</time>
+                        <article>
+                            <div class="ai-recent-tags">${item.abilities.map(ability => `<span>${ability}</span>`).join('')}</div>
+                            <h4>${item.title}</h4>
+                            <p>${item.text}</p>
+                        </article>
+                    </li>`).join('')}
+            </ol>`;
+    }
+
+    function renderCapabilityStandards() {
+        const standards = document.getElementById('aiCapabilityStandards');
+        if (!standards) return;
+        standards.innerHTML = aiAbilities.map(item => `
+            <article>
+                <div><strong>${item.name}</strong><span>${item.current} → ${item.target}</span></div>
+                <p><b>当前重点：</b>${item.focus}</p>
+                <p><b>目标验收：</b>${item.acceptance}</p>
             </article>`).join('');
     }
 
@@ -932,6 +950,44 @@ document.addEventListener('DOMContentLoaded', function() {
     function getCurrentAiWeek() {
         const now = new Date();
         return aiRoadmap.find(item => now >= new Date(`${item.start}T00:00:00`) && now <= new Date(`${item.end}T23:59:59`))?.week || null;
+    }
+
+    function renderAiLearningPhases() {
+        const list = document.getElementById('aiLearningPhases');
+        const progress = document.getElementById('aiLearningTimeProgress');
+        const fill = document.getElementById('aiLearningTimeFill');
+        const text = document.getElementById('aiLearningTimeText');
+        if (!list || !progress || !fill || !text) return;
+
+        const currentWeek = getCurrentAiWeek();
+        const start = new Date(`${aiRoadmap[0].start}T00:00:00`);
+        const end = new Date(`${aiRoadmap[aiRoadmap.length - 1].end}T23:59:59`);
+        const now = new Date();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const totalDays = Math.floor((end - start) / dayMs) + 1;
+        const elapsedDays = now < start ? 0 : now > end ? totalDays : Math.floor((now - start) / dayMs) + 1;
+        const percent = Math.max(0, Math.min(100, elapsedDays / totalDays * 100));
+        const currentPhase = aiPhases.find(phase => currentWeek && currentWeek >= phase.fromWeek && currentWeek <= phase.toWeek);
+
+        progress.style.setProperty('--learning-progress', `${percent}%`);
+        progress.setAttribute('aria-valuenow', String(Math.round(percent)));
+        text.textContent = currentPhase
+            ? `第 ${elapsedDays} / ${totalDays} 天 · 当前 ${currentPhase.code}`
+            : now < start ? '计划尚未开始' : '计划周期已结束';
+
+        list.innerHTML = aiPhases.map(phase => {
+            const firstWeek = aiRoadmap.find(item => item.week === phase.fromWeek);
+            const lastWeek = aiRoadmap.find(item => item.week === phase.toWeek);
+            const status = currentWeek && currentWeek >= phase.fromWeek && currentWeek <= phase.toWeek
+                ? 'active'
+                : currentWeek && currentWeek > phase.toWeek ? 'completed' : 'upcoming';
+            return `<li class="${status}" style="grid-column:span ${phase.toWeek - phase.fromWeek + 1}"${status === 'active' ? ' aria-current="step"' : ''}>
+                <span class="ai-learning-stage-node" aria-hidden="true"></span>
+                <span class="ai-learning-stage-code">${phase.code}</span>
+                <strong>${phase.title}</strong>
+                <small>W${String(phase.fromWeek).padStart(2, '0')}—W${String(phase.toWeek).padStart(2, '0')} · ${aiDateLabel(firstWeek.start)}—${aiDateLabel(lastWeek.end)}</small>
+            </li>`;
+        }).join('');
     }
 
     function renderAiRoadmap() {
@@ -997,7 +1053,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     renderAiRadar();
-    renderAiAbilities();
+    renderAiRecentTimeline();
+    renderCapabilityStandards();
+    renderAiLearningPhases();
     renderAiEvidence();
     renderAiRoadmap();
     renderNextCheckin();

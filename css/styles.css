@@ -4436,3 +4436,521 @@ body {
         gap: 4px;
     }
 }
+
+/* ============================================================
+   AI LEARNING LOG + STANDALONE CONTACT · 2026-08-25
+   ============================================================ */
+.ai-growth-title-row {
+    grid-template-columns: minmax(0, .95fr) minmax(320px, 1.05fr);
+    gap: clamp(36px, 6vw, 76px);
+    align-items: end;
+}
+
+.ai-growth-title-row h1 {
+    max-width: 680px;
+    margin-top: 14px;
+    color: #20242a;
+    font-size: clamp(42px, 4.4vw, 64px);
+    font-weight: 690;
+    line-height: 1.06;
+    letter-spacing: -.045em;
+}
+
+.ai-growth-intro {
+    max-width: 600px;
+    padding-bottom: 2px;
+}
+
+.ai-status-card-primary {
+    color: #1d1d1f;
+    border-color: rgba(37, 99, 235, .18);
+    background: #eef3fb;
+    box-shadow: 0 18px 52px rgba(42, 46, 54, .055);
+}
+
+.ai-status-card-primary > span {
+    color: #667086;
+}
+
+.ai-status-card-primary p {
+    color: #5f6876;
+}
+
+.ai-learning-arc {
+    grid-template-columns: 166px minmax(0, 1fr);
+    align-items: start;
+}
+
+.ai-learning-arc-heading small {
+    display: block;
+    margin-top: 9px;
+    color: #838993;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.ai-learning-arc-body {
+    position: relative;
+    min-width: 0;
+}
+
+.ai-learning-time-progress {
+    --learning-progress: 0%;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    z-index: 0;
+    height: 4px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #dfe2e6;
+}
+
+.ai-learning-time-progress i {
+    display: block;
+    width: var(--learning-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--ai-blue);
+    transition: width .45s ease;
+}
+
+.ai-learning-arc ol {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    gap: 0;
+}
+
+.ai-learning-arc li,
+.ai-learning-arc li.active {
+    position: relative;
+    display: block;
+    min-height: 92px;
+    padding: 31px 14px 0 8px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.ai-learning-stage-node {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border: 4px solid #fff;
+    border-radius: 50%;
+    background: #bdc2c9;
+    box-shadow: 0 0 0 1px rgba(31, 37, 45, .10);
+}
+
+.ai-learning-arc li.completed .ai-learning-stage-node,
+.ai-learning-arc li.active .ai-learning-stage-node {
+    background: var(--ai-blue);
+}
+
+.ai-learning-arc li.active .ai-learning-stage-node {
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, .12);
+}
+
+.ai-learning-stage-code {
+    display: block;
+    margin-bottom: 5px;
+    color: #727985;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .08em;
+}
+
+.ai-learning-arc li.active .ai-learning-stage-code {
+    color: #1d55bd;
+}
+
+.ai-learning-arc li strong {
+    overflow: visible;
+    color: #2e333a;
+    font-size: 12px;
+    line-height: 1.4;
+    text-overflow: clip;
+    white-space: normal;
+}
+
+.ai-learning-arc li small {
+    margin-top: 4px;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.ai-learning-crosscut {
+    margin: 8px 8px 0;
+    padding-top: 10px;
+    color: #747b85;
+    border-top: 1px solid rgba(28, 32, 39, .08);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.ai-learning-crosscut span {
+    margin-right: 8px;
+    color: #1d55bd;
+    font-weight: 700;
+}
+
+#recentTimelineSummary {
+    color: #69717c;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.ai-recent-timeline {
+    margin-top: 28px;
+}
+
+.ai-recent-range {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 18px 36px;
+    color: #858b94;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.ai-recent-range strong {
+    height: 1px;
+    overflow: hidden;
+    color: transparent;
+    background: #e1e3e6;
+}
+
+.ai-recent-timeline ol {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ai-recent-timeline ol::before,
+.ai-recent-timeline ol::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    bottom: 9px;
+    left: 8px;
+    width: 4px;
+    border-radius: 999px;
+}
+
+.ai-recent-timeline ol::before {
+    background: #dfe2e6;
+}
+
+.ai-recent-timeline ol::after {
+    background: var(--ai-blue);
+}
+
+.ai-recent-timeline li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    padding-left: 34px;
+}
+
+.ai-recent-node {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    border: 4px solid #fff;
+    border-radius: 50%;
+    background: var(--ai-blue);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, .18);
+}
+
+.ai-recent-timeline li.current .ai-recent-node {
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, .13);
+}
+
+.ai-recent-timeline time {
+    padding-top: 6px;
+    color: #c44b18;
+    font-size: 10px;
+    font-weight: 750;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+}
+
+.ai-recent-timeline article {
+    padding: 14px 15px;
+    border: 1px solid rgba(28, 32, 39, .08);
+    border-radius: 13px;
+    background: #f8f6f1;
+}
+
+.ai-recent-timeline h4 {
+    margin: 6px 0 5px;
+    color: #2a3037;
+    font-size: 13px;
+}
+
+.ai-recent-timeline p {
+    margin: 0;
+    color: #616873;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.ai-recent-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.ai-recent-tags span {
+    padding: 3px 6px;
+    color: #53657f;
+    border: 1px solid rgba(37, 99, 235, .13);
+    border-radius: 999px;
+    background: #eef3fb;
+    font-size: 8px;
+    font-weight: 650;
+}
+
+.ai-capability-standards {
+    margin-top: 14px;
+    border-top: 1px solid var(--ai-line);
+}
+
+.ai-capability-standards summary {
+    padding: 14px 0 0;
+    color: #58616e;
+    font-size: 11px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+#aiCapabilityStandards {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+#aiCapabilityStandards article {
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #f4f5f6;
+}
+
+#aiCapabilityStandards article > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: #2f353d;
+    font-size: 11px;
+}
+
+#aiCapabilityStandards article > div span {
+    color: #7d848e;
+    font-variant-numeric: tabular-nums;
+}
+
+#aiCapabilityStandards p {
+    margin-top: 6px;
+    color: #676f79;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+#aiCapabilityStandards b {
+    color: #424a54;
+}
+
+.contact-page-section {
+    min-height: calc(100vh - 190px);
+    padding: 132px 0 110px;
+    background:
+        radial-gradient(circle at 82% 12%, rgba(0, 113, 227, .08), transparent 28%),
+        #f5f5f3;
+}
+
+.contact-page-container {
+    max-width: 900px;
+}
+
+.contact-page-heading {
+    max-width: 680px;
+}
+
+.contact-page-heading h1 {
+    margin: 16px 0 14px;
+    color: #1d1d1f;
+    font-size: clamp(42px, 6vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -.045em;
+}
+
+.contact-page-heading p {
+    color: #666b72;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.contact-profile-card {
+    max-width: 760px;
+    margin-top: 48px;
+    padding: clamp(24px, 4vw, 40px);
+    border: 1px solid rgba(29, 29, 31, .09);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 22px 70px rgba(28, 32, 39, .06);
+}
+
+.contact-profile-header {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding-bottom: 26px;
+    border-bottom: 1px solid rgba(29, 29, 31, .09);
+}
+
+.contact-monogram {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    color: #fff;
+    border-radius: 18px;
+    background: #20242a;
+    font-size: 22px;
+    font-weight: 650;
+}
+
+.contact-profile-header span:not(.contact-monogram),
+.contact-method dt {
+    color: #83878e;
+    font-size: 11px;
+}
+
+.contact-profile-header h2 {
+    margin-top: 4px;
+    color: #24272c;
+    font-size: 24px;
+}
+
+.contact-method-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.contact-method {
+    padding: 18px;
+    border-radius: 14px;
+    background: #f5f5f3;
+}
+
+.contact-method dd {
+    margin: 8px 0 0;
+}
+
+.contact-method a {
+    color: #24272c;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.contact-method a:hover {
+    color: var(--color-accent);
+}
+
+@container main-content (max-width: 760px) {
+    .ai-growth-title-row {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .ai-growth-title-row h1 {
+        font-size: clamp(40px, 10cqw, 56px);
+    }
+}
+
+@container main-content (max-width: 620px) {
+    .ai-learning-arc {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-learning-arc-body {
+        padding-left: 0;
+    }
+
+    .ai-learning-time-progress {
+        top: 8px;
+        right: auto;
+        bottom: 56px;
+        left: 8px;
+        width: 4px;
+        height: auto;
+    }
+
+    .ai-learning-time-progress i {
+        width: 100%;
+        height: var(--learning-progress);
+        transition: height .45s ease;
+    }
+
+    .ai-learning-arc ol {
+        display: block;
+        overflow: visible;
+        padding: 0;
+    }
+
+    .ai-learning-arc li,
+    .ai-learning-arc li.active {
+        min-height: 82px;
+        padding: 4px 0 20px 40px;
+    }
+
+    .ai-learning-stage-node {
+        top: 0;
+        left: 0;
+    }
+
+    .ai-learning-crosscut {
+        margin-left: 40px;
+    }
+
+    .ai-recent-timeline li {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .ai-recent-timeline time {
+        padding-top: 3px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        max-width: none;
+        margin: 0;
+        padding: 0 18px;
+    }
+
+    .contact-page-section {
+        padding: 104px 0 80px;
+    }
+
+    .contact-method-list {
+        grid-template-columns: 1fr;
+    }
+}
