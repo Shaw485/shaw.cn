@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     heading: '02 · 当前验收证据',
                     title: 'Stage 0 Report',
                     href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/docs/STAGE_0_REPORT.md',
-                    intro: '查看本地技术闸门、42 条测试、环境约束、OpenSearch 待验证项与证据边界。'
+                    intro: '查看本地技术闸门、43 条测试、环境约束、OpenSearch 待验证项与证据边界。'
                 },
                 codeHeading: '03 · 代码与说明',
                 code: [
