@@ -2333,6 +2333,38 @@ img {
     flex-shrink: 0;
 }
 
+.app-modal-platform-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 158px;
+}
+
+.app-modal-platform-actions[hidden] {
+    display: none;
+}
+
+.app-modal-platform-actions .app-modal-download {
+    width: 100%;
+    justify-content: center;
+}
+
+.app-modal-platform-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 16px;
+    color: #777b82;
+    border: 1px solid var(--color-border-light);
+    border-radius: 980px;
+    background: #f5f5f7;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: default;
+}
+
 .apk-download-btn {
     display: flex;
     align-items: center;
@@ -2858,6 +2890,11 @@ img {
     .app-modal-download {
         width: 100%;
         justify-content: center;
+    }
+
+    .app-modal-platform-actions {
+        width: 100%;
+        min-width: 0;
     }
 
     .app-modal-icon {

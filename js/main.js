@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ],
             apk: {
                 url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v60.apk',
-                label: '下载应用',
+                label: '下载安卓版',
                 meta: 'v60.0 · 12 MB'
             }
         },
@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
+    const modalPlatformActions = document.getElementById('modalPlatformActions');
     const modalDownloadStats = document.getElementById('modalDownloadStats');
     const modalDownloadCount = document.getElementById('modalDownloadCount');
     const imageLightbox = document.getElementById('imageLightbox');
@@ -347,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -362,12 +363,16 @@ document.addEventListener('DOMContentLoaded', function() {
             modalApkDownload.href = app.apk.url;
             modalApkLabel.textContent = app.apk.label;
 
+            modalPlatformActions.hidden = false;
+            modalPlatformActions.style.removeProperty('display');
             modalApkDownload.hidden = false;
             modalApkDownload.style.removeProperty('display');
             modalDownloadStats.hidden = false;
             modalDownloadStats.style.removeProperty('display');
             refreshDownloadCount();
         } else {
+            modalPlatformActions.hidden = true;
+            modalPlatformActions.style.display = 'none';
             modalApkDownload.hidden = true;
             modalApkDownload.style.display = 'none';
             modalDownloadStats.hidden = true;

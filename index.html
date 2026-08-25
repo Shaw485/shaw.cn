@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260825-learning5">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-platform6">
 </head>
 <body class="page-portfolio">
     <nav class="navbar">
@@ -102,12 +102,15 @@
                         <span><strong id="modalDownloadCount">—</strong> 次下载</span>
                     </div>
                 </div>
-                <a id="modalApkDownload" href="https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v60.apk" class="btn btn-primary app-modal-download" target="_blank" rel="noopener" download>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 3v12"></path><polyline points="7 10 12 15 17 10"></polyline><path d="M5 21h14"></path>
-                    </svg>
-                    <span id="modalApkLabel">下载应用</span>
-                </a>
+                <div class="app-modal-platform-actions" id="modalPlatformActions">
+                    <a id="modalApkDownload" href="https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v60.apk" class="btn btn-primary app-modal-download" target="_blank" rel="noopener" download>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3v12"></path><polyline points="7 10 12 15 17 10"></polyline><path d="M5 21h14"></path>
+                        </svg>
+                        <span id="modalApkLabel">下载安卓版</span>
+                    </a>
+                    <span class="app-modal-platform-status">苹果版开发中</span>
+                </div>
             </div>
 
             <div class="app-modal-screenshots">
@@ -234,6 +237,6 @@
         </svg>
     </button>
 
-    <script src="js/main.js?v=20260825-learning5"></script>
+    <script src="js/main.js?v=20260825-platform6"></script>
 </body>
 </html>
