@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="个人官网 - App 作品集">
-    <title>我的 App 作品集</title>
+    <meta name="description" content="何少宇的产品作品与 AI 成长记录">
+    <title>Shaw's Space · 产品作品与 AI 成长记录</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,6 +22,7 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#apps" class="nav-link active">首页</a></li>
+                <li><a href="#ai-growth" class="nav-link">AI 成长历程</a></li>
                 <li><a href="#about" class="nav-link">博客记录</a></li>
                 <li><a href="#contact" class="nav-link">联系我</a></li>
             </ul>
@@ -146,6 +147,82 @@
         </button>
         <img id="imageLightboxImage" src="" alt="">
     </div>
+
+    <section id="ai-growth" class="ai-growth-section">
+        <div class="section-container ai-growth-container">
+            <header class="ai-growth-hero reveal">
+                <div class="ai-growth-kicker">
+                    <span class="ai-growth-live-dot"></span>
+                    2026.08.25 — 2026.12.25 · 18 WEEKS
+                </div>
+                <div class="ai-growth-title-row">
+                    <div>
+                        <p class="ai-growth-overline">FROM E-COMMERCE PM TO AI PM</p>
+                        <h2>何少宇的<br><span>AI 成长之路</span></h2>
+                    </div>
+                    <p class="ai-growth-intro">从 TikTok Shop 电商产品实践出发，系统补齐模型原理、RAG、Agent、后训练与多模态，并用一个可上线的电商 AI Copilot 完成四个月闭环。</p>
+                </div>
+                <div class="ai-growth-status-grid">
+                    <div class="ai-status-card ai-status-card-primary">
+                        <span>NOW · 当前坐标</span>
+                        <strong>Transformer Block + RAG Eval</strong>
+                        <p>正在从手搓 Self-Attention 进入完整 Transformer Block；同时用真实 Bad Case 推进分层检索、重排与证据评测。</p>
+                    </div>
+                    <div class="ai-status-card">
+                        <span>NEXT CHECK-IN</span>
+                        <strong>周五 21:00</strong>
+                        <p id="nextCheckinText">每周固定复盘：学到了什么、做出了什么、下周改什么。</p>
+                    </div>
+                    <div class="ai-status-card">
+                        <span>NORTH STAR</span>
+                        <strong>业务落地能力</strong>
+                        <p>不是“懂术语”，而是能定义场景、搭出原型、建立评测并推动真实业务结果。</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="ai-dashboard-grid reveal">
+                <article class="ai-panel ai-radar-panel">
+                    <div class="ai-panel-heading">
+                        <div><span>01 · CAPABILITY MAP</span><h3>AI 六边形能力图</h3></div>
+                        <div class="ai-radar-legend"><span><i class="legend-current"></i>当前</span><span><i class="legend-target"></i>四个月目标</span></div>
+                    </div>
+                    <div class="ai-radar-wrap">
+                        <svg id="aiRadarChart" class="ai-radar-chart" viewBox="0 0 520 430" role="img" aria-label="AI 六边形能力雷达图"></svg>
+                    </div>
+                    <p class="ai-chart-note">分值来自 GitHub 项目与历史学习记录的阶段性判断，用来明确下一步投入，不代表考试成绩。</p>
+                </article>
+
+                <article class="ai-panel ai-progress-panel">
+                    <div class="ai-panel-heading">
+                        <div><span>02 · SKILL PROGRESS</span><h3>六项能力进展</h3></div>
+                        <strong id="abilityAverage">—</strong>
+                    </div>
+                    <div id="aiAbilityList" class="ai-ability-list"></div>
+                </article>
+            </div>
+
+            <section class="ai-evidence-section reveal" aria-labelledby="aiEvidenceTitle">
+                <div class="ai-subsection-heading">
+                    <div><span>03 · LEARNING EVIDENCE</span><h3 id="aiEvidenceTitle">不是从零开始</h3></div>
+                    <p>代码、对话与上线结果共同构成当前能力基线。</p>
+                </div>
+                <div id="aiEvidenceGrid" class="ai-evidence-grid"></div>
+            </section>
+
+            <section class="ai-roadmap-section reveal" aria-labelledby="aiRoadmapTitle">
+                <div class="ai-subsection-heading ai-roadmap-heading">
+                    <div><span>04 · 18-WEEK ROADMAP</span><h3 id="aiRoadmapTitle">四个月，按周交付</h3></div>
+                    <div class="ai-roadmap-progress" aria-live="polite">
+                        <span id="roadmapProgressText">0 / 18 周完成</span>
+                        <div class="ai-roadmap-progress-track"><i id="roadmapProgressBar"></i></div>
+                    </div>
+                </div>
+                <div class="ai-phase-filters" id="aiPhaseFilters" aria-label="路线图阶段筛选"></div>
+                <div class="ai-roadmap-list" id="aiRoadmapList"></div>
+            </section>
+        </div>
+    </section>
 
     <section id="about" class="about blog-section">
       <div class="section-container">
