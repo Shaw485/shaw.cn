@@ -3237,6 +3237,7 @@ body {
 }
 
 .work-card {
+    aspect-ratio: 1 / 1;
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 16px;
