@@ -119,10 +119,10 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #101820 0%, #182f43 58%, #ff9900 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path><path d="M7.5 11.5 10 9l2 2 2.5-3"></path>',
-            desc: '一个证据驱动的电商搜索质量评测与诊断项目。当前在线版本部署了 Stage 0 未优化基线：在 10 条自建商品样例上实时执行 BM25 与确定性 Hash Vector 排序，让用户直接观察同一 Query 的排名差异；后续将接入 Amazon ESCI、nDCG / MRR、混合检索、Rerank、Bad Case 诊断以及 Trace / Replay。',
+            desc: '一个证据驱动的电商搜索质量评测与诊断项目。当前体验页采用“优化前 / 优化后”双栏：优化前已接入 Stage 0 BM25，可实时搜索 10 条自建商品样例；优化后暂未支持，后续将在完整评测集与指标可信后逐步开放。',
             features: [
                 '🔎 实时基线：输入英文 Query，在线运行 BM25 并返回商品',
-                '↕️ 排名对比：切换 BM25 与 Hash Vector，查看排名变化',
+                '↔️ 双栏对照：优化前可用，优化后保持明确的未开放状态',
                 '🧪 评测边界：明确区分体验原型、正式评测与完整 ESCI',
                 '📦 当前数据：10 条 Stage 0 商品样例，字段与限制透明披露',
                 '🧾 证据链：路线图、ADR、验收报告与 GitHub 均可追溯',
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0, wants: 0, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 },
-        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '实时运行未优化的 BM25 与 Hash Vector 基线，观察同一搜索词在 10 条商品样例中的排名差异，并透明展示数据集与评测边界。', likes: 0, wants: 0, comments: 0 }
+        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0, wants: 0, comments: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 

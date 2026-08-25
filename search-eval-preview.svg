@@ -1,30 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
-  <title id="title">搜索引擎评测 Agent 页面预览</title>
-  <desc id="desc">深蓝与橙色的电商搜索界面，展示 BM25 与 Hash Vector 的商品排序。</desc>
-  <rect width="1440" height="900" fill="#f4f5f6"/>
-  <rect width="1440" height="122" fill="#131e29"/>
-  <text x="70" y="58" fill="#fff" font-family="Arial,sans-serif" font-size="31" font-weight="700">Bench<tspan fill="#ff9900">Mart</tspan></text>
-  <text x="70" y="79" fill="#aab7c3" font-family="Arial,sans-serif" font-size="9" letter-spacing="2">ESCI LAB · SIMULATED STORE</text>
-  <rect x="315" y="30" width="775" height="55" rx="7" fill="#fff"/>
-  <text x="345" y="64" fill="#647280" font-family="Arial,sans-serif" font-size="16">wireless mouse</text>
-  <rect x="1028" y="30" width="62" height="55" fill="#ff9900"/>
-  <circle cx="1055" cy="55" r="10" fill="none" stroke="#17232e" stroke-width="3"/><path d="m1063 63 9 9" stroke="#17232e" stroke-width="3"/>
-  <rect y="96" width="1440" height="38" fill="#223246"/>
-  <circle cx="72" cy="115" r="4" fill="#42d392"/>
-  <text x="84" y="119" fill="#fff" font-family="Arial,sans-serif" font-size="10" font-weight="700">API LIVE</text>
-  <text x="174" y="119" fill="#bbc6cf" font-family="Arial,sans-serif" font-size="10">STAGE 0 · 10 PRODUCTS · ENGLISH</text>
-  <text x="70" y="206" fill="#9b670f" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="2">REAL-TIME RESULTS</text>
-  <text x="70" y="250" fill="#17232e" font-family="Arial,sans-serif" font-size="36" font-weight="700">“wireless mouse” 的搜索结果</text>
-  <rect x="1030" y="191" width="150" height="62" rx="6" fill="#131e29"/>
-  <text x="1048" y="212" fill="#b8c4ce" font-family="Arial,sans-serif" font-size="9">未优化基线</text><text x="1048" y="235" fill="#fff" font-family="Arial,sans-serif" font-size="15" font-weight="700">BM25</text>
-  <rect x="1180" y="191" width="190" height="62" rx="6" fill="#fff" stroke="#aeb7bf"/>
-  <text x="1198" y="212" fill="#778491" font-family="Arial,sans-serif" font-size="9">链路诊断</text><text x="1198" y="235" fill="#17232e" font-family="Arial,sans-serif" font-size="15" font-weight="700">Hash Vector</text>
+  <title id="title">搜索优化前后对照页面</title>
+  <desc id="desc">左右两个搜索面板，优化前显示商品结果，优化后暂未支持。</desc>
+  <rect width="1440" height="900" fill="#edf0f2"/>
+  <rect width="1440" height="100" fill="#131e29"/>
+  <text x="42" y="52" fill="#fff" font-family="Arial,sans-serif" font-size="30" font-weight="700">Bench<tspan fill="#ff9900">Mart</tspan></text>
+  <text x="42" y="73" fill="#aebbc6" font-family="Arial,sans-serif" font-size="9" letter-spacing="2">SEARCH COMPARISON</text>
+  <text x="720" y="57" fill="#b9c5cf" text-anchor="middle" font-family="Arial,sans-serif" font-size="12">同一商品集 · 两套搜索结果</text>
   <g font-family="Arial,sans-serif">
-    <text x="70" y="328" fill="#a46810" font-size="11" font-weight="700">#1</text><rect x="117" y="288" width="138" height="138" rx="4" fill="#f2eee8"/><text x="157" y="375" font-size="56">🖱️</text><text x="290" y="316" fill="#707d88" font-size="9" font-weight="700">COMPUTER MICE</text><text x="290" y="348" fill="#17232e" font-size="21" font-weight="700">Bluetooth Ergonomic Wireless Mouse</text><text x="290" y="377" fill="#176481" font-size="12">Brand: Anker</text><text x="290" y="406" fill="#65727e" font-size="12">Rechargeable silent mouse for laptops and tablets</text><text x="1210" y="316" fill="#7b8792" font-size="9">BM25 SCORE</text><text x="1210" y="350" fill="#17232e" font-size="24" font-weight="700">1.6788</text>
-    <line x1="70" y1="455" x2="1370" y2="455" stroke="#d8dde3"/>
-    <text x="70" y="508" fill="#a46810" font-size="11" font-weight="700">#2</text><rect x="117" y="470" width="138" height="138" rx="4" fill="#edf0f4"/><text x="157" y="557" font-size="56">🖱️</text><text x="290" y="498" fill="#707d88" font-size="9" font-weight="700">COMPUTER MICE</text><text x="290" y="530" fill="#17232e" font-size="21" font-weight="700">Wireless RGB Gaming Mouse</text><text x="290" y="559" fill="#176481" font-size="12">Brand: Razer</text><text x="290" y="588" fill="#65727e" font-size="12">Low-latency rechargeable mouse with six buttons</text><text x="1210" y="498" fill="#7b8792" font-size="9">BM25 SCORE</text><text x="1210" y="532" fill="#17232e" font-size="24" font-weight="700">1.6788</text>
-    <line x1="70" y1="637" x2="1370" y2="637" stroke="#d8dde3"/>
-    <text x="70" y="690" fill="#a46810" font-size="11" font-weight="700">#3</text><rect x="117" y="652" width="138" height="138" rx="4" fill="#e9f2f7"/><text x="157" y="739" font-size="56">🖱️</text><text x="290" y="680" fill="#707d88" font-size="9" font-weight="700">COMPUTER MICE</text><text x="290" y="712" fill="#17232e" font-size="21" font-weight="700">Logitech M185 Wireless Mouse</text><text x="290" y="741" fill="#176481" font-size="12">Brand: Logitech</text><text x="290" y="770" fill="#65727e" font-size="12">Compact 2.4 GHz cordless optical mouse with USB receiver</text><text x="1210" y="680" fill="#7b8792" font-size="9">BM25 SCORE</text><text x="1210" y="714" fill="#17232e" font-size="24" font-weight="700">1.5539</text>
+    <rect x="24" y="124" width="688" height="748" fill="#fff" stroke="#cfd5da"/><rect x="24" y="124" width="688" height="5" fill="#ff9900"/>
+    <text x="54" y="183" fill="#9b670f" font-size="11" font-weight="700">01</text><text x="85" y="185" fill="#18212a" font-size="31" font-weight="700">优化前</text><rect x="602" y="157" width="78" height="28" rx="14" fill="#e3f4ed"/><circle cx="620" cy="171" r="4" fill="#16a477"/><text x="632" y="175" fill="#07694d" font-size="10" font-weight="700">已支持</text>
+    <rect x="54" y="218" width="628" height="56" rx="6" fill="#fff" stroke="#131e29" stroke-width="2"/><text x="73" y="252" fill="#41505e" font-size="15">wireless mouse</text><rect x="624" y="218" width="58" height="56" fill="#ff9900"/><circle cx="650" cy="244" r="9" fill="none" stroke="#18212a" stroke-width="2.5"/><path d="m657 251 8 8" stroke="#18212a" stroke-width="2.5"/>
+    <text x="54" y="315" fill="#18212a" font-size="13" font-weight="700">搜索结果</text><text x="682" y="315" fill="#657383" text-anchor="end" font-size="10">7 个结果 · 42 ms</text><line x1="54" y1="328" x2="682" y2="328" stroke="#d8dde3"/>
+    <text x="54" y="378" fill="#9b670f" font-size="10" font-weight="700">#1</text><rect x="87" y="344" width="86" height="86" rx="4" fill="#f2eee8"/><text x="108" y="401" font-size="35">🖱️</text><text x="194" y="366" fill="#78838c" font-size="8">COMPUTER MICE</text><text x="194" y="389" fill="#18212a" font-size="15" font-weight="700">Bluetooth Ergonomic Wireless Mouse</text><text x="194" y="411" fill="#657383" font-size="10">Anker · Rechargeable silent mouse</text><text x="653" y="367" fill="#87919a" text-anchor="end" font-size="8">SCORE</text><text x="653" y="390" fill="#18212a" text-anchor="end" font-size="14" font-weight="700">1.6788</text>
+    <line x1="54" y1="451" x2="682" y2="451" stroke="#d8dde3"/>
+    <text x="54" y="501" fill="#9b670f" font-size="10" font-weight="700">#2</text><rect x="87" y="467" width="86" height="86" rx="4" fill="#edf0f4"/><text x="108" y="524" font-size="35">🖱️</text><text x="194" y="489" fill="#78838c" font-size="8">COMPUTER MICE</text><text x="194" y="512" fill="#18212a" font-size="15" font-weight="700">Wireless RGB Gaming Mouse</text><text x="194" y="534" fill="#657383" font-size="10">Razer · Low-latency rechargeable mouse</text><text x="653" y="490" fill="#87919a" text-anchor="end" font-size="8">SCORE</text><text x="653" y="513" fill="#18212a" text-anchor="end" font-size="14" font-weight="700">1.6788</text>
+    <rect x="728" y="124" width="688" height="748" fill="#fff" stroke="#cfd5da"/><rect x="728" y="124" width="688" height="5" fill="#9da7b1"/>
+    <text x="758" y="183" fill="#7e8993" font-size="11" font-weight="700">02</text><text x="789" y="185" fill="#18212a" font-size="31" font-weight="700">优化后</text><rect x="1296" y="157" width="88" height="28" rx="14" fill="#eef0f2"/><text x="1340" y="175" fill="#687582" text-anchor="middle" font-size="10" font-weight="700">暂未支持</text>
+    <rect x="758" y="218" width="628" height="56" rx="6" fill="#f4f5f6" stroke="#c4cbd1" stroke-width="2"/><text x="777" y="252" fill="#929ca5" font-size="15">wireless mouse</text><rect x="1328" y="218" width="58" height="56" fill="#d7dce0"/><circle cx="1354" cy="244" r="9" fill="none" stroke="#89939c" stroke-width="2.5"/><path d="m1361 251 8 8" stroke="#89939c" stroke-width="2.5"/>
+    <text x="758" y="315" fill="#18212a" font-size="13" font-weight="700">搜索结果</text><text x="1386" y="315" fill="#657383" text-anchor="end" font-size="10">0 个结果</text><line x1="758" y1="328" x2="1386" y2="328" stroke="#d8dde3"/>
+    <rect x="758" y="348" width="628" height="486" fill="#f7f8f9" stroke="#c9d0d6" stroke-dasharray="6 5"/><circle cx="1072" cy="558" r="38" fill="#e8ebed"/><circle cx="1066" cy="551" r="13" fill="none" stroke="#9aa4ad" stroke-width="2"/><path d="m1076 561 13 13" stroke="#9aa4ad" stroke-width="2"/><text x="1072" y="625" fill="#78838d" text-anchor="middle" font-size="15" font-weight="700">优化后搜索暂未支持</text>
   </g>
-  <rect y="850" width="1440" height="50" fill="#131e29"/><text x="70" y="880" fill="#c5ced5" font-family="Arial,sans-serif" font-size="11">PRODUCT EXPERIENCE PROTOTYPE · NOT A FORMAL ESCI EVALUATION</text>
 </svg>
