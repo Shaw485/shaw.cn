@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Shaw 的 AI 学习记录：18 周学习计划、近期实践与每周验收标准。">
+    <meta name="description" content="Shaw 的 AI 学习记录：面向 AI 产品岗位的 8 周学习计划、项目实践与量化验收。">
     <title>AI 学习记录 · Shaw's Space</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260825-clean8">
+    <link rel="stylesheet" href="css/styles.css?v=20260825-jd8">
 </head>
 <body class="page-ai-growth">
     <nav class="navbar">
@@ -38,57 +38,57 @@
                     <header class="ai-growth-hero reveal">
                         <div class="ai-growth-kicker">
                             <span class="ai-growth-live-dot"></span>
-                            2026.08.25 — 12.25 · 18 周计划
+                            2026.08.25 — 10.19 · 8 周计划
                         </div>
                         <div class="ai-growth-title-row">
                             <div>
                                 <p class="ai-growth-overline">LEARNING LOG · 2026</p>
                                 <h1>我的 AI 学习记录</h1>
                             </div>
-                            <p class="ai-growth-intro">记录接下来四个月的学习计划、每周任务和复盘。重点包括模型基础、RAG 与评测、模型适配、多模态、Agent，以及 AI 产品落地；计划通过一个电商方向的 AI Copilot 项目检验学习结果。</p>
+                            <p class="ai-growth-intro">这两个月不追求把 AI 技术学全，而是围绕目标岗位最常出现的能力做一轮可验证实践：场景与体验、信息检索、评测与数据、Agent / 开放平台，以及协同交付。</p>
                         </div>
                         <div class="ai-growth-status-grid">
                             <div class="ai-status-card ai-status-card-primary">
-                                <span>本周学习</span>
-                                <strong>Transformer Block + RAG Eval</strong>
-                                <p>正在从手写 Self-Attention 进入完整 Transformer Block；同时用脱敏案例推进分层检索、重排与离线评测。</p>
+                                <span id="currentWeekLabel">本周主线</span>
+                                <strong id="currentWeekTitle">岗位画像、场景选择与指标基线</strong>
+                                <p id="currentWeekSummary">从目标 JD 与真实用户任务出发，选定一个值得用 AI 解决、也能被数据验证的问题。</p>
                             </div>
                             <div class="ai-status-card">
                                 <span>下次复盘</span>
-                                <strong>周五 21:00</strong>
+                                <strong id="nextCheckinTitle">周五 21:00</strong>
                                 <p id="nextCheckinText">每周固定复盘：学到了什么、做出了什么、下周改什么。</p>
                             </div>
                             <div class="ai-status-card">
-                                <span>学习目标</span>
-                                <strong>形成可验证的项目能力</strong>
-                                <p>能从场景判断出发，完成原型、评测、风险控制与真实用户验证。</p>
+                                <span>贯穿项目</span>
+                                <strong>PRD Agent 2.0</strong>
+                                <p>持续打磨一个可评测的跨境电商知识检索 Agent，仅使用公开、脱敏或合成数据。</p>
                             </div>
                         </div>
                     </header>
 
-                    <nav class="ai-learning-arc reveal" aria-label="18 周学习五阶段">
+                    <nav class="ai-learning-arc reveal" aria-label="8 周学习四阶段">
                         <div class="ai-learning-arc-heading">
                             <span>LEARNING PLAN</span>
-                            <strong>18 周学习安排</strong>
+                            <strong>8 周学习安排</strong>
                             <small id="aiLearningTimeText">计算时间进度…</small>
                         </div>
                         <div class="ai-learning-arc-body">
-                            <div class="ai-learning-time-progress" id="aiLearningTimeProgress" role="progressbar" aria-label="18 周计划时间进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="aiLearningTimeFill"></i></div>
+                            <div class="ai-learning-time-progress" id="aiLearningTimeProgress" role="progressbar" aria-label="8 周计划时间进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="aiLearningTimeFill"></i></div>
                             <ol id="aiLearningPhases"></ol>
-                            <p class="ai-learning-crosscut"><span>全程复盘</span> 场景价值 · Human-AI 交互 · 持续评测 · 安全治理 · 成本与 ROI</p>
+                            <p class="ai-learning-crosscut"><span>每周共同验收</span> 可打开的产出 · 可复现的指标 · Bad Case · 周五复盘</p>
                         </div>
                     </nav>
 
                     <div class="ai-dashboard-grid reveal">
                         <article class="ai-panel ai-radar-panel">
                             <div class="ai-panel-heading">
-                                <div><span>01 · CAPABILITY MAP</span><h3>阶段性能力自评</h3></div>
-                                <div class="ai-radar-legend"><span><i class="legend-current"></i>当前自评</span><span><i class="legend-target"></i>四个月目标</span></div>
+                                <div><span>01 · CAPABILITY MAP</span><h2>阶段性能力自评</h2></div>
+                                <div class="ai-radar-legend"><span><i class="legend-current"></i>当前自评</span><span><i class="legend-target"></i>两个月目标</span></div>
                             </div>
                             <div class="ai-radar-wrap">
                                 <svg id="aiRadarChart" class="ai-radar-chart" viewBox="0 0 520 430" role="img" aria-label="AI 六边形能力雷达图"></svg>
                             </div>
-                            <p class="ai-chart-note">基于 8 月 16 日至 25 日的学习、代码与上线记录做保守自评；分数用于找差距，不代表考试成绩。</p>
+                            <p class="ai-chart-note">基于现有产品经验、学习记录与项目证据，对照目标 JD 做保守自评；分数只用于找差距，不代表考试成绩。</p>
                             <details class="ai-capability-standards">
                                 <summary>查看六项能力的目标与验收标准</summary>
                                 <div id="aiCapabilityStandards"></div>
@@ -97,7 +97,7 @@
 
                         <article class="ai-panel ai-progress-panel">
                             <div class="ai-panel-heading">
-                                <div><span>02 · LAST 14 DAYS</span><h3>最近学习记录</h3></div>
+                                <div><span>02 · LAST 14 DAYS</span><h2>最近学习记录</h2></div>
                                 <strong id="recentTimelineSummary">—</strong>
                             </div>
                             <div id="aiRecentTimeline" class="ai-recent-timeline"></div>
@@ -106,19 +106,19 @@
 
                     <section class="ai-roadmap-section reveal" aria-labelledby="aiRoadmapTitle">
                         <div class="ai-subsection-heading ai-roadmap-heading">
-                            <div><span>03 · 18-WEEK ROADMAP</span><h3 id="aiRoadmapTitle">18 周学习计划</h3></div>
+                            <div><span>03 · 8-WEEK ROADMAP</span><h2 id="aiRoadmapTitle">8 周岗位能力计划</h2></div>
                             <div class="ai-roadmap-progress" aria-live="polite">
-                                <span id="roadmapProgressText">0 / 18 周完成</span>
+                                <span id="roadmapProgressText">0 / 8 周完成</span>
                                 <div class="ai-roadmap-progress-track"><i id="roadmapProgressBar"></i></div>
                             </div>
                         </div>
-                        <div class="ai-phase-filters" id="aiPhaseFilters" aria-label="路线图阶段筛选"></div>
+                        <div class="ai-phase-filters" id="aiPhaseFilters" role="group" aria-label="路线图阶段筛选"></div>
                         <div class="ai-roadmap-list" id="aiRoadmapList"></div>
                     </section>
 
                     <section class="ai-evidence-section reveal" aria-labelledby="aiEvidenceTitle">
                         <div class="ai-subsection-heading">
-                            <div><span>04 · CURRENT PRACTICE</span><h3 id="aiEvidenceTitle">当前实践基础</h3></div>
+                            <div><span>04 · CURRENT PRACTICE</span><h2 id="aiEvidenceTitle">当前实践基础</h2></div>
                             <p>用已有代码、学习记录与上线结果作为阶段性参考。</p>
                         </div>
                         <div id="aiEvidenceGrid" class="ai-evidence-grid"></div>
@@ -140,6 +140,6 @@
     </div>
 
     <button class="back-to-top" id="backToTop" aria-label="返回顶部"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
-    <script src="js/main.js?v=20260825-clean8"></script>
+    <script src="js/main.js?v=20260825-jd8"></script>
 </body>
 </html>

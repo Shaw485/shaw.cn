@@ -479,46 +479,46 @@ document.addEventListener('DOMContentLoaded', function() {
     /* AI Growth Journey -------------------------------------------------- */
     const aiAbilities = [
         {
-            name: '业务与场景判断', short: '业务场景', current: 72, target: 92,
-            focus: '把电商经验转成可量化的 AI 机会地图。',
+            name: '场景与产品策略', short: '场景策略', current: 70, target: 82,
+            focus: '把电商经验转成有取舍、有指标的 AI 场景判断。',
             recentDate: '08.25',
-            recentWork: '把电商产品经验整理成 AI PM 能力地图与四个月学习主线，明确以真实业务结果作为学习终点。',
-            acceptance: '能从用户痛点、数据可得性、模型边界、ROI 与风险五方面筛选场景，并给出“不做什么”的理由。'
+            recentWork: '对目标岗位做能力交集分析，收敛到评测驱动的检索 / Agent 产品方向。',
+            acceptance: '能用用户价值、数据可得性、模型适配度、ROI、风险和可验证性评估至少 5 个场景，选出 1 个主场景并说明其余场景为什么暂不做。'
         },
         {
-            name: 'AI 产品设计', short: 'AI产品设计', current: 64, target: 90,
-            focus: '补齐 Human-in-the-loop、可信交互与失败路径设计。',
+            name: '用户洞察与 AI 体验', short: '用户体验', current: 60, target: 76,
+            focus: '补齐澄清、证据、纠错、失败恢复与反馈闭环。',
             recentDate: '08.16–08.25',
-            recentWork: '完成数学闹钟迭代、作品站与 AI 成长页上线，持续用真实交付检验产品闭环。',
-            acceptance: '能独立交付 AI PRD、交互原型、反馈闭环、护栏指标及灰度/回滚方案，并完成真实用户验证。'
+            recentWork: '通过数学题闹钟、作品站与 AI 学习页的真实迭代，持续练习从问题到交付的产品闭环。',
+            acceptance: '完成至少 5 名目标用户的任务测试；3 个核心任务完成率达到 80%，并根据证据修复优先级最高的 5 个体验问题。'
         },
         {
-            name: '模型与数据理解', short: '模型与数据', current: 40, target: 80,
-            focus: '已到 Transformer Block；下一步打通训练、SFT 与多模态。',
-            recentDate: '08.22–08.24',
-            recentWork: '手写 Self-Attention、Multi-Head、残差、LayerNorm 与 FFN，并梳理从 Transformer 到 Logits 的链路。',
-            acceptance: '能讲清模型训练到推理全链路，并在 Prompt、RAG、微调和多模态方案之间做有依据的选择。'
+            name: 'LLM 与检索理解', short: 'LLM / 检索', current: 43, target: 66,
+            focus: '重点理解查询、召回、重排、引用和模型边界。',
+            recentDate: '08.21–08.25',
+            recentWork: '学习 Chunking、Embedding、BM25、混合检索、证据边界与 Agentic Search，并开始推进离线对比。',
+            acceptance: '能讲清端到端检索链路；建立不少于 60 条检索题，Recall@5 达到 80% 或较基线提升 15 个百分点，引用准确率达到 90%。'
         },
         {
-            name: 'RAG / Agent 方案设计', short: 'RAG / Agent', current: 46, target: 88,
-            focus: 'RAG 已有工程原型；Agent 的工具循环、状态和评测待落地。',
+            name: 'Agent 与平台方案', short: 'Agent / 平台', current: 38, target: 64,
+            focus: '从单点 Demo 进阶到可追踪、可治理的多工具能力。',
             recentDate: '08.13–08.25',
-            recentWork: '先跑通知识切分、检索、上下文组装与回答链路，再学习混合检索、证据边界，并用脱敏案例推进分层召回与重排。',
-            acceptance: '能设计并搭建带检索、工具、记忆、审批、回退与 Trace 的 Agent，复杂任务成功率达到 85%。'
+            recentWork: '已跑通知识切分、检索、上下文组装与回答链路；下一步补齐 Tool、状态、权限、版本和监控。',
+            acceptance: '接入至少 3 个工具并完成 30 条多步骤任务，端到端成功率达到 80%；所有调用可追踪，高风险动作 100% 需要人工确认。'
         },
         {
-            name: '评测与实验', short: '评测实验', current: 40, target: 86,
-            focus: '已开始用 Bad Case 与离线指标优化检索，下一步扩充正式评测集。',
+            name: '评测与数据分析', short: '评测数据', current: 35, target: 70,
+            focus: '从看几个答案，升级为可复现、可比较的决策系统。',
             recentDate: '08.18–08.25',
-            recentWork: '建立 Outcome、Trajectory、Trace 的基础认知，开始用离线评测定位召回与重排问题。',
-            acceptance: '能建立覆盖质量、忠实度、任务成功、延迟、成本与安全的评测体系，并用实验驱动迭代。'
+            recentWork: '建立 Outcome、Trajectory、Trace 与错误归因的初步认知，并开始用 Bad Case 定位检索问题。',
+            acceptance: '建立 100 条以上分层评测集；LLM Judge 与人工抽检一致率达到 80%；比较至少 3 组方案，并基于质量、延迟和成本给出产品决策。'
         },
         {
-            name: '工程落地与治理', short: '工程治理', current: 50, target: 84,
-            focus: '已有 App 与网站上线能力；需补齐 CI、Secret、权限和跨仓治理。',
+            name: '协同交付与表达', short: '协同表达', current: 68, target: 80,
+            focus: '把判断、取舍和结果沉淀成可评审、可投递的证据。',
             recentDate: '08.16–08.25',
             recentWork: '完成 Android 构建、代码合并、云服务器部署与个人站多轮上线验证。',
-            acceptance: '能与算法/工程团队共同完成架构评审、SLA、权限边界、成本预算、监控告警和上线复盘。'
+            acceptance: '沉淀公开案例、PRD、架构图、评测报告和 Demo；完成至少 3 次模拟面试，中文 10 分钟与英文 3 分钟均能用数据讲清关键取舍。'
         }
     ];
 
@@ -527,197 +527,134 @@ document.addEventListener('DOMContentLoaded', function() {
             date: '08.13', datetime: '2026-08-13', title: '跑通 RAG 基础链路',
             text: '完成知识切分、检索、上下文组装和模型回答；确认下一步重点在评测、召回与排序。',
             project: 'PRD Agent',
-            abilities: ['RAG / Agent', '评测']
+            abilities: ['LLM / 检索', '评测数据']
         },
         {
             date: '08.16', datetime: '2026-08-16', title: '完成产品迭代与上线',
-            text: '推进数学闹钟真机修复、APK 构建、代码合并与个人站部署，用真实交付检查产品闭环。',
+            text: '推进数学题闹钟真机修复、APK 构建、代码合并与个人站部署，用真实交付检查产品闭环。',
             project: '数学题闹钟',
-            abilities: ['AI 产品设计', '工程落地']
+            abilities: ['用户体验', '协同交付']
         },
         {
             date: '08.18', datetime: '2026-08-18', title: '开始建立 Agent Eval 认知',
             text: '梳理 Outcome、Trajectory、Trace 与错误归因，明确评测要从产品目标和真实任务出发。',
             project: 'PRD Agent',
-            abilities: ['评测与实验']
+            abilities: ['评测数据']
         },
         {
             date: '08.21', datetime: '2026-08-21', title: '补齐搜索与 RAG 基础',
             text: '学习 Chunking、Embedding、BM25、混合检索、证据边界与 Agentic Search。',
             project: 'PRD Agent',
-            abilities: ['模型与数据', 'RAG / Agent']
+            abilities: ['LLM / 检索', 'Agent / 平台']
         },
         {
             date: '08.22—08.24', datetime: '2026-08-24', title: '手写 Transformer 模块',
             text: '实现 Self-Attention、Multi-Head、Residual、LayerNorm 与 FFN，并梳理到 Logits 的链路。',
             project: '手撕 GPT',
-            abilities: ['模型与数据']
+            abilities: ['LLM / 检索']
         },
         {
-            date: '08.25', datetime: '2026-08-25', title: '校准评测与学习计划',
-            text: '用脱敏样例推进分层召回、重排和离线评测，并按 AI 产品要求重新校准 18 周计划。',
-            project: 'PRD Agent',
-            abilities: ['业务场景', '评测与实验']
+            date: '08.25', datetime: '2026-08-25', title: '按目标 JD 重做两个月计划',
+            text: '旧路线作废；新的 8 周计划聚焦场景与体验、信息检索、评测数据、Agent 平台和可验证的交付证据。',
+            project: '学习路线',
+            abilities: ['场景策略', '评测数据']
         }
     ];
 
     const aiEvidence = [
         {
             title: 'TikTok Shop 产品实践',
-            text: '具备真实电商业务、商家需求和跨团队产品经验，这是转型 AI PM 最重要的场景与落地优势。',
+            text: '具备真实跨境电商业务、商家需求和跨团队产品经验，是转向 AI 产品岗位最重要的场景与落地基础。',
             tags: ['E-COMMERCE', 'PRODUCT', 'BUSINESS']
         },
         {
-            title: '从零手搓 GPT',
-            text: '用 PyTorch 实现字符 Tokenizer、Bigram、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，正在组装完整 Block。',
-            tags: ['PYTORCH', 'TRANSFORMER', 'BUILD']
-        },
-        {
             title: '企业知识 RAG',
-            text: '搭建带分层检索、证据门、引用校验、Trace 与配置治理的知识助手，并用离线 Bad Case 持续优化召回与重排。',
+            text: '已经跑通知识切分、检索、上下文组装与回答链路，正用脱敏 Bad Case 推进召回、重排与证据校验。',
             tags: ['RAG', 'EVALUATION', 'PRIVATE / REDACTED']
         },
         {
-            title: '5 个仓库 · 持续交付',
-            text: '覆盖 AI 学习、RAG、Android App、浏览器游戏与个人站；具备从产品定义、调试迭代到 GitHub、云服务器上线的闭环。',
-            tags: ['5 REPOS', 'APP', 'DEPLOY']
+            title: '从零手搓 GPT',
+            text: '用 PyTorch 实现 Tokenizer、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，建立模型边界的直观理解。',
+            tags: ['PYTORCH', 'TRANSFORMER', 'BUILD']
+        },
+        {
+            title: '持续交付与上线',
+            text: '覆盖 AI 学习、RAG、Android App、浏览器游戏与个人站，具备从定义、调试、迭代到 GitHub 和云服务器上线的闭环。',
+            tags: ['PRODUCT', 'APP', 'DEPLOY']
         }
     ];
 
     const aiPhases = [
-        { id: 'foundation', code: 'P1', title: '模型与 AI 应用基础', label: 'P1 · 模型与 AI 应用基础', fromWeek: 1, toWeek: 3 },
-        { id: 'rag', code: 'P2', title: '数据、RAG 与持续评测', label: 'P2 · 数据、RAG 与持续评测', fromWeek: 4, toWeek: 8 },
-        { id: 'adaptation', code: 'P3', title: '模型适配与多模态', label: 'P3 · 模型适配与多模态', fromWeek: 9, toWeek: 11 },
-        { id: 'agent', code: 'P4', title: 'Agent 可靠性与安全', label: 'P4 · Agent 可靠性与安全', fromWeek: 12, toWeek: 14 },
-        { id: 'product', code: 'P5', title: '产品化、试点与作品', label: 'P5 · 产品化、试点与作品', fromWeek: 15, toWeek: 18 }
+        { id: 'baseline', code: 'P1', title: '问题定义与检索基线', label: 'P1 · 问题定义与检索基线', fromWeek: 1, toWeek: 2 },
+        { id: 'evaluation', code: 'P2', title: '评测驱动与用户体验', label: 'P2 · 评测驱动与用户体验', fromWeek: 3, toWeek: 4 },
+        { id: 'platform', code: 'P3', title: 'Agent 与开放平台', label: 'P3 · Agent 与开放平台', fromWeek: 5, toWeek: 6 },
+        { id: 'evidence', code: 'P4', title: '数据决策与求职案例', label: 'P4 · 数据决策与求职案例', fromWeek: 7, toWeek: 8 }
     ];
 
     const aiRoadmap = [
         {
-            week: 1, phase: 'foundation', start: '2026-08-25', end: '2026-08-31', review: '08/28 21:00', title: 'Transformer Block 与能力基线',
-            learn: ['Multi-Head Attention、Residual、LayerNorm 与 FFN 的组合', 'Block 堆叠、反向传播、Loss 与参数更新', 'AI 场景从用户任务、数据、价值、风险到评测的完整链路'],
-            business: ['用价值、可行动性、数据/技术可行性、ROI 与风险给商家 Copilot 场景打分', '记录现有工作流基线，并明确至少一个“不该用 AI”的场景'],
-            output: '双 Transformer Block 代码 + 20 道脱敏基准题 + 场景评分卡、现状基线与风险台账。',
-            acceptance: '代码前向/反向通过并能讲清每层职责；20 道题可重复运行；能用证据选出 1 个场景、放弃 1 个场景，并定义价值与护栏指标。'
+            week: 1, phase: 'baseline', start: '2026-08-25', end: '2026-08-31', review: '08/28 21:00', title: '岗位画像、场景选择与指标基线',
+            learn: ['梳理目标 JD 的共同能力、岗位证据与个人差距', '用用户价值、数据、模型、ROI、风险、可验证性筛选 AI 场景', '建立业务、体验、模型与护栏四层指标树'],
+            business: ['从跨境电商工作流列出至少 5 个知识检索场景', '完成至少 3 次目标用户访谈，整理 JTBD 与当前旅程', '选定 PRD Agent 2.0 主场景并建立 20 条基线问题'],
+            output: 'JD 能力矩阵 + 场景机会地图 + 产品一页纸 + 用户旅程 + 指标树 + 基线问题集。',
+            acceptance: '覆盖 7 个独立目标 JD；用 6 个维度评分至少 5 个场景并说明取舍；完成 ≥3 次访谈、≥20 条基线题；定义 1 个北极星、3 个过程指标和 2 个护栏指标。',
+            jd: ['场景与策略', '用户洞察', '效果定义', '项目推动']
         },
         {
-            week: 2, phase: 'foundation', start: '2026-09-01', end: '2026-09-07', review: '09/04 21:00', title: 'Mini GPT 限时实验：理解训练与生成',
-            learn: ['Tokenizer、Embedding、位置编码与完整 Decoder Stack', 'LM Head、Cross Entropy、训练循环与采样', 'Checkpoint、过拟合、验证集与 Loss 曲线'],
-            business: ['解释领域语料、词表、上下文和采样如何影响模型行为', '形成训练成本、推理成本、质量与失败边界的产品判断'],
-            output: '可训练、保存和生成文本的 Mini GPT + Loss 曲线 + 模型行为与成本说明。',
-            acceptance: '限定一周内完成；Loss 与验证结果可解释、Checkpoint 可恢复；用 3 组样例说明能力边界，并讲清为何真实产品通常不从零训练模型。'
+            week: 2, phase: 'baseline', start: '2026-09-01', end: '2026-09-07', review: '09/04 21:00', title: '信息检索与 RAG 可复现基线',
+            learn: ['Query 理解、改写与意图识别', 'Chunk、Embedding、BM25、混合召回、Rerank、版本过滤与引用', 'Recall@K、MRR、nDCG、引用准确率、延迟与成本'],
+            business: ['用公开、脱敏或合成资料搭建查询理解 → 召回 → 重排 → 引用链路', '整理不少于 50 份文档与 60 条检索题，其中至少 20% 为英文或中英混合', '建立检索 Bad Case 分类并完成第一轮优化'],
+            output: '检索与数据链路图 + 数据规范 + 可运行 Demo + 基线报告 + Bad Case 清单。',
+            acceptance: '所有回答可追溯到来源与版本；Recall@5 ≥80% 或较基线提升 ≥15 个百分点；引用准确率 ≥90%；分析 ≥10 个 Bad Case，并完成其中 3 类问题的迭代。',
+            jd: ['信息检索', 'RAG 策略', '海外体验', '数据链路', '模型边界']
         },
         {
-            week: 3, phase: 'foundation', start: '2026-09-08', end: '2026-09-14', review: '09/11 21:00', title: 'Prompt、结构化输出与工具调用',
-            learn: ['System Prompt、上下文工程与能力边界', 'JSON Schema、Function Calling、错误恢复与 Prompt Injection 基础', '模型路由、缓存、重试和成本控制'],
-            business: ['为商品文案、问题归类、运营建议三条流程写 AI PRD', '设计不确定性提示、编辑/撤销、人工确认、反馈入口与失败回退'],
-            output: '电商 Copilot v0 + AI PRD + 三条流程的 Trace 与失败路径清单。',
-            acceptance: '三条流程端到端可运行；结构化输出成功率 ≥90%；至少测试 10 条失败/注入路径；每次请求记录质量、延迟和估算成本。'
+            week: 3, phase: 'evaluation', start: '2026-09-08', end: '2026-09-14', review: '09/11 21:00', title: 'LLM 评测体系与版本结论',
+            learn: ['离线评测与线上评测的边界，拆分检索、生成和端到端指标', 'Golden Set、Rubric、Human Eval、规则评测与 LLM-as-Judge', '任务分层、标注规范、Judge 校准与错误归因'],
+            business: ['把 W2 题集扩展为 100 条以上、覆盖至少 6 类任务的评测集', '搭建可一键复跑的自动评测流程，对基线版与新版本做统一比较', '从结果中提炼优先级最高的 3 个问题与改进建议'],
+            output: '评测方案 + Golden Set v1 + 自动评测流程 + 版本对比面板 + 结论报告。',
+            acceptance: '题集 ≥100 条，含 ≥20 条困难、歧义或失败样本；抽取 20 条由至少 2 人复核；Judge 与人工一致率 ≥80%；能说明各指标的升降、根因和是否值得继续上线。',
+            jd: ['评测体系', '结果分析', '数据生产', '模型迭代']
         },
         {
-            week: 4, phase: 'rag', start: '2026-09-15', end: '2026-09-21', review: '09/18 21:00', title: 'RAG 正式基线、数据规范与错误分类',
-            learn: ['文档级与 Chunk 级分层检索', '版本、Metadata、Top-k、证据组合与数据规格', '检索、生成、引用、拒答和错误归因'],
-            business: ['以脱敏政策/帮助文档验证知识助手价值', '记录数据来源、权限、隐私/版权、更新责任人与保留策略'],
-            output: '≥50 题黄金集 + 标注规范与数据说明 + 系统基线报告 + 失败样本分类。',
-            acceptance: '黄金集有答案、证据、场景切片和双人抽样复核；记录质量、延迟和成本基线；形成继续、调整或停止的阶段结论。'
+            week: 4, phase: 'evaluation', start: '2026-09-15', end: '2026-09-21', review: '09/18 21:00', title: 'C 端搜索体验与反馈闭环',
+            learn: ['搜索与对话的信息架构，以及澄清、证据、置信表达与无答案设计', 'Human-in-the-loop、纠错、撤销、失败恢复与可信交互', '埋点、漏斗、A/B 实验、护栏指标与停止条件'],
+            business: ['实现查询、结果、引用、澄清、纠错和反馈 6 个关键环节', '邀请至少 5 名目标用户完成 3 个核心任务', '按用户证据修复优先级最高的体验问题并复测'],
+            output: '高保真原型或网页 Demo + 埋点字典 + 用户测试记录 + A/B 方案 + 迭代报告。',
+            acceptance: '5 名用户、3 个核心任务完成率 ≥80%；收集 ≥8 个体验问题并修复前 5 个；定义 ≥15 个关键埋点；A/B 方案含主指标、2 个护栏指标和明确停止条件。',
+            jd: ['C 端体验', '用户研究', '产品设计', '数据闭环']
         },
         {
-            week: 5, phase: 'rag', start: '2026-09-22', end: '2026-09-28', review: '09/25 21:00', title: '混合检索与 Rerank',
-            learn: ['Dense + BM25 混合检索', 'Query Rewrite 与 Metadata Filter', 'Cross-encoder Rerank 与消融实验'],
-            business: ['跨站点、国家和类目政策的精确命中', '分析查准率与查全率的业务取舍'],
-            output: 'Baseline / Hybrid / Rerank 三组配置对比报告。',
-            acceptance: '先根据 W4 基线预注册目标；用消融实验说明各模块增益，并给出质量、延迟、成本三者的配置决策。'
+            week: 5, phase: 'platform', start: '2026-09-22', end: '2026-09-28', review: '09/25 21:00', title: 'Agent、Tool 与任务编排',
+            learn: ['Workflow 与自主 Agent 的适用边界', 'Tool Schema、结构化输出、Context、Memory 与状态管理', '超时、重试、幂等、异常、降级、Trace 与人工确认'],
+            business: ['为主项目接入知识检索、版本对比、冲突检查等至少 3 个工具', '实现一个连续调用多个工具的任务流程', '建立多步骤任务集，观察参数、结果、耗时和失败原因'],
+            output: 'Agent 架构图 + 状态机 + Tool Schema + 正常/异常/降级路径 + 可追踪 Demo。',
+            acceptance: '接入 ≥3 个工具并建立 ≥30 条多步骤任务；端到端成功率 ≥80%；覆盖参数错误、无结果、超时、重复调用、权限不足 5 类异常；高风险写入 100% 需要确认。',
+            jd: ['Agent', 'Tool / MCP', '任务编排', '工程协同', '模型约束']
         },
         {
-            week: 6, phase: 'rag', start: '2026-09-29', end: '2026-10-05', review: '10/02 21:00', title: 'RAG 评测、幻觉与可信回答',
-            learn: ['Context Precision / Recall、Faithfulness、Relevance', '引用校验、置信度与拒答策略', '人工评审、LLM Judge 校准、Trace 与回归测试'],
-            business: ['政策问答中的过期、冲突、无依据和敏感问题处理', '把错误分为数据、检索、生成、交互四层'],
-            output: '≥50 题自动评测集 + 评测脚本 + 失败样本看板。',
-            acceptance: '自动 grader 与人工抽样的一致性可解释；引用和拒答按场景切片评估；每次修改可一键回归并输出质量、延迟、成本对比。'
+            week: 6, phase: 'platform', start: '2026-09-29', end: '2026-10-05', review: '10/02 21:00', title: '开放平台、Skill 与治理机制',
+            learn: ['能力抽象、模块解耦、统一接口与开发者体验', 'Skill 注册、上架、调用、下架与版本兼容', '权限、配额、日志、监控、质量认证、错误码与 SLA'],
+            business: ['把 W5 工具包装成可注册、可调用的 Skill', '设计轻量 Skill Center、接入规范和权限矩阵', '验证一次 v1 → v2 兼容升级与异常处理'],
+            output: '开放平台 PRD + Skill 接入规范 + 发布审核流程 + 权限矩阵 + 监控指标 + 交互原型。',
+            acceptance: '至少 3 个 Skill 通过统一 Schema 校验；完成 1 次兼容升级；覆盖管理员、开发者、普通用户 3 类角色与 ≥10 个权限/服务异常；新开发者按文档 30 分钟内完成首次调用。',
+            jd: ['开放平台', '能力模块化', '版本权限', '监控治理', 'Skill 生态']
         },
         {
-            week: 7, phase: 'rag', start: '2026-10-06', end: '2026-10-12', review: '10/09 21:00', title: '知识工程与数据管线',
-            learn: ['PDF、OCR、表格与版面解析', '版本、去重、增量索引和数据血缘', '权限、PII、版权、保留/删除与知识治理'],
-            business: ['多站点政策频繁变化时保证最新与权限隔离', '定义数据 Owner、更新 SLA 与异常更新 Runbook'],
-            output: '支持新增、更新、下线和版本追溯的增量索引管线 + 数据治理清单。',
-            acceptance: '新增文档可在目标 SLA 内检索；重复内容可去重、旧版本可追溯、越权查询被阻断；完成一次数据异常处置演练。'
+            week: 7, phase: 'evidence', start: '2026-10-06', end: '2026-10-12', review: '10/09 21:00', title: '数据复盘、第二轮迭代与上线决策',
+            learn: ['从评测切片和 Trace 定位模型、数据、策略、交互或工程根因', '质量、任务成功、延迟、成本与风险的联合决策', '线上实验、ROI 敏感性、灰度、回滚与 Go / Iterate / Stop'],
+            business: ['对 W2–W6 的关键版本做统一回归，关闭优先级最高的 3 类 Bad Case', '比较至少 3 组配置并完成第二轮迭代', '设计线上实验与轻量增长 / 商业假设，不让单一模型分数替代产品结果'],
+            output: '前后对比仪表盘 + Bad Case 归因与闭环 + 实验方案 + ROI 测算 + 产品决策 Memo。',
+            acceptance: 'Top 3 Bad Case 均有根因、责任层与验证结果；至少 1 个核心指标提升，或用证据做出停止/回滚决策；质量、延迟、成本同时可比较；结论明确为 Go、Iterate 或 Stop。',
+            jd: ['数据分析', '评测结论', '策略迭代', '项目运营', 'ROI']
         },
         {
-            week: 8, phase: 'rag', start: '2026-10-13', end: '2026-10-19', review: '10/16 21:00', title: 'RAG 产品化里程碑',
-            learn: ['流式 UX、追问、引用和反馈闭环', '缓存、降级、监控与成本预算', '离线评测、线上行为与业务指标'],
-            business: ['自助解决政策问题，复杂问题无缝转人工', '定义满意度、解决率、转人工率和节省时长'],
-            output: 'TikTok Shop 政策 Copilot Demo + PRD + 评测报告。',
-            acceptance: '完成 5 位目标用户测试，报告任务完成率、信任度、转人工体验、采用意愿和单位成本；结合质量与延迟基线做 Go / Iterate / Stop 决策。'
-        },
-        {
-            week: 9, phase: 'adaptation', start: '2026-10-20', end: '2026-10-26', review: '10/23 21:00', title: '预训练认知、SFT 与 LoRA',
-            learn: ['预训练、继续预训练和 SFT 的目标差异', 'Instruction Data 设计、清洗与划分', 'PEFT、LoRA / QLoRA 及何时不该微调'],
-            business: ['统一商家客服语气、意图分类和回复格式', '先建立 Prompt / RAG / 微调选择决策树，再决定是否训练'],
-            output: '模型选择决策 Memo + 50–100 条高质量指令样本；有必要时再做小模型 LoRA 实验。',
-            acceptance: '用证据说明是否需要微调；若训练则过程可复现并与基线盲评 ≥50 条；若不训练，也要给出替代方案和成本判断。'
-        },
-        {
-            week: 10, phase: 'adaptation', start: '2026-10-27', end: '2026-11-02', review: '10/30 21:00', title: '后训练、DPO 与模型评测',
-            learn: ['RLHF / RLAIF、Reward Model、DPO 的原理与边界', 'Pairwise Preference Data', '能力、安全、偏差与稳定性评测'],
-            business: ['让运营建议更有帮助、合规且不过度承诺', '定义偏好标注规则、受影响人群与冲突处理'],
-            output: '偏好数据规范 + 盲评实验 + 模型/系统卡与风险台账；DPO 实现作为可选项。',
-            acceptance: '能解释 RLHF / DPO 的适用边界；完成 20 条红队用例；模型/系统卡记录适用范围、限制、责任人和残余风险。'
-        },
-        {
-            week: 11, phase: 'adaptation', start: '2026-11-03', end: '2026-11-09', review: '11/06 21:00', title: '多模态与 Multimodal RAG',
-            learn: ['Vision Encoder、CLIP 与 VLM 基础', 'OCR、版面理解与图文 Embedding', '多模态检索、Grounding 与评测'],
-            business: ['商品主图违规识别、信息缺失检查和卖点生成', '将图片证据与政策文本联合检索'],
-            output: '商品图合规检查 + 卖点生成 Demo，支持证据定位。',
-            acceptance: '≥50 张公开或合成图片测试集；按图片质量、语言和类目切片；输出证据区域与失败解释，并评估隐私、可访问性、延迟和误判处置。'
-        },
-        {
-            week: 12, phase: 'agent', start: '2026-11-10', end: '2026-11-16', review: '11/13 21:00', title: 'Agent 基础：循环、状态、记忆与工具',
-            learn: ['Observe → Plan → Act → Reflect', 'Workflow 与 Agent 的边界', '短期状态、长期记忆、工具契约与 MCP'],
-            business: ['输入店铺问题，自动查政策、分析指标并给动作建议', '先判断固定 Workflow 是否足够，并对工具动作分级、设置人工控制点'],
-            output: '商家运营 Agent v1：检索、计算、数据查询、报告四类工具。',
-            acceptance: '10 个脚本任务多次运行并报告一致性；每一步有 Trace；停止条件、参数校验、超时、重试、失败回退和高风险确认有效。'
-        },
-        {
-            week: 13, phase: 'agent', start: '2026-11-17', end: '2026-11-23', review: '11/20 21:00', title: '高级 Agent：规划、协作与人工审批',
-            learn: ['Task Decomposition、Planning 与 Replanning', '单 Agent 基线与多 Agent 的收益/代价', '权限、审批、持久记忆和中断恢复'],
-            business: ['选品研究与活动报名：搜集、分析、审核、执行', '先做单 Agent 基线；只有质量或维护性证明确有收益才拆分角色'],
-            output: '带审批和断点恢复的单 Agent 链路；多 Agent 作为有证据时的扩展。',
-            acceptance: '10 个复杂任务多次运行；高风险动作未经确认 0 次执行；中断后可继续；若使用多 Agent，必须证明相对基线的净收益。'
-        },
-        {
-            week: 14, phase: 'agent', start: '2026-11-24', end: '2026-11-30', review: '11/27 21:00', title: 'Agent 评测、可观测性与安全',
-            learn: ['Task Success、Trajectory Eval 与错误归因', 'Prompt Injection、数据泄露和最小权限', '延迟、成本、并发、缓存与降级'],
-            business: ['确保运营 Agent 可控、可解释、可运营', '为线上故障定义告警、止损和人工接管'],
-            output: 'Agent 评测台 + Trace 看板 + 威胁模型、安全攻击集、事故响应与预算控制。',
-            acceptance: '≥30 个代表性任务并多次运行，报告 pass@1、一致性和错误分层；高风险写操作 100% 人工审批且无未授权执行；展示 p95 与单任务成本。'
-        },
-        {
-            week: 15, phase: 'product', start: '2026-12-01', end: '2026-12-07', review: '12/04 21:00', title: '生产就绪评审与 Agent 架构',
-            learn: ['模型网关、工具注册、身份与权限', 'Build / Buy、模型供应商、容量与单位成本', '版本、可观测性、SLO、灰度与灾备'],
-            business: ['从单点 Demo 走向可运营的业务能力', '明确自建、采购、混合与可迁移方案边界'],
-            output: '生产架构与 Build / Buy 决策 + API / 工具契约 + 上线及事故 Runbook。',
-            acceptance: '完成生产就绪评审；关键组件有 SLO 与 Owner；完成一次灰度、降级或回滚演练，并给出成本上限和供应商迁移方案。'
-        },
-        {
-            week: 16, phase: 'product', start: '2026-12-08', end: '2026-12-14', review: '12/11 21:00', title: 'AI 产品策略、实验与 ROI',
-            learn: ['汇总用户证据并重构任务，而不是从本周才开始用户发现', 'Human-AI UX、信任、可控性、反馈与采用', '北极星指标、A/B、ROI 敏感性与发布策略'],
-            business: ['从点状工具升级为商家经营决策助手', '用现状基线量化节省时长、解决率、GMV 机会、风险成本与净价值'],
-            output: '商家经营 Copilot PRD + 指标树 + 实验、ROI 敏感性、发布与采用计划。',
-            acceptance: '汇总前期访谈/测试证据；定义北极星和护栏指标；量化收益/成本与停止条件；明确灰度、回滚和组织采用方案。'
-        },
-        {
-            week: 17, phase: 'product', start: '2026-12-15', end: '2026-12-20', review: '12/18 21:00', title: '毕业作品：端到端交付',
-            learn: ['系统取舍、指标复盘与失败修正', '产品、模型、评测、工程材料的统一叙事', '面向管理者与技术团队的双版本表达'],
-            business: ['证明自己能定义场景、选技术、搭系统、做评测并推动落地', '邀请目标用户、算法和产品同行评审'],
-            output: '聚焦一个高价值任务的在线 Demo、源码、架构图、PRD、评测报告与案例页。',
-            acceptance: '完成真实目标用户试点并保留脱敏运行日志；核心指标与原基线对比；邀请 3 位用户/同行评审；每个问题都有结论或后续计划。'
-        },
-        {
-            week: 18, phase: 'product', start: '2026-12-21', end: '2026-12-25', review: '12/25 21:00', title: '发布、路演与下一程',
-            learn: ['AI PM Portfolio 与面试叙事', '10 分钟路演：Why / What / How / Impact', '建立下一季度学习飞轮'],
-            business: ['把四个月成果转成可公开验证的职业转型证据', '制定入岗 30 / 60 / 90 天计划'],
-            output: '公开作品集、Demo 视频、10 分钟路演、失败实验复盘与下一季度 OKR。',
-            acceptance: '公开前完成脱敏与安全检查；能讲清假设、关键取舍、失败证据、业务影响和遗留风险；完成模拟面试与 30 / 60 / 90 天计划。'
+            week: 8, phase: 'evidence', start: '2026-10-13', end: '2026-10-19', review: '10/16 21:00', title: '端到端案例与面试验证',
+            learn: ['用问题、洞察、决策、实现、评测、结果和复盘讲 AI 产品案例', '准备产品策略、LLM 评测、检索与 Agent 系统设计高频问题', '表达模型边界、失败实验、跨团队协作和关键取舍'],
+            business: ['整理主案例：PRD Agent 2.0；辅助案例：数学题闹钟与手撕 GPT', '录制中文 10 分钟演示与英文 3 分钟项目介绍', '邀请产品或技术同学按统一标准进行模拟面试'],
+            output: '公开案例页 + 在线 Demo + PRD + 架构图 + 评测报告 + 演示视频 + 英文 One-pager + 简历描述。',
+            acceptance: '新环境 15 分钟内可运行，核心链路无阻断；完成 ≥3 次模拟面试；产品判断、评测分析、技术理解、数据表达、项目推动 5 项平均 ≥4/5；准备 ≥20 道问题且至少 10 道能用项目数据回答。',
+            jd: ['端到端交付', '项目管理', '沟通协作', '英文表达', '作品案例']
         }
     ];
 
@@ -830,9 +767,35 @@ document.addEventListener('DOMContentLoaded', function() {
             </article>`).join('');
     }
 
-    function getCurrentAiWeek() {
-        const now = new Date();
+    function getCurrentAiWeek(now = new Date()) {
         return aiRoadmap.find(item => now >= new Date(`${item.start}T00:00:00`) && now <= new Date(`${item.end}T23:59:59`))?.week || null;
+    }
+
+    function renderAiCurrentWeek() {
+        const label = document.getElementById('currentWeekLabel');
+        const title = document.getElementById('currentWeekTitle');
+        const summary = document.getElementById('currentWeekSummary');
+        if (!label || !title || !summary) return;
+
+        const now = new Date();
+        const currentWeekNumber = getCurrentAiWeek(now);
+        const currentWeek = aiRoadmap.find(item => item.week === currentWeekNumber);
+        const planStart = new Date(`${aiRoadmap[0].start}T00:00:00`);
+        const planEnd = new Date(`${aiRoadmap[aiRoadmap.length - 1].end}T23:59:59`);
+
+        if (currentWeek) {
+            label.textContent = `WEEK ${String(currentWeek.week).padStart(2, '0')} · 本周主线`;
+            title.textContent = currentWeek.title;
+            summary.textContent = `本周要完成：${currentWeek.business.slice(0, 2).join('；')}。`;
+        } else if (now < planStart) {
+            label.textContent = '计划尚未开始';
+            title.textContent = '先准备项目资料与用户名单';
+            summary.textContent = `8 周计划将于 ${aiDateLabel(aiRoadmap[0].start)}开始。`;
+        } else if (now > planEnd) {
+            label.textContent = '8 周计划已结束';
+            title.textContent = '整理成果与下一阶段复盘';
+            summary.textContent = '回看每周验收、最终案例与模拟面试反馈，决定下一轮唯一重点。';
+        }
     }
 
     function renderAiLearningPhases() {
@@ -842,7 +805,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const text = document.getElementById('aiLearningTimeText');
         if (!list || !progress || !fill || !text) return;
 
-        const currentWeek = getCurrentAiWeek();
         const start = new Date(`${aiRoadmap[0].start}T00:00:00`);
         const end = new Date(`${aiRoadmap[aiRoadmap.length - 1].end}T23:59:59`);
         const now = new Date();
@@ -850,10 +812,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalDays = Math.floor((end - start) / dayMs) + 1;
         const elapsedDays = now < start ? 0 : now > end ? totalDays : Math.floor((now - start) / dayMs) + 1;
         const percent = Math.max(0, Math.min(100, elapsedDays / totalDays * 100));
-        const currentPhase = aiPhases.find(phase => currentWeek && currentWeek >= phase.fromWeek && currentWeek <= phase.toWeek);
+        const currentPhase = aiPhases.find(phase => {
+            const firstWeek = aiRoadmap.find(item => item.week === phase.fromWeek);
+            const lastWeek = aiRoadmap.find(item => item.week === phase.toWeek);
+            return now >= new Date(`${firstWeek.start}T00:00:00`) && now <= new Date(`${lastWeek.end}T23:59:59`);
+        });
 
         progress.style.setProperty('--learning-progress', `${percent}%`);
         progress.setAttribute('aria-valuenow', String(Math.round(percent)));
+        list.style.setProperty('--roadmap-week-count', aiRoadmap.length);
         text.textContent = currentPhase
             ? `第 ${elapsedDays} / ${totalDays} 天 · 当前 ${currentPhase.code}`
             : now < start ? '计划尚未开始' : '计划周期已结束';
@@ -861,9 +828,9 @@ document.addEventListener('DOMContentLoaded', function() {
         list.innerHTML = aiPhases.map(phase => {
             const firstWeek = aiRoadmap.find(item => item.week === phase.fromWeek);
             const lastWeek = aiRoadmap.find(item => item.week === phase.toWeek);
-            const status = currentWeek && currentWeek >= phase.fromWeek && currentWeek <= phase.toWeek
-                ? 'active'
-                : currentWeek && currentWeek > phase.toWeek ? 'completed' : 'upcoming';
+            const phaseStart = new Date(`${firstWeek.start}T00:00:00`);
+            const phaseEnd = new Date(`${lastWeek.end}T23:59:59`);
+            const status = now > phaseEnd ? 'completed' : now >= phaseStart ? 'active' : 'upcoming';
             return `<li class="${status}" style="grid-column:span ${phase.toWeek - phase.fromWeek + 1}"${status === 'active' ? ' aria-current="step"' : ''}>
                 <span class="ai-learning-stage-node" aria-hidden="true"></span>
                 <span class="ai-learning-stage-code">${phase.code}</span>
@@ -878,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const list = document.getElementById('aiRoadmapList');
         if (!filters || !list) return;
         const currentWeek = getCurrentAiWeek();
-        filters.innerHTML = [{ id: 'all', label: '全部 18 周' }, ...aiPhases].map((phase, index) => `<button type="button" class="ai-phase-filter${index === 0 ? ' active' : ''}" data-phase="${phase.id}">${phase.label}</button>`).join('');
+        filters.innerHTML = [{ id: 'all', label: `全部 ${aiRoadmap.length} 周` }, ...aiPhases].map((phase, index) => `<button type="button" class="ai-phase-filter${index === 0 ? ' active' : ''}" data-phase="${phase.id}" aria-pressed="${index === 0}">${phase.label}</button>`).join('');
         list.innerHTML = aiRoadmap.map(item => {
             const phase = aiPhases.find(candidate => candidate.id === item.phase);
             const isCurrent = currentWeek === item.week;
@@ -892,6 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="ai-week-body">
                     <div class="ai-week-column"><h5>本周学习</h5><ul>${item.learn.map(value => `<li>${value}</li>`).join('')}</ul></div>
                     <div class="ai-week-column"><h5>业务实战</h5><ul>${item.business.map(value => `<li>${value}</li>`).join('')}</ul></div>
+                    <div class="ai-week-jd"><span>JD 对齐</span><div>${item.jd.map(value => `<em>${value}</em>`).join('')}</div></div>
                     <div class="ai-week-deliverable"><div><span>可交付物</span><strong>${item.output}</strong></div></div>
                     <div class="ai-week-acceptance"><div><span>周五 21:00 · 验收标准</span><strong>${item.acceptance}</strong></div><label class="ai-week-check"><input type="checkbox" data-week-complete="${item.week}"> 本周达标</label></div>
                 </div>
@@ -901,13 +869,22 @@ document.addEventListener('DOMContentLoaded', function() {
         filters.addEventListener('click', event => {
             const button = event.target.closest('.ai-phase-filter');
             if (!button) return;
-            filters.querySelectorAll('.ai-phase-filter').forEach(item => item.classList.toggle('active', item === button));
+            filters.querySelectorAll('.ai-phase-filter').forEach(item => {
+                const active = item === button;
+                item.classList.toggle('active', active);
+                item.setAttribute('aria-pressed', String(active));
+            });
             list.querySelectorAll('.ai-week-card').forEach(card => { card.hidden = button.dataset.phase !== 'all' && card.dataset.phase !== button.dataset.phase; });
         });
 
-        const storageKey = 'shaw-ai-roadmap-progress-v1';
+        const storageKey = 'shaw-ai-roadmap-progress-v2';
         let completed = [];
-        try { completed = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch (error) { completed = []; }
+        try {
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            completed = Array.isArray(saved)
+                ? saved.map(Number).filter(week => Number.isInteger(week) && week >= 1 && week <= aiRoadmap.length)
+                : [];
+        } catch (error) { completed = []; }
         const updateProgress = () => {
             const checkboxes = [...list.querySelectorAll('[data-week-complete]')];
             const done = checkboxes.filter(box => box.checked).map(box => Number(box.dataset.weekComplete));
@@ -924,17 +901,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderNextCheckin() {
+        const title = document.getElementById('nextCheckinTitle');
         const node = document.getElementById('nextCheckinText');
-        if (!node) return;
+        if (!title || !node) return;
         const now = new Date();
+        const planEnd = new Date(`${aiRoadmap[aiRoadmap.length - 1].end}T23:59:59`);
+        if (now > planEnd) {
+            title.textContent = '本期已收官';
+            node.textContent = '8 周计划已结束 · 查看最终案例、数据与模拟面试复盘。';
+            return;
+        }
+        title.textContent = '周五 21:00';
         const next = new Date(now);
         let days = (5 - next.getDay() + 7) % 7;
         if (days === 0 && next.getHours() >= 21) days = 7;
         next.setDate(next.getDate() + days);
         next.setHours(21, 0, 0, 0);
-        node.textContent = `${next.getMonth() + 1}月${next.getDate()}日 周五 21:00 · Demo、数据、失败样本与下周唯一目标。`;
+        node.textContent = next <= planEnd
+            ? `${next.getMonth() + 1}月${next.getDate()}日 周五 21:00 · 产出链接、指标、Bad Case 与下周唯一目标。`
+            : `${aiDateLabel(aiRoadmap[aiRoadmap.length - 1].end)} · 完成八周总复盘与成果归档。`;
     }
 
+    renderAiCurrentWeek();
     renderAiRadar();
     renderAiRecentTimeline();
     renderCapabilityStandards();
