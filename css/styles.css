@@ -807,7 +807,7 @@ img {
     max-width: var(--max-width);
     width: 100%;
     height: 100%;
-    margin: 0px 100px 1px 150px;
+    margin: 0 auto;
     padding: 0 24px;
     display: flex;
     align-items: center;
@@ -1627,36 +1627,57 @@ img {
 }
 
 .footer {
-    padding: 48px 0 32px;
-    background-color: var(--color-text);
-    color: white;
+    padding: 30px 0 24px;
+    color: var(--color-text);
+    border-top: 1px solid rgba(29, 29, 31, .08);
+    background: #f7f6f2;
 }
 
 .footer-content {
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
 }
 
 .footer-brand {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 .footer-brand .logo-text {
-    color: white;
+    color: var(--color-text);
     font-weight: 600;
 }
 
 .footer-text {
+    margin: 0;
+    color: var(--color-text-secondary);
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 8px;
 }
 
 .footer-copyright {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    flex: 0 0 100%;
+    margin: 4px 0 0;
+    padding-top: 14px;
+    color: var(--color-text-secondary);
+    border-top: 1px solid rgba(29, 29, 31, .07);
+    font-size: 12px;
+}
+
+@media (max-width: 640px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .footer-copyright {
+        width: 100%;
+    }
 }
 
 .back-to-top {
@@ -3046,121 +3067,14 @@ img {
     }
 }
 
-/* ===================================
-   左右分栏布局（桌面端）
-   左侧：参考 Guang's Space 单列居中布局
-   右侧：聊天框独立一列贴右缘
-   =================================== */
-@media (min-width: 1100px) {
-    .page-layout {
-        display: grid;
-        grid-template-columns: 1fr 380px;
-        gap: 0;
-        max-width: none;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    .page-main {
-        min-width: 0;
-        padding-right: 32px;
-        background: transparent;
-    }
-
-    .page-sidebar {
-        position: sticky;
-        top: calc(var(--nav-height) + 24px);
-        height: calc(100vh - var(--nav-height) - 48px);
-        padding-left: 0;
-        padding-right: 0;
-        margin-right: 0;
-    }
-
-    /* 侧边栏模式下的 Agent：去掉浮窗，全高度展开 */
-    .chat-widget.sidebar-mode {
-        position: static;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        z-index: 10;
-        background: #FFFFFF;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        border-radius: 18px 0 0 18px;
-        overflow: hidden;
-    }
-
-    .chat-widget.sidebar-mode .chat-toggle {
-        display: none;
-    }
-
-    .chat-widget.sidebar-mode .chat-panel {
-        position: relative;
-        right: auto;
-        bottom: auto;
-        width: 100%;
-        height: 100%;
-        max-height: none;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: none !important;
-        display: flex !important;
-        pointer-events: auto;
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-        border: 1px solid var(--color-border-light);
-        border-radius: 20px;
-        flex-direction: column;
-    }
-
-    .chat-widget.sidebar-mode .chat-messages {
-        flex: 1 1 auto;
-        min-height: 0;
-    }
-
-    .chat-widget.sidebar-mode .chat-header {
-        flex-shrink: 0;
-    }
-
-    .chat-widget.sidebar-mode .chat-input-area {
-        flex-shrink: 0;
-        display: block !important;
-    }
-
-    .chat-widget.sidebar-mode .chat-panel-close {
-        display: none;
-    }
+/* Full-width page shell. */
+.page-layout,
+.page-main {
+    width: 100%;
 }
 
-@media (min-width: 1280px) {
-    .page-layout {
-        grid-template-columns: 1fr 400px;
-    }
-    .chat-widget.sidebar-mode {
-        border-radius: 18px 0 0 18px;
-    }
-}
-
-/* 移动端：恢复浮窗模式（page-sidebar 不做 sticky，chat-widget 用原来的浮窗样式） */
-@media (max-width: 1099px) {
-    .page-layout {
-        display: block;
-    }
-
-    .page-sidebar {
-        position: static;
-        height: auto;
-    }
-
-    .chat-widget.sidebar-mode {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        z-index: 100;
-    }
-
-    .chat-widget.sidebar-mode:not(.open) .chat-panel {
-        display: none;
-    }
+.page-main {
+    min-width: 0;
 }
 
 /* ===================================
@@ -4294,19 +4208,6 @@ body {
 
     .ai-roadmap-progress > span {
         text-align: left;
-    }
-}
-
-@media (min-width: 1100px) and (max-width: 1439px) {
-    .nav-container {
-        width: calc(100% - 380px);
-        max-width: none;
-        margin: 0;
-        padding: 0 24px;
-    }
-
-    .nav-link {
-        padding-inline: 11px;
     }
 }
 
