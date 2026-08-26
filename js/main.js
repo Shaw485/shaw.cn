@@ -183,7 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 '📚 搜索基础卡：内置 NDCG、BM25、向量召回与精排原理'
             ],
             tags: ['Chrome Extension', 'macOS', 'Spaced Repetition', 'Local First', 'Open Source'],
-            screenshots: ['pick-memory-preview.svg'],
+            screenshotLayout: 'landscape',
+            screenshots: [
+                'pick-memory-live-demo.png',
+                'pick-memory-selection.png',
+                'pick-memory-review-card.png'
+            ],
             downloads: [
                 {
                     url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.1/Pick-Memory-macOS-v0.3.1.zip',
@@ -469,6 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalDesc.textContent = app.desc;
 
+        modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
         const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
         const secondaryAction = app.downloads?.[1];
