@@ -4286,14 +4286,17 @@ body {
     }
 }
 
-/* Keep the growing project list balanced in a two-column editorial grid. */
+/* Keep portfolio cards compact instead of stretching across the full row. */
 .works-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 300px));
+    justify-content: start;
 }
 
 @media (max-width: 640px) {
     .works-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 320px;
     }
 }
 
