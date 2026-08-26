@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: 'Pick Memory',
             category: '桌面工具 · 间隔复习',
             date: '2026',
-            rating: 'v0.3.0 已开源',
+            rating: 'v0.3.1 已开源',
             gradient: 'linear-gradient(135deg, #18231d 0%, #2f7255 58%, #9bc3ae 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"></path><path d="M8 4.5V20M11 9h4M11 13h4"></path><path d="m18.5 3 .7 1.5L21 5.2l-1.8.7-.7 1.6-.7-1.6-1.8-.7 1.8-.7z"></path>',
@@ -186,15 +186,15 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshots: ['pick-memory-preview.svg'],
             downloads: [
                 {
-                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.0/Pick-Memory-macOS-v0.3.0.zip',
+                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.1/Pick-Memory-macOS-v0.3.1.zip',
                     label: '下载 macOS'
                 },
                 {
-                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.0/Pick-Memory-Windows-v0.3.0.zip',
+                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.1/Pick-Memory-Windows-v0.3.1.zip',
                     label: '下载 Windows'
                 }
             ],
-            platformStatus: 'v0.3.0 · GitHub 开源',
+            platformStatus: 'v0.3.1 · GitHub 开源',
             resources: {
                 first: {
                     heading: '01 · 产品与安装',
@@ -216,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         intro: '查看完整源码、测试、macOS 伴侣程序与打包脚本。'
                     },
                     {
-                        title: 'Release v0.3.0',
-                        href: 'https://github.com/Shaw485/pick-memory/releases/tag/v0.3.0',
+                        title: 'Release v0.3.1',
+                        href: 'https://github.com/Shaw485/pick-memory/releases/tag/v0.3.1',
                         intro: '下载经过校验的 macOS 与 Windows 安装包。'
                     }
                 ]
