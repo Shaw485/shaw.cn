@@ -2404,6 +2404,22 @@ img {
     justify-content: center;
 }
 
+.app-modal-download-secondary {
+    color: #2f7255;
+    border: 1px solid rgba(47, 114, 85, 0.28);
+    background: #f5faf7;
+}
+
+.app-modal-download-secondary:hover {
+    color: #245d45;
+    border-color: rgba(47, 114, 85, 0.5);
+    background: #edf6f1;
+}
+
+.app-modal-download-secondary[hidden] {
+    display: none;
+}
+
 .app-modal-platform-status {
     display: inline-flex;
     align-items: center;
@@ -4255,7 +4271,7 @@ body {
     }
 }
 
-/* Four-project portfolio: keep the cards balanced as a 2 × 2 grid. */
+/* Keep the growing project list balanced in a two-column editorial grid. */
 .works-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Pick Memory desktop card preview</title>
+  <desc id="desc">A compact spaced repetition card on a dark desktop background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18211d"/>
+      <stop offset="1" stop-color="#0d1210"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#000" flood-opacity=".36"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="1080" cy="126" r="250" fill="#315d48" opacity=".14"/>
+  <circle cx="170" cy="660" r="300" fill="#7d653d" opacity=".11"/>
+  <text x="84" y="110" fill="#9bc3ae" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="5">PICK MEMORY</text>
+  <text x="84" y="162" fill="#f7f4eb" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="650">把知识重新放回视线</text>
+  <g transform="translate(398 238)" filter="url(#shadow)">
+    <rect width="484" height="244" rx="24" fill="#fcfaf4" stroke="#9dac9f" stroke-opacity=".32"/>
+    <text x="30" y="52" fill="#435149" font-family="Inter,Arial,sans-serif" font-size="18">NDCG 同时考虑相关性等级和结果位置，</text>
+    <text x="30" y="82" fill="#435149" font-family="Inter,Arial,sans-serif" font-size="18">越靠前的高相关结果贡献越大。</text>
+    <g transform="translate(30 112)">
+      <rect width="130" height="54" rx="10" fill="#fff" stroke="#d9ddd9"/>
+      <text x="65" y="24" text-anchor="middle" fill="#4a5550" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">忘了</text>
+      <text x="65" y="42" text-anchor="middle" fill="#7a827e" font-family="Inter,Arial,sans-serif" font-size="11">明天再见</text>
+      <rect x="147" width="130" height="54" rx="10" fill="#fff" stroke="#d9ddd9"/>
+      <text x="212" y="24" text-anchor="middle" fill="#4a5550" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">模糊</text>
+      <text x="212" y="42" text-anchor="middle" fill="#7a827e" font-family="Inter,Arial,sans-serif" font-size="11">缩短间隔</text>
+      <rect x="294" width="130" height="54" rx="10" fill="#2f7255"/>
+      <text x="359" y="24" text-anchor="middle" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">记得</text>
+      <text x="359" y="42" text-anchor="middle" fill="#d9eee3" font-family="Inter,Arial,sans-serif" font-size="11">直接下一张</text>
+    </g>
+    <line x1="30" y1="188" x2="454" y2="188" stroke="#e5e5df"/>
+    <text x="30" y="218" fill="#65736c" font-family="Inter,Arial,sans-serif" font-size="13">设置</text>
+    <text x="454" y="218" text-anchor="end" fill="#a0645b" font-family="Inter,Arial,sans-serif" font-size="13">删除</text>
+  </g>
+  <text x="640" y="570" text-anchor="middle" fill="#b8c2bc" font-family="Inter,Arial,sans-serif" font-size="18">网页划词 · 跨应用收藏 · 艾宾浩斯复习 · 本地存储</text>
+</svg>

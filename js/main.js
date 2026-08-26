@@ -162,6 +162,66 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ]
             }
+        },
+        {
+            id: 5,
+            title: 'Pick Memory · 拾忆卡',
+            shortName: 'Pick Memory',
+            category: '桌面工具 · 间隔复习',
+            date: '2026',
+            rating: 'v0.3.0 已开源',
+            gradient: 'linear-gradient(135deg, #18231d 0%, #2f7255 58%, #9bc3ae 100%)',
+            iconStroke: '#FFFFFF',
+            iconSVG: '<path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"></path><path d="M8 4.5V20M11 9h4M11 13h4"></path><path d="m18.5 3 .7 1.5L21 5.2l-1.8.7-.7 1.6-.7-1.6-1.8-.7 1.8-.7z"></path>',
+            desc: '一款把零散知识重新放回视线的开源桌面工具。平时在网页、Codex、备忘录或飞书中选中一句话，点击“学习”即可加入本地知识库；左下角卡片按艾宾浩斯节奏复现内容，并用“忘了 / 模糊 / 记得”反馈动态调整下一次复习时间。',
+            features: [
+                '🖱️ 随手收藏：网页与 macOS 跨应用划词后，一键加入知识库',
+                '🧠 间隔复习：基于渐进间隔安排知识再次出现的时间',
+                '🪶 紧凑卡片：小、中、大三种尺寸，不打断当前工作',
+                '🔁 自动轮换：可设置每条知识曝光 1～20 次后进入下一张',
+                '🔒 本地优先：知识与学习记录保存在本机，无需注册账号',
+                '📚 搜索基础卡：内置 NDCG、BM25、向量召回与精排原理'
+            ],
+            tags: ['Chrome Extension', 'macOS', 'Spaced Repetition', 'Local First', 'Open Source'],
+            screenshots: ['pick-memory-preview.svg'],
+            downloads: [
+                {
+                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.0/Pick-Memory-macOS-v0.3.0.zip',
+                    label: '下载 macOS'
+                },
+                {
+                    url: 'https://github.com/Shaw485/pick-memory/releases/download/v0.3.0/Pick-Memory-Windows-v0.3.0.zip',
+                    label: '下载 Windows'
+                }
+            ],
+            platformStatus: 'v0.3.0 · GitHub 开源',
+            resources: {
+                first: {
+                    heading: '01 · 产品与安装',
+                    title: 'README',
+                    href: 'https://github.com/Shaw485/pick-memory#readme',
+                    intro: '查看产品能力、macOS / Windows 安装方法、数据说明与快捷键。'
+                },
+                second: {
+                    heading: '02 · 版本更新',
+                    title: 'Changelog',
+                    href: 'https://github.com/Shaw485/pick-memory/blob/main/CHANGELOG.md',
+                    intro: '查看卡片、划词学习、间隔策略、跨应用能力与安装包的迭代记录。'
+                },
+                codeHeading: '03 · 代码与发布',
+                code: [
+                    {
+                        title: 'GitHub 仓库',
+                        href: 'https://github.com/Shaw485/pick-memory',
+                        intro: '查看完整源码、测试、macOS 伴侣程序与打包脚本。'
+                    },
+                    {
+                        title: 'Release v0.3.0',
+                        href: 'https://github.com/Shaw485/pick-memory/releases/tag/v0.3.0',
+                        intro: '下载经过校验的 macOS 与 Windows 安装包。'
+                    }
+                ]
+            }
         }
     ];
 
@@ -176,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','https://github.com/Shaw485/create-gpt-step-by-step/blob/main/README.md']]}
       ,{ links:[] }
       ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','https://github.com/Shaw485/pick-memory#readme']] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 
@@ -187,7 +248,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0, wants: 0, comments: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 },
-        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0, wants: 0, comments: 0 }
+        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0, wants: 0, comments: 0 },
+        { status: '已开源', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0, wants: 0, comments: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -244,6 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
+    const modalSecondaryDownload = document.getElementById('modalSecondaryDownload');
+    const modalSecondaryLabel = document.getElementById('modalSecondaryLabel');
     const modalPlatformActions = document.getElementById('modalPlatformActions');
     const modalDownloadStats = document.getElementById('modalDownloadStats');
     const modalDownloadCount = document.getElementById('modalDownloadCount');
@@ -386,6 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalApkDownload?.addEventListener('click', () => {
+        if (modalApkDownload.dataset.countDownload !== 'true') return;
         fetch(downloadCounterHitUrl, { cache: 'no-store', keepalive: true })
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(setDownloadCount)
@@ -394,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -405,17 +470,28 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDesc.textContent = app.desc;
 
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
-        const primaryAction = app.apk || app.primaryAction;
+        const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
+        const secondaryAction = app.downloads?.[1];
         const platformStatus = modalPlatformActions.querySelector('.app-modal-platform-status');
         if (primaryAction) {
             modalApkDownload.href = primaryAction.url;
             modalApkLabel.textContent = primaryAction.label;
-            if (app.apk) {
+            modalApkDownload.dataset.countDownload = app.apk ? 'true' : 'false';
+            if (app.apk || app.downloads) {
                 modalApkDownload.setAttribute('download', '');
             } else {
                 modalApkDownload.removeAttribute('download');
             }
-            if (platformStatus) platformStatus.textContent = app.apk ? '苹果版开发中' : primaryAction.status;
+            if (secondaryAction) {
+                modalSecondaryDownload.href = secondaryAction.url;
+                modalSecondaryLabel.textContent = secondaryAction.label;
+                modalSecondaryDownload.hidden = false;
+                modalSecondaryDownload.style.removeProperty('display');
+            } else {
+                modalSecondaryDownload.hidden = true;
+                modalSecondaryDownload.style.display = 'none';
+            }
+            if (platformStatus) platformStatus.textContent = app.platformStatus || (app.apk ? '苹果版开发中' : primaryAction.status);
 
             modalPlatformActions.hidden = false;
             modalPlatformActions.style.removeProperty('display');
@@ -429,6 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
             modalPlatformActions.style.display = 'none';
             modalApkDownload.hidden = true;
             modalApkDownload.style.display = 'none';
+            modalSecondaryDownload.hidden = true;
+            modalSecondaryDownload.style.display = 'none';
             modalDownloadStats.hidden = true;
             modalDownloadStats.style.display = 'none';
         }
