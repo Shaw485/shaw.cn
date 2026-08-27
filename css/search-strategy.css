@@ -1,7 +1,7 @@
 :root { --strategy-navy:#26333d; --strategy-ink:#1c2833; --strategy-muted:#667582; --strategy-line:#d9dfe4; }
 html { scroll-behavior:smooth; }
 .strategy-page { min-height:100vh; color:var(--strategy-ink); background:#f1f3f4; }
-.strategy-page main { width:min(1440px, calc(100% - 40px)); margin:0 auto; padding:18px 0 72px; }
+.strategy-page main { width:min(1440px, calc(100% - 40px)); margin:0 auto; padding:calc(var(--nav-height) + 18px) 0 72px; }
 .strategy-hero { min-height:84px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:28px; color:var(--strategy-ink); border:1px solid var(--strategy-line); background:#fff; }
 .strategy-hero h1 { font-size:26px; line-height:1.1; letter-spacing:-.035em; }
 .strategy-hero p { margin-top:6px; color:var(--strategy-muted); font-size:11px; line-height:1.5; }
@@ -15,7 +15,7 @@ html { scroll-behavior:smooth; }
 .strategy-tabs a { padding:7px 10px; border-radius:3px; color:#687580; font-size:10px; font-weight:600; }
 .strategy-tabs a:hover { color:#172430; background:#f0f2f4; }
 .strategy-tabs span { min-width:18px; height:18px; padding:0 5px; display:inline-grid; place-items:center; border-radius:99px; color:#fff; background:#65727c; font-size:8px; }
-.strategy-section { margin-top:12px; padding:28px; border:1px solid var(--strategy-line); background:#fff; }
+.strategy-section { margin-top:12px; padding:28px; border:1px solid var(--strategy-line); background:#fff; scroll-margin-top:calc(var(--nav-height) + 56px); }
 .section-heading { margin-bottom:22px; display:flex; align-items:end; justify-content:space-between; gap:30px; }
 .section-heading > div > span { display:block; margin-bottom:7px; color:#89949d; font-size:8px; font-weight:700; letter-spacing:.13em; }
 .section-heading h2 { font-size:24px; letter-spacing:-.03em; }
@@ -56,4 +56,4 @@ html { scroll-behavior:smooth; }
 .event-row span:first-child { color:#8a949c; font-variant-numeric:tabular-nums; }
 .event-row strong { color:#32414c; }
 @media (max-width:1050px) { .pipeline,.foundation-grid { grid-template-columns:repeat(2,1fr); }.strategy-hero { align-items:flex-start; flex-direction:column; gap:14px; }.strategy-actions { align-self:stretch; } }
-@media (max-width:700px) { .strategy-page main { width:calc(100% - 24px); padding-top:12px; }.strategy-hero { min-height:0; padding:16px; }.strategy-hero h1 { font-size:23px; }.strategy-actions { width:100%; }.strategy-actions a { flex:1; }.strategy-tabs { top:var(--nav-height); padding:0 6px; overflow-x:auto; }.strategy-tabs a { white-space:nowrap; }.strategy-section { padding:22px 14px; }.section-heading { align-items:flex-start; flex-direction:column; gap:8px; }.section-heading > p { text-align:left; }.pipeline,.foundation-grid { grid-template-columns:1fr; }.strategy-card { min-height:200px; }.log-toolbar { grid-template-columns:1fr; }.log-toolbar > span { text-align:left; }.log-summary { grid-template-columns:76px minmax(0,1fr) 70px 20px; }.log-summary .log-metric:nth-of-type(2),.log-summary .log-metric:nth-of-type(3) { display:none; }.log-detail { grid-template-columns:1fr; }.event-row { grid-template-columns:64px 76px minmax(0,1fr); }.event-row span:nth-child(3) { display:none; }.privacy-note { flex-direction:column; gap:4px; } }
+@media (max-width:700px) { .strategy-page main { width:calc(100% - 24px); padding-top:calc(var(--nav-height) + 12px); }.strategy-hero { min-height:0; padding:16px; }.strategy-hero h1 { font-size:23px; }.strategy-actions { width:100%; }.strategy-actions a { flex:1; }.strategy-tabs { top:var(--nav-height); padding:0 6px; overflow-x:auto; }.strategy-tabs a { white-space:nowrap; }.strategy-section { padding:22px 14px; }.section-heading { align-items:flex-start; flex-direction:column; gap:8px; }.section-heading > p { text-align:left; }.pipeline,.foundation-grid { grid-template-columns:1fr; }.strategy-card { min-height:200px; }.log-toolbar { grid-template-columns:1fr; }.log-toolbar > span { text-align:left; }.log-summary { grid-template-columns:76px minmax(0,1fr) 70px 20px; }.log-summary .log-metric:nth-of-type(2),.log-summary .log-metric:nth-of-type(3) { display:none; }.log-detail { grid-template-columns:1fr; }.event-row { grid-template-columns:64px 76px minmax(0,1fr); }.event-row span:nth-child(3) { display:none; }.privacy-note { flex-direction:column; gap:4px; } }
