@@ -3249,7 +3249,20 @@ body {
     flex-wrap: wrap;
 }
 
-.filter-btn {
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.filter-btn,
+.filter-select {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -3266,7 +3279,13 @@ body {
     font-family: inherit;
 }
 
-.filter-btn:hover {
+.filter-select {
+    min-width: 108px;
+    padding-right: 10px;
+}
+
+.filter-btn:hover,
+.filter-select:hover {
     background: #F6F2EC;
     color: #111;
     transform: translateY(-1px);
@@ -3281,6 +3300,12 @@ body {
     color: #FFF;
     border-color: transparent;
     box-shadow: 0 4px 12px rgba(255, 107, 0, 0.22);
+}
+
+.filter-select:focus-visible,
+.filter-btn:focus-visible {
+    outline: 3px solid rgba(255, 107, 0, 0.25);
+    outline-offset: 2px;
 }
 
 .filter-dropdown .filter-btn::after {
@@ -3367,6 +3392,18 @@ body {
     border: 1px solid rgba(178, 107, 0, 0.15);
 }
 
+.status-pending {
+    background: #F1EEFF;
+    color: #6550B8;
+    border: 1px solid rgba(101, 80, 184, 0.16);
+}
+
+.status-opensource {
+    background: #E9F4FF;
+    color: #1768A8;
+    border: 1px solid rgba(23, 104, 168, 0.16);
+}
+
 .work-date {
     color: #9B958C;
     font-weight: 500;
@@ -3422,8 +3459,31 @@ body {
     transition: color 0.15s ease;
 }
 
+button.stat-item-mini {
+    padding: 4px 6px;
+    margin: -4px -6px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-family: inherit;
+}
+
 .stat-item-mini:hover {
     color: #FF6B00;
+}
+
+.like-button.liked {
+    color: #FF5B57;
+}
+
+.like-button:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+.like-button:focus-visible {
+    outline: 3px solid rgba(255, 91, 87, 0.22);
+    outline-offset: 2px;
 }
 
 .stat-item-mini svg {
@@ -3453,6 +3513,22 @@ body {
 
 .btn-view-work:active {
     transform: scale(0.95);
+}
+
+.works-feedback {
+    min-height: 20px;
+    margin: -12px 0 16px;
+    color: #6C665F;
+    font-size: 12px;
+}
+
+.works-empty {
+    grid-column: 1 / -1;
+    padding: 48px 24px;
+    border: 1px dashed rgba(0, 0, 0, 0.12);
+    border-radius: 16px;
+    color: #8A8680;
+    text-align: center;
 }
 
 /* -------- 响应式适配 -------- */

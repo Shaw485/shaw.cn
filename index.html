@@ -53,18 +53,22 @@
                     <span class="works-count">(6)</span>
                 </div>
                 <div class="works-filters">
-                    <button class="filter-btn active">最新</button>
-                    <button class="filter-btn">最热</button>
+                    <button class="filter-btn active" type="button" data-work-sort="latest" aria-pressed="true">最新</button>
+                    <button class="filter-btn" type="button" data-work-sort="popular" aria-pressed="false">最热</button>
                     <div class="filter-dropdown">
-                        <button class="filter-btn">
-                            开发状态
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
+                        <label class="sr-only" for="workStatusFilter">按开发状态筛选</label>
+                        <select class="filter-select" id="workStatusFilter">
+                            <option value="all">全部状态</option>
+                            <option value="online">已上线</option>
+                            <option value="wip">开发中</option>
+                            <option value="pending">待上线</option>
+                            <option value="opensource">已开源</option>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <p class="works-feedback" id="worksFeedback" aria-live="polite"></p>
 
             <div class="works-grid" id="worksGrid">
             </div>

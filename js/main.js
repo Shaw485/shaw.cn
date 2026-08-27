@@ -368,42 +368,101 @@ document.addEventListener('DOMContentLoaded', function() {
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
-        { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2, wants: 8, comments: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0, wants: 0, comments: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0, wants: 0, comments: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0, wants: 0, comments: 0 },
-        { status: '可体验', statusType: 'online', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0, wants: 0, comments: 0 },
-        { status: '已开源', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0, wants: 0, comments: 0 }
+        { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
+        { status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
+        { status: '已开源', statusType: 'opensource', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
+
+    const portfolioLogConfig = (() => {
+        try {
+            const enabled = localStorage.getItem('shaw.debug.portfolio') === '1';
+            const modules = (localStorage.getItem('shaw.debug.portfolio.modules') || '')
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean);
+            return { enabled, modules: new Set(modules) };
+        } catch (_) {
+            return { enabled: false, modules: new Set() };
+        }
+    })();
+
+    function portfolioLog(module, level, event, context = {}) {
+        const shouldDebug = portfolioLogConfig.enabled && (!portfolioLogConfig.modules.size || portfolioLogConfig.modules.has(module));
+        if (!shouldDebug && level !== 'warn' && level !== 'error') return;
+        const writer = console[level] || console.log;
+        writer(`[portfolio:${module}] ${event}`, { timestamp: new Date().toISOString(), ...context });
+    }
+
+    const likeApiBase = 'https://countapi.mileshilliard.com/api/v1';
+    const likeStorageKey = 'shawspace_portfolio_likes_v1';
+    const portfolioState = { sort: 'latest', status: 'all' };
+    const pendingLikeIds = new Set();
+    const likedAppIds = (() => {
+        try {
+            const saved = JSON.parse(localStorage.getItem(likeStorageKey) || '[]');
+            return new Set(Array.isArray(saved) ? saved.map(Number).filter(Number.isInteger) : []);
+        } catch (error) {
+            portfolioLog('likes', 'warn', 'liked-state-read-failed', { reason: error?.name || 'unknown' });
+            return new Set();
+        }
+    })();
+
+    function likeCounterKey(appId) {
+        return `shawspace_cn_portfolio_${appId}_likes_v1`;
+    }
+
+    function requestWithTimeout(url, timeoutMs = 5000) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), timeoutMs);
+        return fetch(url, { cache: 'no-store', signal: controller.signal })
+            .finally(() => clearTimeout(timeout));
+    }
+
+    function publishTime(value) {
+        const [year, month, day] = value.split('/').map(Number);
+        return Date.UTC(year, month - 1, day);
+    }
+
+    function getVisibleApps() {
+        const filtered = portfolioState.status === 'all'
+            ? [...appsData]
+            : appsData.filter(app => app.statusType === portfolioState.status);
+        return filtered.sort((a, b) => {
+            const dateDelta = publishTime(b.publishDate) - publishTime(a.publishDate);
+            return portfolioState.sort === 'popular' ? (b.likes - a.likes || dateDelta) : dateDelta;
+        });
+    }
 
     function renderWorks() {
         const grid = document.getElementById('worksGrid');
         if (!grid) return;
-        grid.innerHTML = appsData.map(app => {
-            const statusClass = app.statusType === 'online' ? 'status-online' : 'status-wip';
+        const visibleApps = getVisibleApps();
+        if (worksCount) worksCount.textContent = `(${visibleApps.length})`;
+        if (!visibleApps.length) {
+            grid.innerHTML = '<div class="works-empty">当前筛选条件下暂无作品</div>';
+            return;
+        }
+        grid.innerHTML = visibleApps.map(app => {
+            const liked = likedAppIds.has(app.id);
+            const pending = pendingLikeIds.has(app.id);
             return `
             <div class="work-card" data-app="${app.id}">
                 <div class="work-card-top">
-                    <span class="status-tag ${statusClass}">${app.status}</span>
+                    <span class="status-tag status-${app.statusType}">${app.status}</span>
                     <span class="work-date">${app.publishDate}</span>
                 </div>
                 <h3 class="work-title">「${app.shortName}」</h3>
                 <p class="work-desc">${app.shortDesc}</p>
                 <div class="work-card-bottom">
                     <div class="work-stats">
-                        <span class="stat-item-mini" title="赞">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                            ${app.likes}
-                        </span>
-                        <span class="stat-item-mini" title="想要">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                            ${app.wants}
-                        </span>
-                        <span class="stat-item-mini" title="评论">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                            ${app.comments}
-                        </span>
+                        <button class="stat-item-mini like-button${liked ? ' liked' : ''}" type="button" data-like-app="${app.id}" aria-pressed="${liked}" aria-label="${liked ? `已喜欢${app.shortName}` : `喜欢${app.shortName}`}"${pending ? ' disabled' : ''}>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            <span>${app.likes}</span>
+                        </button>
                     </div>
                     <button class="btn-view-work" type="button">查看作品</button>
                 </div>
@@ -444,6 +503,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalPrdHeading=document.getElementById('modalPrdHeading'), modalChangelogHeading=document.getElementById('modalChangelogHeading'), modalCodeHeading=document.getElementById('modalCodeHeading');
 
     const worksGrid = document.getElementById('worksGrid');
+    const worksFilters = document.querySelector('.works-filters');
+    const workStatusFilter = document.getElementById('workStatusFilter');
+    const worksFeedback = document.getElementById('worksFeedback');
 
     const roles = [
         '全栈开发者',
@@ -724,12 +786,105 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
     }
 
+    function setWorksFeedback(message) {
+        if (!worksFeedback) return;
+        worksFeedback.textContent = message;
+        clearTimeout(setWorksFeedback.timeout);
+        setWorksFeedback.timeout = setTimeout(() => {
+            if (worksFeedback.textContent === message) worksFeedback.textContent = '';
+        }, 3200);
+    }
+
+    function saveLikedApps() {
+        try {
+            localStorage.setItem(likeStorageKey, JSON.stringify([...likedAppIds]));
+        } catch (error) {
+            portfolioLog('likes', 'warn', 'liked-state-write-failed', { reason: error?.name || 'unknown' });
+        }
+    }
+
+    async function loadLikeCounts() {
+        portfolioLog('likes', 'debug', 'counts-load-start', { projectCount: appsData.length });
+        const failures = [];
+        await Promise.all(appsData.map(async app => {
+            try {
+                const response = await requestWithTimeout(`${likeApiBase}/get/${likeCounterKey(app.id)}`);
+                if (!response.ok) throw new Error(`http-${response.status}`);
+                const data = await response.json();
+                const value = Number(data?.value ?? data?.count);
+                if (Number.isFinite(value) && value >= 0) app.likes = value;
+            } catch (error) {
+                failures.push({ appId: app.id, reason: error?.message || error?.name || 'unknown' });
+            }
+        }));
+        renderWorks();
+        if (failures.length) portfolioLog('likes', 'warn', 'counts-load-partial', { failures });
+        portfolioLog('likes', 'debug', 'counts-load-complete');
+    }
+
+    async function likeApp(appId) {
+        const app = appsData.find(item => item.id === appId);
+        if (!app || pendingLikeIds.has(appId)) return;
+        if (likedAppIds.has(appId)) {
+            setWorksFeedback(`你已经喜欢过「${app.shortName}」了`);
+            return;
+        }
+        pendingLikeIds.add(appId);
+        renderWorks();
+        portfolioLog('likes', 'debug', 'like-submit-start', { appId });
+        try {
+            const response = await requestWithTimeout(`${likeApiBase}/hit/${likeCounterKey(appId)}`);
+            if (!response.ok) throw new Error(`http-${response.status}`);
+            const data = await response.json();
+            const value = Number(data?.value ?? data?.count);
+            if (!Number.isFinite(value)) throw new Error('invalid-count');
+            app.likes = value;
+            likedAppIds.add(appId);
+            saveLikedApps();
+            setWorksFeedback(`谢谢喜欢「${app.shortName}」`);
+            portfolioLog('likes', 'debug', 'like-submit-success', { appId, value });
+        } catch (error) {
+            setWorksFeedback('点赞暂时没有记录成功，请稍后再试');
+            portfolioLog('likes', 'error', 'like-submit-failed', { appId, reason: error?.message || error?.name || 'unknown' });
+        } finally {
+            pendingLikeIds.delete(appId);
+            renderWorks();
+        }
+    }
+
+    worksFilters?.addEventListener('click', event => {
+        const button = event.target.closest('[data-work-sort]');
+        if (!button) return;
+        portfolioState.sort = button.dataset.workSort;
+        worksFilters.querySelectorAll('[data-work-sort]').forEach(item => {
+            const active = item === button;
+            item.classList.toggle('active', active);
+            item.setAttribute('aria-pressed', String(active));
+        });
+        renderWorks();
+        portfolioLog('filters', 'debug', 'sort-changed', { sort: portfolioState.sort });
+    });
+
+    workStatusFilter?.addEventListener('change', event => {
+        portfolioState.status = event.target.value;
+        renderWorks();
+        portfolioLog('filters', 'debug', 'status-changed', { status: portfolioState.status, visibleCount: getVisibleApps().length });
+    });
+
     worksGrid?.addEventListener('click', (e) => {
+        const likeButton = e.target.closest('[data-like-app]');
+        if (likeButton) {
+            e.stopPropagation();
+            likeApp(Number(likeButton.dataset.likeApp));
+            return;
+        }
         const wrapper = e.target.closest('.work-card');
         if (!wrapper) return;
         const appId = parseInt(wrapper.dataset.app);
         openAppModal(appId);
     });
+
+    loadLikeCounts();
 
     appModal?.querySelectorAll('[data-close-modal]').forEach(el => {
         el.addEventListener('click', closeAppModal);
