@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PRD Agent 的脱敏产品目标、检索架构、回答边界与评测方法。">
+    <title>PRD Agent 项目说明 · Shaw's Space</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260828-doc">
+    <link rel="stylesheet" href="css/document.css?v=20260828-doc">
+</head>
+<body class="document-page">
+    <main class="document-shell">
+        <a class="document-back" href="index.html">← 返回作品集</a>
+        <article class="document-article">
+            <p class="document-kicker">PRD AGENT · PUBLIC OVERVIEW</p>
+            <h1>PRD Agent<br>公开项目说明</h1>
+            <p class="document-lead">一个面向企业产品文档的知识检索与问答项目。关键结论需要回到经过权限校验的文档证据，证据不足时明确说明边界。</p>
+
+            <section class="document-section">
+                <h2>一、项目目标</h2>
+                <p>PRD Agent 的目标不是让大模型“凭经验回答”，而是让每个关键结论都能够回到经过权限校验的文档证据，并在证据不足时明确说明边界。</p>
+            </section>
+
+            <section class="document-section">
+                <h2>二、核心链路</h2>
+                <ol>
+                    <li><strong>文档处理：</strong>解析产品文档，保留标题、章节、版本和权限等必要信息。</li>
+                    <li><strong>分层召回：</strong>先定位可能相关的文档，再在候选文档内部检索章节和内容片段。</li>
+                    <li><strong>混合检索：</strong>结合关键词、向量检索和重排，降低只命中“语义相似但条件错误”内容的概率。</li>
+                    <li><strong>证据补全：</strong>根据问题补充父章节、相邻片段或相关文档，避免关键条件被切断。</li>
+                    <li><strong>回答控制：</strong>区分完整回答、部分回答、需要澄清、证据不足和无权限等状态。</li>
+                    <li><strong>Trace 与评测：</strong>记录检索、重排和证据选择过程，并使用真实 Bad Case 做离线回归。</li>
+                </ol>
+            </section>
+
+            <section class="document-section">
+                <h2>三、产品判断</h2>
+                <p>企业知识问答的核心不是生成更流畅的文字，而是提高“找对文档、找全证据、使用正确版本、避免越权和不凭空补写”的稳定性。因此项目优先建设评测与证据链，再逐步增加复杂 Agent 能力。</p>
+            </section>
+
+            <section class="document-section">
+                <h2>四、当前实践重点</h2>
+                <ul>
+                    <li>建立覆盖不同问题类型的稳定评测集。</li>
+                    <li>完善文档目录、版本状态和知识治理。</li>
+                    <li>验证分层 Hybrid RAG 与重排策略。</li>
+                    <li>让答案中的关键事实可追溯到原文。</li>
+                    <li>通过同一批题目进行改动前后回归，避免局部提升造成其他问题退化。</li>
+                </ul>
+            </section>
+
+            <section class="document-section">
+                <h2>五、公开范围</h2>
+                <p>本页面只展示经过脱敏的产品思路、通用架构和评测方法。企业内部文档、业务数据、账号信息、权限配置、真实问答内容和私有源码不会公开。</p>
+            </section>
+        </article>
+    </main>
+</body>
+</html>

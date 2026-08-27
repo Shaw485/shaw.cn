@@ -194,25 +194,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 作品介绍',
                     title: '在线阅读项目与架构说明',
-                    href: '/prd-agent-overview.txt',
+                    href: '/prd-agent-overview.html',
                     intro: '直接阅读产品目标、核心检索链路、回答边界、评测方法与公开范围。'
                 },
                 second: {
                     heading: '02 · 建设路线',
                     title: '在线阅读脱敏 Roadmap',
-                    href: '/prd-agent-public-roadmap.txt',
+                    href: '/prd-agent-roadmap.html',
                     intro: '查看评测集、知识治理、分层 Hybrid RAG、证据控制与运行监控的实施顺序。'
                 },
                 codeHeading: '03 · 公开阅读入口',
                 code: [
                     {
                         title: '产品说明',
-                        href: '/prd-agent-overview.txt',
+                        href: '/prd-agent-overview.html',
                         intro: '阅读不包含企业内部文档、业务数据和账号信息的公开项目说明。'
                     },
                     {
                         title: '公开 Roadmap',
-                        href: '/prd-agent-public-roadmap.txt',
+                        href: '/prd-agent-roadmap.html',
                         intro: '阅读可公开的阶段目标、交付物与验收方法；私有源码暂不对外展示。'
                     }
                 ]
@@ -241,8 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshots: ['search-eval-preview.svg'],
             primaryAction: {
                 url: 'search-eval.html',
-                label: '去搜索',
-                status: 'Stage 0 · Baseline'
+                label: '开始搜索'
             },
             secondaryAction: {
                 url: 'search-strategy.html',
@@ -700,7 +699,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalSecondaryDownload.hidden = true;
                 modalSecondaryDownload.style.display = 'none';
             }
-            if (platformStatus) platformStatus.textContent = app.platformStatus || (app.apk ? '苹果版开发中' : primaryAction.status);
+            if (platformStatus) {
+                const statusText = app.platformStatus || (app.apk ? '苹果版开发中' : primaryAction.status);
+                platformStatus.textContent = statusText || '';
+                platformStatus.hidden = !statusText;
+                platformStatus.style.display = statusText ? '' : 'none';
+            }
 
             modalPlatformActions.hidden = false;
             modalPlatformActions.style.removeProperty('display');
@@ -720,6 +724,10 @@ document.addEventListener('DOMContentLoaded', function() {
             modalSecondaryDownload.style.display = 'none';
             modalDownloadStats.hidden = true;
             modalDownloadStats.style.display = 'none';
+            if (platformStatus) {
+                platformStatus.hidden = true;
+                platformStatus.style.display = 'none';
+            }
         }
         const linkMap=Object.fromEntries(app.links.map(x=>[x[0],x[1]]));
         const defaultResourceCopy = app.id === 0 ? {

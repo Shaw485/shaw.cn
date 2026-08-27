@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PRD Agent 脱敏建设路线图与阶段验收标准。">
+    <title>PRD Agent 建设路线 · Shaw's Space</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260828-doc">
+    <link rel="stylesheet" href="css/document.css?v=20260828-doc">
+</head>
+<body class="document-page">
+    <main class="document-shell">
+        <a class="document-back" href="index.html">← 返回作品集</a>
+        <article class="document-article">
+            <p class="document-kicker">PRD AGENT · PUBLIC ROADMAP</p>
+            <h1>PRD Agent<br>脱敏建设路线</h1>
+            <p class="document-lead">从稳定评测集开始，逐步建设知识治理、分层 Hybrid RAG、证据控制、复杂问题补充检索与运行监控。</p>
+
+            <section class="document-section"><h2>阶段 1：建立评测集</h2><p>整理单点事实、完整流程、跨文档比较、版本冲突、需要澄清、知识库无答案和多轮追问等问题类型。每道题标注预期回答状态、必须覆盖的答案点、权威来源和禁止出现的错误结论。</p><p class="document-acceptance"><strong>验收：</strong>评测题可以重复运行，答案标准不依赖容易变化的 Chunk ID，并能区分召回、证据和生成问题。</p></section>
+            <section class="document-section"><h2>阶段 2：文档目录与知识治理</h2><p>为文档补充稳定标识、标题、别名、业务域、国家、角色、流程阶段、版本和有效状态，识别重复、过期、冲突与缺失内容。</p><p class="document-acceptance"><strong>验收：</strong>目标文档能够被稳定定位，过期或无权限内容不会混入最终证据。</p></section>
+            <section class="document-section"><h2>阶段 3：分层 Hybrid RAG</h2><p>先检索候选文档，再在候选文档内部检索章节；融合关键词、向量与元数据召回，并使用重排选择更可靠的证据。</p><p class="document-acceptance"><strong>验收：</strong>相同评测集上的目标文档召回、事实覆盖和最终证据质量相较基线有可复核提升，且没有明显回归。</p></section>
+            <section class="document-section"><h2>阶段 4：答案与证据控制</h2><p>根据问题列出必须回答的内容，并检查每个答案点是否有证据。关键结论绑定引用，证据不足时返回部分回答、需要澄清或无法确认。</p><p class="document-acceptance"><strong>验收：</strong>不能使用模型常识补写文档中不存在的规则，引用能够支持对应结论。</p></section>
+            <section class="document-section"><h2>阶段 5：复杂问题补充检索</h2><p>只对跨文档、多子问题或首次证据不完整的请求拆分子问题并补充检索；设置最大轮次、超时和预算，简单问题继续走一次确定性检索。</p><p class="document-acceptance"><strong>验收：</strong>复杂问题的证据覆盖提升，同时调用次数、延迟和成本保持在设定上限内。</p></section>
+            <section class="document-section"><h2>阶段 6：按错误类型定向优化</h2><p>找错文档时优化目录和文档级召回；找对文档但找错章节时优化章节检索和重排；内容被切断时调整证据扩展；证据正确但答案错误时优化回答约束。</p><p class="document-acceptance"><strong>验收：</strong>每次改动都能说明解决了哪类错误，并通过固定评测集验证收益与回归。</p></section>
+            <section class="document-section"><h2>阶段 7：回归评测与运行监控</h2><p>把新出现的真实失败持续加入评测集；对重要语料、检索、配置和提示词变更运行回归，记录可用性、召回、证据、稳定性、延迟和成本。</p><p class="document-acceptance"><strong>验收：</strong>形成“发现问题—加入评测—定向优化—回归验证”的持续闭环。</p></section>
+        </article>
+    </main>
+</body>
+</html>
