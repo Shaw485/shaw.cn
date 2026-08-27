@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const logList = document.getElementById('logList');
     const logSearch = document.getElementById('logSearch');
     const logStatus = document.getElementById('logStatus');
-    const overviewCount = document.getElementById('overviewLogCount');
     const tabCount = document.getElementById('tabLogCount');
     const visibleCount = document.getElementById('visibleLogCount');
 
@@ -30,12 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const haystack = `${log.query} ${log.id} ${log.requestId || ''}`.toLowerCase();
             return matchesStatus && (!keyword || haystack.includes(keyword));
         });
-        overviewCount.textContent = String(logs.length);
         tabCount.textContent = String(logs.length);
         visibleCount.textContent = `${filtered.length} 条记录`;
 
         if (!filtered.length) {
-            logList.innerHTML = `<div class="log-empty"><strong>${logs.length ? '没有符合条件的日志' : '还没有查询日志'}</strong><p>${logs.length ? '换一个筛选条件试试。' : '在搜索体验页执行一次搜索后，这里会自动生成链路记录。'}</p>${logs.length ? '' : '<a href="search-eval.html">去搜索 ↗</a>'}</div>`;
+            logList.innerHTML = `<div class="log-empty"><strong>${logs.length ? '没有符合条件的日志' : '还没有查询日志'}</strong><p>${logs.length ? '换一个筛选条件试试。' : '在搜索体验页执行一次搜索后，这里会自动生成链路记录。'}</p>${logs.length ? '' : '<a href="search-eval.html">开始搜索</a>'}</div>`;
             return;
         }
 

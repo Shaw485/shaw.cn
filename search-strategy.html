@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260828-strategy">
-    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-strategy">
+    <link rel="stylesheet" href="css/styles.css?v=20260828-strategy-compact">
+    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-strategy-compact">
 </head>
 <body class="strategy-page">
     <nav class="navbar">
@@ -28,12 +28,11 @@
     <main>
         <header class="strategy-hero">
             <div>
-                <p class="strategy-eyebrow">SEARCH STRATEGY CONSOLE · STAGE 0</p>
-                <h1>搜索策略平台</h1>
-                <p>按照成熟搜索系统的完整链路组织策略。当前先搭建知识与管理框架，策略均暂未配置。</p>
+                <h1>搜索策略</h1>
+                <p>按实际检索链路组织，当前策略待配置。</p>
             </div>
             <div class="strategy-actions">
-                <a class="strategy-primary" href="search-eval.html">去搜索 <span>↗</span></a>
+                <a class="strategy-primary" href="search-eval.html">开始搜索</a>
                 <a class="strategy-secondary" href="index.html">返回作品集</a>
             </div>
         </header>
@@ -43,13 +42,6 @@
             <a href="#foundation-strategies">数据、评测与治理</a>
             <a href="#query-logs">查询日志 <span id="tabLogCount">0</span></a>
         </nav>
-
-        <section class="strategy-overview" aria-label="策略平台概览">
-            <div><strong>13</strong><span>策略分类</span></div>
-            <div><strong>0</strong><span>已配置策略</span></div>
-            <div><strong id="overviewLogCount">0</strong><span>本机查询日志</span></div>
-            <div><strong>Stage 0</strong><span>当前阶段</span></div>
-        </section>
 
         <section class="strategy-section" id="online-strategies">
             <header class="section-heading">
@@ -85,7 +77,7 @@
         <section class="strategy-section log-section" id="query-logs">
             <header class="section-heading">
                 <div><span>03 · QUERY LOGS</span><h2>查询日志</h2></div>
-                <p>展示当前浏览器在“去搜索”页面产生的体验记录，最多保留 100 条。</p>
+                <p>展示当前浏览器在“开始搜索”页面产生的体验记录，最多保留 100 条。</p>
             </header>
             <div class="privacy-note"><strong>隐私说明</strong><span>Query 仅存储在你的当前浏览器，不上传到公开日志，也不会显示其他访客的搜索内容。</span></div>
             <div class="log-toolbar">
@@ -97,7 +89,7 @@
         </section>
     </main>
 
-    <script src="js/search-console-store.js?v=20260828-strategy"></script>
-    <script src="js/search-strategy.js?v=20260828-strategy"></script>
+    <script src="js/search-console-store.js?v=20260828-strategy-compact"></script>
+    <script src="js/search-strategy.js?v=20260828-strategy-compact"></script>
 </body>
 </html>
