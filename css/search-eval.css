@@ -17,8 +17,11 @@
 .store-brand b { color: var(--bench-orange); }
 .store-brand small { margin-top: 8px; color: #aebbc6; font-size: 8px; font-weight: 700; letter-spacing: .16em; }
 .store-bar-title { justify-self: center; color: #b9c5cf; font-size: 12px; font-weight: 600; letter-spacing: .04em; }
-.store-back { justify-self: end; color: #dfe5e9; font-size: 11px; font-weight: 600; }
+.store-links { justify-self: end; display:flex; align-items:center; gap:14px; white-space:nowrap; }
+.store-back { color: #dfe5e9; font-size: 11px; font-weight: 600; }
 .store-back:hover { color: var(--bench-orange); }
+.store-strategy { padding:8px 11px; border:1px solid #53616d; border-radius:4px; color:#fff; font-size:10px; font-weight:700; }
+.store-strategy:hover { border-color:var(--bench-orange); color:var(--bench-orange); }
 
 .comparison-grid { width: min(100%, 1600px); height: calc(100vh - var(--nav-height) - 86px); min-height: 620px; margin: 0 auto; padding: 22px 20px; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
 .search-lane { min-width: 0; min-height: 0; display: flex; flex-direction: column; border: 1px solid #cfd5da; background: #fff; box-shadow: 0 8px 28px rgba(20,31,42,.05); overflow: hidden; }
@@ -85,6 +88,8 @@
 @media (max-width: 700px) {
     .store-bar { padding: 15px 18px; grid-template-columns: 1fr auto; }
     .store-bar-title { display: none; }
+    .store-links { gap:8px; }
+    .store-back { display:none; }
     .comparison-grid { padding: 12px; gap: 12px; }
     .search-lane { min-height: 560px; }
     .lane-header { min-height: 78px; padding: 16px; }

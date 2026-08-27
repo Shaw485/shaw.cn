@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="搜索引擎评测 Agent 的策略框架与本地查询日志。">
+    <title>搜索策略平台 · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260828-strategy">
+    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-strategy">
+</head>
+<body class="strategy-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><span class="logo-mark"></span><span class="logo-text">Shaw's Space</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link">AI 学习记录</a></li>
+                <li><a href="blog.html" class="nav-link">博客记录</a></li>
+                <li><a href="contact.html" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="strategy-hero">
+            <div>
+                <p class="strategy-eyebrow">SEARCH STRATEGY CONSOLE · STAGE 0</p>
+                <h1>搜索策略平台</h1>
+                <p>按照成熟搜索系统的完整链路组织策略。当前先搭建知识与管理框架，策略均暂未配置。</p>
+            </div>
+            <div class="strategy-actions">
+                <a class="strategy-primary" href="search-eval.html">去搜索 <span>↗</span></a>
+                <a class="strategy-secondary" href="index.html">返回作品集</a>
+            </div>
+        </header>
+
+        <nav class="strategy-tabs" aria-label="页面目录">
+            <a href="#online-strategies">在线检索链路</a>
+            <a href="#foundation-strategies">数据、评测与治理</a>
+            <a href="#query-logs">查询日志 <span id="tabLogCount">0</span></a>
+        </nav>
+
+        <section class="strategy-overview" aria-label="策略平台概览">
+            <div><strong>13</strong><span>策略分类</span></div>
+            <div><strong>0</strong><span>已配置策略</span></div>
+            <div><strong id="overviewLogCount">0</strong><span>本机查询日志</span></div>
+            <div><strong>Stage 0</strong><span>当前阶段</span></div>
+        </section>
+
+        <section class="strategy-section" id="online-strategies">
+            <header class="section-heading">
+                <div><span>01 · ONLINE SERVING</span><h2>在线检索链路</h2></div>
+                <p>从理解 Query 到生成最终结果，策略按实际执行顺序排列。</p>
+            </header>
+            <div class="pipeline" aria-label="在线搜索策略链路">
+                <article class="strategy-card"><span class="card-index">01</span><div><h3>Query 理解</h3><p>归一化、拼写纠错、分词、意图/类目/属性识别、同义词、改写与扩展。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">02</span><div><h3>约束与过滤</h3><p>市场与语言、可售性、权限、合规、库存及其他硬性条件。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">03</span><div><h3>多路召回</h3><p>关键词 BM25、向量语义、类目属性、行为热度、个性化与规则召回。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">04</span><div><h3>召回融合</h3><p>分数归一化、RRF/线性融合、去重、配额、截断与候选集治理。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">05</span><div><h3>粗排</h3><p>用低成本特征或轻量模型快速筛选 Top N，并管理延迟预算。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">06</span><div><h3>精排</h3><p>融合相关性、用户、商品及业务特征，用学习排序或深度模型精细打分。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">07</span><div><h3>重排与结果治理</h3><p>语义 Rerank、多样性、新鲜度、置顶/排除、业务规则与安全控制。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">08</span><div><h3>补召 / 重召</h3><p>低召回、零结果或覆盖不足时触发二次改写、兜底与候选回填。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">09</span><div><h3>结果编排与呈现</h3><p>结果分组、类目聚合、Facets、摘要高亮、解释信息与页面布局。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+            </div>
+        </section>
+
+        <section class="strategy-section" id="foundation-strategies">
+            <header class="section-heading">
+                <div><span>02 · FOUNDATION &amp; GOVERNANCE</span><h2>数据、评测与治理</h2></div>
+                <p>这些能力不直接排在请求链路中，但决定搜索系统能否稳定迭代。</p>
+            </header>
+            <div class="foundation-grid">
+                <article class="strategy-card"><span class="card-index">10</span><div><h3>数据与索引</h3><p>字段 Schema、分词器、Embedding、索引版本、数据新鲜度与质量。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">11</span><div><h3>评测与实验</h3><p>训练/验证/测试集切分、标注集、离线指标、A/B 实验与护栏指标。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">12</span><div><h3>版本与发布</h3><p>策略版本、灰度、配置校验、依赖关系、回滚与变更记录。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+                <article class="strategy-card"><span class="card-index">13</span><div><h3>日志与监控</h3><p>请求 Trace、链路事件、延迟、错误、成本、告警与线上问题回放。</p></div><span class="empty-badge">暂未配置</span><div class="strategy-empty">暂无策略</div></article>
+            </div>
+        </section>
+
+        <section class="strategy-section log-section" id="query-logs">
+            <header class="section-heading">
+                <div><span>03 · QUERY LOGS</span><h2>查询日志</h2></div>
+                <p>展示当前浏览器在“去搜索”页面产生的体验记录，最多保留 100 条。</p>
+            </header>
+            <div class="privacy-note"><strong>隐私说明</strong><span>Query 仅存储在你的当前浏览器，不上传到公开日志，也不会显示其他访客的搜索内容。</span></div>
+            <div class="log-toolbar">
+                <label><span class="sr-only">搜索 Query 或请求 ID</span><input id="logSearch" type="search" placeholder="筛选 Query、日志 ID 或请求 ID"></label>
+                <select id="logStatus" aria-label="按状态筛选"><option value="all">全部状态</option><option value="success">成功</option><option value="error">失败</option><option value="aborted">已取消</option><option value="running">进行中</option></select>
+                <span id="visibleLogCount">0 条记录</span>
+            </div>
+            <div class="log-list" id="logList" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script src="js/search-console-store.js?v=20260828-strategy"></script>
+    <script src="js/search-strategy.js?v=20260828-strategy"></script>
+</body>
+</html>

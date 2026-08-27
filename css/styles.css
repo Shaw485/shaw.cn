@@ -2420,6 +2420,17 @@ img {
     display: none;
 }
 
+.app-modal-download.is-navigation svg {
+    display: none;
+}
+
+.app-modal-download.is-navigation::after {
+    content: '↗';
+    margin-left: 3px;
+    font-size: 15px;
+    line-height: 1;
+}
+
 .app-modal-platform-status {
     display: inline-flex;
     align-items: center;

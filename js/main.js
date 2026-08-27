@@ -241,8 +241,12 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshots: ['search-eval-preview.svg'],
             primaryAction: {
                 url: 'search-eval.html',
-                label: '体验搜索差异',
+                label: '去搜索',
                 status: 'Stage 0 · Baseline'
+            },
+            secondaryAction: {
+                url: 'search-strategy.html',
+                label: '策略平台'
             },
             resources: {
                 first: {
@@ -671,12 +675,13 @@ document.addEventListener('DOMContentLoaded', function() {
         modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
         const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
-        const secondaryAction = app.downloads?.[1];
+        const secondaryAction = app.secondaryAction || app.downloads?.[1];
         const platformStatus = modalPlatformActions.querySelector('.app-modal-platform-status');
         if (primaryAction) {
             modalApkDownload.href = primaryAction.url;
             modalApkLabel.textContent = primaryAction.label;
             modalApkDownload.dataset.countDownload = app.apk ? 'true' : 'false';
+            modalApkDownload.classList.toggle('is-navigation', !app.apk && !app.downloads);
             if (app.apk || app.downloads) {
                 modalApkDownload.setAttribute('download', '');
             } else {
@@ -685,9 +690,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (secondaryAction) {
                 modalSecondaryDownload.href = secondaryAction.url;
                 modalSecondaryLabel.textContent = secondaryAction.label;
+                modalSecondaryDownload.classList.toggle('is-navigation', !app.downloads);
+                if (app.downloads) modalSecondaryDownload.setAttribute('download', '');
+                else modalSecondaryDownload.removeAttribute('download');
                 modalSecondaryDownload.hidden = false;
                 modalSecondaryDownload.style.removeProperty('display');
             } else {
+                modalSecondaryDownload.classList.remove('is-navigation');
                 modalSecondaryDownload.hidden = true;
                 modalSecondaryDownload.style.display = 'none';
             }
@@ -701,6 +710,8 @@ document.addEventListener('DOMContentLoaded', function() {
             modalDownloadStats.style.display = app.apk ? '' : 'none';
             if (app.apk) refreshDownloadCount();
         } else {
+            modalApkDownload.classList.remove('is-navigation');
+            modalSecondaryDownload.classList.remove('is-navigation');
             modalPlatformActions.hidden = true;
             modalPlatformActions.style.display = 'none';
             modalApkDownload.hidden = true;
