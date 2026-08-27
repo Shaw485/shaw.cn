@@ -35,9 +35,10 @@
             const parsed = JSON.parse(storage.getItem(STORAGE_KEY) || '[]');
             return Array.isArray(parsed) ? parsed : [];
         } catch (error) {
-            console.warn('[search-console:storage] Failed to read local logs', {
+            console.warn('[search-console:storage]', {
                 timestamp: new Date().toISOString(),
-                error: error instanceof Error ? error.message : String(error)
+                event: 'local_log_read_failed',
+                errorType: error instanceof Error ? error.name : 'UnknownError'
             });
             return [];
         }
@@ -48,10 +49,11 @@
             storage.setItem(STORAGE_KEY, JSON.stringify(logs.slice(0, MAX_LOGS)));
             return true;
         } catch (error) {
-            console.warn('[search-console:storage] Failed to persist local logs', {
+            console.warn('[search-console:storage]', {
                 timestamp: new Date().toISOString(),
+                event: 'local_log_write_failed',
                 count: logs.length,
-                error: error instanceof Error ? error.message : String(error)
+                errorType: error instanceof Error ? error.name : 'UnknownError'
             });
             return false;
         }

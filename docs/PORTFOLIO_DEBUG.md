@@ -30,3 +30,22 @@ location.reload();
 ```
 
 点赞读取或提交失败会始终输出 `warn` / `error`，包含时间、作品 ID 和非敏感失败原因。日志不记录访客身份、网络地址、联系方式或浏览历史，也不会持久保存到服务器。
+
+## 全量商品搜索页
+
+搜索页的浏览器调试生产环境默认关闭。开启 `search-ui` 模块：
+
+```js
+localStorage.setItem('shaw.debug.search-console', '1');
+localStorage.setItem('shaw.debug.search-console.modules', 'search-ui');
+location.reload();
+```
+
+控制台会记录请求开始、请求 ID、状态、耗时与结果数，不输出 Query、商品标题或响应正文。网络和 HTTP 失败会始终输出一条结构化 `warn`，可用响应的请求 ID 与服务端日志关联。关闭并清理调试设置：
+
+```js
+localStorage.removeItem('shaw.debug.search-console');
+localStorage.removeItem('shaw.debug.search-console.modules');
+```
+
+详细搜索链路只保存在当前浏览器，最多 100 条；查看、导出和清理方式见 `SEARCH_STRATEGY_DEBUG.md`。
