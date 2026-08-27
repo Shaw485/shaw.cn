@@ -173,7 +173,15 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #18231d 0%, #2f7255 58%, #9bc3ae 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"></path><path d="M8 4.5V20M11 9h4M11 13h4"></path><path d="m18.5 3 .7 1.5L21 5.2l-1.8.7-.7 1.6-.7-1.6-1.8-.7 1.8-.7z"></path>',
-            desc: '一款把零散知识重新放回视线的开源桌面工具。平时在网页、Codex、备忘录或飞书中选中一句话，点击“学习”即可加入本地知识库；左下角卡片按艾宾浩斯节奏复现内容，并用“忘了 / 模糊 / 记得”反馈动态调整下一次复习时间。',
+            desc: 'Pick Memory 是一款本地优先的桌面间隔复习工具，把“随手收藏—按时复习—反馈掌握程度—管理知识库”连成一个轻量闭环。它既支持网页划词与手动添加，也通过 macOS 伴侣程序覆盖 Codex、备忘录、飞书等应用；知识卡以紧凑形式停留在网页左下角，不要求切换到专门的学习应用。',
+            featureDetails: [
+                { title: '快速采集', detail: '网页选中文字后，可通过右键菜单加入知识库；也可点击扩展图标手动输入或粘贴内容，并使用 Command / Ctrl + Shift + K 快速打开添加窗口。macOS 版还支持 Codex、备忘录、飞书等应用中的跨应用划词。' },
+                { title: '间隔调度', detail: '新知识当天进入复习，之后按照 1、2、4、7、15、30、60、120、240 天逐步拉开间隔。系统优先显示已经到期的内容；当天没有到期卡片时，会选择较久未出现的知识作为“今日巩固”。' },
+                { title: '掌握反馈', detail: '“记得”会进入下一阶段并切换到下一张；“模糊”保留当前阶段，但缩短下次出现的间隔；“忘了”会回到第一阶段，并在次日重新出现，让复习节奏跟随真实掌握程度调整。' },
+                { title: '知识库管理', detail: '知识库展示知识总数、今日待复习和今日已复习，并支持按标题、正文或标签搜索。用户可以筛选学习状态，编辑、归档或删除知识，同时查看当前阶段、下次复习日期和累计复习次数。' },
+                { title: '卡片与轮换', detail: '复习卡提供小、中、大三种尺寸，可设置每张知识卡曝光 1～20 次后自动轮换。卡片始终保留“设置”和“删除”入口，既方便持续复习，也能及时清理不再需要的内容。' },
+                { title: '本地数据与平台', detail: '无需注册账号或后端服务，知识和复习记录保存在浏览器本地。Windows 版支持浏览器划词与复习；macOS 版额外提供跨应用收藏。当前卸载扩展会清除本地数据，导入导出和浏览器同步仍在后续计划中。' }
+            ],
             features: [
                 '🖱️ 随手收藏：网页与 macOS 跨应用划词后，一键加入知识库',
                 '🧠 间隔复习：基于渐进间隔安排知识再次出现的时间',
@@ -185,7 +193,9 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['Chrome Extension', 'macOS', 'Spaced Repetition', 'Local First', 'Open Source'],
             screenshotLayout: 'landscape',
             screenshots: [
+                'pick-memory-library.png',
                 'pick-memory-live-demo.png',
+                'pick-memory-google-review.png',
                 'pick-memory-selection.png',
                 'pick-memory-review-card.png'
             ],
@@ -308,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDate = document.getElementById('modalDate');
 
     const modalDesc = document.getElementById('modalDesc');
+    const modalFeatureDetails = document.getElementById('modalFeatureDetails');
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
@@ -464,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalFeatureDetails || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -473,6 +484,18 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDate.textContent = app.date;
 
         modalDesc.textContent = app.desc;
+        if (app.featureDetails?.length) {
+            modalFeatureDetails.innerHTML = app.featureDetails.map(item => `
+                <article class="app-feature-detail">
+                    <h4>${item.title}</h4>
+                    <p>${item.detail}</p>
+                </article>
+            `).join('');
+            modalFeatureDetails.hidden = false;
+        } else {
+            modalFeatureDetails.innerHTML = '';
+            modalFeatureDetails.hidden = true;
+        }
 
         modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
