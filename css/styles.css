@@ -4360,6 +4360,30 @@ body {
     border-radius: 14px;
 }
 
+.doc-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.doc-card-link:hover {
+    transform: translateY(-2px);
+    border-color: #a8a8a8;
+    background: #fafafa;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+.doc-card-link:focus-visible {
+    outline: 3px solid rgba(0, 113, 227, 0.35);
+    outline-offset: 3px;
+}
+
+.doc-card-link strong {
+    color: #1d1d1f;
+}
+
 .doc-card p,
 .record-list p {
     margin: 7px 0 0;

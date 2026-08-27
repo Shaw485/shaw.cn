@@ -29,6 +29,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 url: 'https://github.com/Shaw485/shaw.cn/raw/main/math-alarm-v60.apk',
                 label: '下载安卓版',
                 meta: 'v60.0 · 12 MB'
+            },
+            resources: {
+                first: {
+                    heading: '01 · 产品需求文档',
+                    title: '直接下载 PRD PDF',
+                    href: '/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf',
+                    intro: '下载完整 PRD，查看产品目标、数学题解锁规则、核心流程与 Android 系统权限方案。',
+                    download: true
+                },
+                second: {
+                    heading: '02 · 版本记录',
+                    title: '在线阅读完整改动记录',
+                    href: '/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt',
+                    intro: '按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。'
+                },
+                codeHeading: '03 · 源码与说明',
+                code: [
+                    {
+                        title: 'GitHub 仓库',
+                        href: 'https://github.com/Shaw485/math_alarm',
+                        intro: '查看 Android 项目源码、目录结构与最新提交。'
+                    },
+                    {
+                        title: 'README',
+                        href: 'https://github.com/Shaw485/math_alarm/blob/main/README.md',
+                        intro: '快速了解主要功能、运行方式与开发说明。'
+                    }
+                ]
             }
         },
         {
@@ -51,7 +79,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 '📱 网页试玩：使用浏览器即可运行，兼顾触控操作'
             ],
             tags: ['JavaScript', 'HTML5 Canvas', 'Platformer', 'Web Game', 'Hand-drawn'],
-            screenshots: []
+            screenshots: [],
+            resources: {
+                first: {
+                    heading: '01 · 作品介绍',
+                    title: '在线阅读玩法与功能说明',
+                    href: '/brain-egg-overview.txt',
+                    intro: '直接阅读游戏定位、操作方式、关卡结构、视觉风格与当前开发状态。'
+                },
+                second: {
+                    heading: '02 · 版本记录',
+                    title: '在线阅读 33 个版本记录',
+                    href: '/brain-egg-changelog.txt',
+                    intro: '从首个可玩版本到动作、关卡、HUD 和稳定性优化，逐项查看完整迭代过程。'
+                },
+                codeHeading: '03 · 公开资料',
+                code: [
+                    {
+                        title: 'GitHub 版本记录',
+                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt',
+                        intro: '在 GitHub 阅读版本记录，并查看文件历史。'
+                    },
+                    {
+                        title: '公开展示页源码',
+                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/js/main.js',
+                        intro: '查看作品集中的公开介绍与资源入口；游戏工程仍在整理中。'
+                    }
+                ]
+            }
         },
         {
             id: 2,
@@ -79,6 +134,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
                 github: '查看从零实现 GPT 的源码、Notebook 与最新学习进度。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
+            },
+            resources: {
+                first: {
+                    heading: '01 · 学习路线',
+                    title: '在线阅读 Roadmap',
+                    href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/main/ROADMAP.md',
+                    intro: '查看从数据、Tokenizer、预训练到 SFT 的阶段规划、产物与验收门槛。'
+                },
+                second: {
+                    heading: '02 · 实现记录',
+                    title: '在线阅读完整学习记录',
+                    href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/main/RECORD.md',
+                    intro: '按阶段查看实现过程、实验结果、问题诊断与下一步计划。'
+                },
+                codeHeading: '03 · 代码与证据',
+                code: [
+                    {
+                        title: 'GitHub 仓库',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step',
+                        intro: '查看从零实现 GPT 的源码、数据处理脚本、测试与最新提交。'
+                    },
+                    {
+                        title: '训练里程碑',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/tree/main/reports/milestones',
+                        intro: '查看训练曲线、指标、数据报告与可复核的阶段产物。'
+                    }
+                ]
             }
         },
         {
@@ -107,6 +189,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 changelog: '记录从单路向量检索到分层召回、重排、证据校验与离线评测的迭代过程。',
                 github: '项目涉及企业内部知识与数据，源码仓库暂不公开。',
                 readme: '后续将提供不包含内部信息的架构说明、评测方法与公开 Demo。'
+            },
+            resources: {
+                first: {
+                    heading: '01 · 作品介绍',
+                    title: '在线阅读项目与架构说明',
+                    href: '/prd-agent-overview.txt',
+                    intro: '直接阅读产品目标、核心检索链路、回答边界、评测方法与公开范围。'
+                },
+                second: {
+                    heading: '02 · 建设路线',
+                    title: '在线阅读脱敏 Roadmap',
+                    href: '/prd-agent-public-roadmap.txt',
+                    intro: '查看评测集、知识治理、分层 Hybrid RAG、证据控制与运行监控的实施顺序。'
+                },
+                codeHeading: '03 · 公开阅读入口',
+                code: [
+                    {
+                        title: '产品说明',
+                        href: '/prd-agent-overview.txt',
+                        intro: '阅读不包含企业内部文档、业务数据和账号信息的公开项目说明。'
+                    },
+                    {
+                        title: '公开 Roadmap',
+                        href: '/prd-agent-public-roadmap.txt',
+                        intro: '阅读可公开的阶段目标、交付物与验收方法；私有源码暂不对外展示。'
+                    }
+                ]
             }
         },
         {
@@ -551,14 +660,18 @@ document.addEventListener('DOMContentLoaded', function() {
             github: '源码仓库正在整理中，公开后会在这里提供完整项目。',
             readme: 'README 正在整理中，将补充玩法说明、运行方式和开发记录。'
         };
-        const resourceCard=(title,href,intro,directDownload=false)=>`<div class="doc-card"><strong>${href?`<a href="${href}"${directDownload?' download':''}${directDownload?'':' target="_blank" rel="noopener"'}>${title}${directDownload?' ↓':' ↗'}</a>`:title}</strong><p>${intro}</p></div>`;
+        const resourceCard = (title, href, intro, directDownload = false) => {
+            if (!href) return '';
+            const linkAttrs = directDownload ? ' download' : ' target="_blank" rel="noopener"';
+            return `<a class="doc-card doc-card-link" href="${href}"${linkAttrs}><strong>${title}<span aria-hidden="true">${directDownload ? ' ↓' : ' ↗'}</span></strong><p>${intro}</p></a>`;
+        };
         if (app.resources) {
             modalPrdHeading.textContent = app.resources.first.heading;
             modalChangelogHeading.textContent = app.resources.second.heading;
             modalCodeHeading.textContent = app.resources.codeHeading;
-            modalPrdResource.innerHTML = resourceCard(app.resources.first.title, app.resources.first.href, app.resources.first.intro);
-            modalChangelogResource.innerHTML = resourceCard(app.resources.second.title, app.resources.second.href, app.resources.second.intro);
-            modalCodeResources.innerHTML = app.resources.code.map(item => resourceCard(item.title, item.href, item.intro)).join('');
+            modalPrdResource.innerHTML = resourceCard(app.resources.first.title, app.resources.first.href, app.resources.first.intro, app.resources.first.download);
+            modalChangelogResource.innerHTML = resourceCard(app.resources.second.title, app.resources.second.href, app.resources.second.intro, app.resources.second.download);
+            modalCodeResources.innerHTML = app.resources.code.map(item => resourceCard(item.title, item.href, item.intro, item.download)).join('');
         } else {
             const resourceCopy = { ...defaultResourceCopy, ...(app.resourceCopy || {}) };
             modalPrdHeading.textContent = '01 · PRD';
