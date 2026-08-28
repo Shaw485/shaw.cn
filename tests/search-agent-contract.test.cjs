@@ -182,6 +182,64 @@ const validAnalysis = () => {
                 fusion_weights: AGGRESSIVE
             }
         ],
+        agent_run: {
+            schema_version: 'retrieval-agent-run-summary-v1',
+            trace_id: '0123456789abcdef0123456789abcdef',
+            runtime_id: 'search-agent-runtime-v1',
+            planner_id: 'stage-aware-retrieval-planner-v1',
+            state: 'completed',
+            outcome: 'proposal_ready',
+            reason_code: 'conservative_candidate_selected',
+            steps_used: 5,
+            tool_calls_used: 4,
+            replay_supported: true,
+            actions: [
+                {
+                    sequence: 1,
+                    tool_name: 'diagnose_baseline_retrieval',
+                    reason_code: 'diagnose_retrieval_baseline',
+                    status: 'succeeded',
+                    evidence_ref: `run:${baselineRunId}`,
+                    pipeline_variant: null,
+                    gate_passed: null,
+                    failed_gates: [],
+                    retryable: false
+                },
+                {
+                    sequence: 2,
+                    tool_name: 'run_retrieval_candidate',
+                    reason_code: 'test_uniform_multifield_fusion',
+                    status: 'succeeded',
+                    evidence_ref: 'comparison:retrieval-comparison-111111111111',
+                    pipeline_variant: 'title-exact-multifield-v1',
+                    gate_passed: false,
+                    failed_gates: ['fusion_mrr_at_10_floor'],
+                    retryable: false
+                },
+                {
+                    sequence: 3,
+                    tool_name: 'run_retrieval_candidate',
+                    reason_code: 'test_conservative_multifield_fusion',
+                    status: 'succeeded',
+                    evidence_ref: `comparison:${comparisonId}`,
+                    pipeline_variant: 'title-exact-multifield-weighted-v1',
+                    gate_passed: true,
+                    failed_gates: [],
+                    retryable: false
+                },
+                {
+                    sequence: 4,
+                    tool_name: 'run_retrieval_candidate',
+                    reason_code: 'probe_aggressive_multifield_fusion',
+                    status: 'succeeded',
+                    evidence_ref: 'comparison:retrieval-comparison-333333333333',
+                    pipeline_variant: 'title-exact-multifield-weighted-aggressive-v1',
+                    gate_passed: false,
+                    failed_gates: ['fusion_regressed_query_rate_ceiling'],
+                    retryable: false
+                }
+            ]
+        },
         status: 'proposal_ready',
         proposal: {
             decision: 'request_owner_review',
@@ -231,6 +289,12 @@ test('accepts a complete stage-analysis response and preserves the validated obj
 });
 
 test('rejects 200 responses with missing, NaN, or arithmetically inconsistent evidence', async (t) => {
+    await t.test('missing required runtime trace', async () => {
+        const analysis = validAnalysis();
+        delete analysis.agent_run;
+        await expectContractFailure(analysis);
+    });
+
     await t.test('missing required metric', async () => {
         const analysis = validAnalysis();
         delete analysis.comparison.aggregate_deltas.fusion['mrr@10'];
@@ -333,4 +397,101 @@ test('validates every experiment, including an unselected candidate', async () =
     analysis.experiments[1].fusion_ndcg_at_10_delta = Number.NaN;
 
     await expectContractFailure(analysis);
+});
+
+test('strictly validates and cross-links the Agent runtime trace', async (t) => {
+    await t.test('trace identifiers are lowercase fixed-width hex', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.trace_id = 'ABCDEF0123456789ABCDEF0123456789';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('runtime object rejects undeclared fields', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.secret_debug_payload = 'must not be accepted';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('action object rejects undeclared fields', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[0].query_text = 'must not be accepted';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('steps and tool-call counts match the action list', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.steps_used = analysis.agent_run.tool_calls_used;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('action sequences are positive and contiguous', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[2].sequence = 4;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('baseline diagnosis evidence points to the baseline Run', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[0].evidence_ref = `run:${analysis.candidate_run_id}`;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('candidate evidence points to its exact Comparison', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[1].evidence_ref = `comparison:${analysis.comparison_id}`;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('candidate gate decision matches its experiment', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[1].gate_passed = true;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('candidate failed gates match their experiment in order', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[1].failed_gates = ['fusion_ndcg_at_10_floor'];
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('every experiment has exactly one candidate action', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[3].pipeline_variant = 'title-exact-multifield-v1';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('a successful 200 analysis has a completed matching terminal outcome', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.outcome = 'inconclusive';
+        analysis.agent_run.state = 'failed';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('a completed trace may expose one retryable failure followed by the exact retry', async () => {
+        const analysis = validAnalysis();
+        const failedAttempt = {
+            ...analysis.agent_run.actions[1],
+            status: 'failed',
+            evidence_ref: null,
+            gate_passed: null,
+            failed_gates: [],
+            retryable: true
+        };
+        analysis.agent_run.actions.splice(1, 0, failedAttempt);
+        analysis.agent_run.actions.forEach((action, index) => { action.sequence = index + 1; });
+        analysis.agent_run.tool_calls_used = 5;
+        analysis.agent_run.steps_used = 6;
+
+        assert.equal(validateAnalysis(analysis), analysis);
+    });
+
+    await t.test('a failed action must be immediately followed by the same successful retry', async () => {
+        const analysis = validAnalysis();
+        analysis.agent_run.actions[1].status = 'failed';
+        analysis.agent_run.actions[1].evidence_ref = null;
+        analysis.agent_run.actions[1].gate_passed = null;
+        analysis.agent_run.actions[1].failed_gates = [];
+        analysis.agent_run.actions[1].retryable = true;
+        await expectContractFailure(analysis);
+    });
 });

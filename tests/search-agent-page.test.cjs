@@ -75,6 +75,41 @@ test('Agent button runs stage diagnosis before choosing a strategy experiment', 
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
+test('Agent workbench renders a read-only, accessible runtime trace', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const contract = read('js/search-agent-contract.js');
+    const styles = read('css/search-agent.css');
+    const docs = read('docs/SEARCH_STRATEGY_DEBUG.md');
+    for (const id of [
+        'agentRuntimeTitle',
+        'agentRuntimeState',
+        'agentRuntimeTraceId',
+        'agentRuntimeIdentity',
+        'agentRuntimeCounts',
+        'agentRuntimeReplay',
+        'agentRuntimeTimeline'
+    ]) {
+        assert.match(page, new RegExp(`id="${id}"`));
+    }
+    assert.match(page, /这里是只读轨迹，不执行策略审批/);
+    assert.match(page, /class="agent-runtime-timeline"[^>]*aria-label="Agent 按执行顺序排列的动作"/);
+    assert.match(page, /id="agentRuntimeState" aria-live="polite"/);
+    assert.match(contract, /retrieval-agent-run-summary-v1/);
+    assert.match(contract, /run:\$\{analysis\.retrieval_run_id\}/);
+    assert.match(contract, /comparison:\$\{experiment\.comparison_id\}/);
+    assert.match(contract, /agentRun\.steps_used !== actions\.length \+ 1/);
+    assert.match(script, /renderAgentRuntimeTrace/);
+    assert.match(script, /runtime_trace_rendered/);
+    assert.match(script, /上一轮轨迹已清除/);
+    assert.match(script, /兼容接口没有 Agent Runtime Trace/);
+    assert.match(styles, /\.agent-runtime-timeline/);
+    assert.match(styles, /\.agent-replay-badge\.is-ready/);
+    assert.match(docs, /agent-runtime-ui/);
+    assert.doesNotMatch(page, /批准提案|拒绝提案/);
+    assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
+});
+
 test('strategy scope and approval authority are described accurately', () => {
     const agentPage = read('search-agent.html');
     const strategyPage = read('search-strategy.html');
@@ -157,6 +192,7 @@ test('large dynamic panels are not duplicated as live announcements', () => {
         'agentDiagnosisSummary',
         'agentExperimentTable',
         'agentGateChecks',
+        'agentRuntimeTimeline',
         'queryComparisonList'
     ]) {
         assert.doesNotMatch(page, new RegExp(`id="${id}"[^>]*aria-live=`));
@@ -197,6 +233,12 @@ test('Agent script can request proposals but cannot approve decisions', () => {
     assert.doesNotMatch(script, /decision:\s*['"](?:approve|reject)['"]/);
 });
 
+test('local Agent QA keeps the page hostname when selecting the API origin', () => {
+    const script = read('js/search-agent.js');
+    assert.match(script, /window\.location\.hostname}:8000/);
+    assert.doesNotMatch(script, /isLocal \? 'http:\/\/127\.0\.0\.1:8000'/);
+});
+
 test('Agent workbench renders ten side-by-side query result comparisons', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
@@ -220,6 +262,18 @@ test('comparison diagnostics log counts but not query or result content', () => 
     assert.match(script, /comparisonCount:\s*rows\.length/);
     assert.match(script, /outcomeCounts/);
     assert.doesNotMatch(script, /debug\('query_comparisons_rendered',[\s\S]{0,180}query_text/);
+});
+
+test('runtime diagnostics are independently filtered and log IDs and counts only', () => {
+    const script = read('js/search-agent.js');
+    assert.match(script, /modules\.has\('agent-runtime-ui'\)/);
+    assert.match(script, /\[search-console:agent-runtime-ui\]/);
+    const runtimeLog = script.match(/runtimeDebug\('runtime_trace_rendered', \{([\s\S]*?)\n\s*\}\);/);
+    assert.ok(runtimeLog);
+    for (const key of ['traceId', 'runtimeId', 'plannerId', 'actionCount', 'toolCallCount', 'failedActionCount']) {
+        assert.match(runtimeLog[1], new RegExp(`${key}:`));
+    }
+    assert.doesNotMatch(runtimeLog[1], /query|product|response|credential|authorization|evidence|reason/i);
 });
 
 test('risk card uses regression evidence and supports engineering terminal state', () => {

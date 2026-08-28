@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const isLocal = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
-    const apiRoot = isLocal ? 'http://127.0.0.1:8000' : '/search-eval-api';
+    const apiRoot = isLocal
+        ? `${window.location.protocol}//${window.location.hostname}:8000`
+        : '/search-eval-api';
     const startButton = document.getElementById('agentStartAnalysis');
     const decisionState = document.getElementById('agentDecisionState');
     const strategyName = document.getElementById('agentStrategyName');
@@ -16,6 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pipelineStageGrid = document.getElementById('pipelineStageGrid');
     const pipelineDecisionSummary = document.getElementById('pipelineDecisionSummary');
     const pipelineEvidenceStrip = document.getElementById('pipelineEvidenceStrip');
+    const agentRuntimeState = document.getElementById('agentRuntimeState');
+    const agentRuntimeTraceId = document.getElementById('agentRuntimeTraceId');
+    const agentRuntimeIdentity = document.getElementById('agentRuntimeIdentity');
+    const agentRuntimeCounts = document.getElementById('agentRuntimeCounts');
+    const agentRuntimeReplay = document.getElementById('agentRuntimeReplay');
+    const agentRuntimeTimeline = document.getElementById('agentRuntimeTimeline');
     const agentContract = window.SearchAgentContract;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -34,6 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const modules = enabledDebugModules();
         if (modules.size && !modules.has('agent-ui')) return;
         console.debug('[search-console:agent-ui]', {
+            timestamp: new Date().toISOString(),
+            event,
+            ...context
+        });
+    };
+
+    const runtimeDebug = (event, context = {}) => {
+        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
+        const modules = enabledDebugModules();
+        if (modules.size && !modules.has('agent-runtime-ui')) return;
+        console.debug('[search-console:agent-runtime-ui]', {
             timestamp: new Date().toISOString(),
             event,
             ...context
@@ -487,6 +506,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     };
 
+    const runtimeVariantLabels = {
+        'title-exact-multifield-v1': '均匀 RRF · 1 / 1 / 1',
+        'title-exact-multifield-weighted-v1': '保守 RRF · 1 / 1 / 0.1',
+        'title-exact-multifield-weighted-aggressive-v1': '激进 RRF · 1 / 0.5 / 0.25'
+    };
+
+    const runtimeReasonLabels = {
+        establish_baseline_evidence: '先运行基线并定位相关商品第一次被丢失的阶段，为后续实验建立可复现证据。',
+        baseline_retrieval_diagnosis: '先检查基线召回、融合和粗排 lineage，确认问题发生在哪一层。',
+        diagnose_retrieval_baseline: '先检查基线召回、融合和粗排 lineage，确认问题发生在哪一层。',
+        test_uniform_fusion: '基线暴露召回覆盖缺口，先用均匀权重测试新增通道是否能直接带来安全提升。',
+        test_uniform_candidate: '基线暴露召回覆盖缺口，先用均匀权重测试新增通道是否能直接带来安全提升。',
+        test_uniform_multifield_fusion: '基线暴露召回覆盖缺口，先用均匀权重测试新增通道是否能直接带来安全提升。',
+        reduce_noisy_channel_weight: '前一候选出现排序退化，因此降低多字段通道权重，保留新增覆盖并控制噪声。',
+        test_conservative_candidate: '均匀融合未守住质量门禁，因此降低新通道权重并运行保守消融。',
+        test_conservative_multifield_fusion: '均匀融合未守住质量门禁，因此降低新通道权重并运行保守消融。',
+        probe_aggressive_fusion: '为验证安全权重边界，再提高新通道影响，检查局部 Query 是否退化。',
+        test_aggressive_candidate: '为验证安全权重边界，再提高新通道影响，检查局部 Query 是否退化。',
+        probe_aggressive_multifield_fusion: '为验证安全权重边界，再提高新通道影响，检查局部 Query 是否退化。'
+    };
+
+    const explainRuntimeAction = (action) => {
+        if (runtimeReasonLabels[action.reason_code]) return runtimeReasonLabels[action.reason_code];
+        if (action.tool_name === 'diagnose_baseline_retrieval') {
+            return `先建立基线阶段证据，再决定是否值得运行候选实验（${action.reason_code.replaceAll('_', ' ')}）。`;
+        }
+        if (action.pipeline_variant === 'title-exact-multifield-v1') {
+            return `基于上一轮阶段证据，测试新召回通道的均匀融合效果（${action.reason_code.replaceAll('_', ' ')}）。`;
+        }
+        if (action.pipeline_variant === 'title-exact-multifield-weighted-v1') {
+            return `根据前一候选的门禁结果，测试更保守的新通道权重（${action.reason_code.replaceAll('_', ' ')}）。`;
+        }
+        return `继续探测融合权重边界并检查局部退化风险（${action.reason_code.replaceAll('_', ' ')}）。`;
+    };
+
+    const setRuntimeState = (label, className = '') => {
+        agentRuntimeState.classList.remove('is-running', 'is-pass', 'is-fail');
+        agentRuntimeState.textContent = label;
+        if (className) agentRuntimeState.classList.add(className);
+    };
+
+    const clearRuntimeTrace = ({ label, className = '', counts = '— 个步骤 · — 次工具调用', message }) => {
+        setRuntimeState(label, className);
+        agentRuntimeTraceId.textContent = '—';
+        agentRuntimeIdentity.textContent = 'search-agent-runtime-v1';
+        agentRuntimeCounts.textContent = counts;
+        agentRuntimeReplay.classList.remove('is-ready');
+        agentRuntimeReplay.textContent = '无可回放轨迹';
+        agentRuntimeTimeline.innerHTML = `<li class="is-empty"><p>${escapeHtml(message)}</p></li>`;
+    };
+
+    const renderRuntimeLoading = () => {
+        clearRuntimeTrace({
+            label: '运行中',
+            className: 'is-running',
+            counts: '计算中 · 等待工具调用',
+            message: '正在等待第一条可验证的 Agent 动作；上一轮轨迹已清除。'
+        });
+        agentRuntimeReplay.textContent = '等待轨迹';
+    };
+
+    const renderAgentRuntimeTrace = (agentRun) => {
+        const outcomeLabel = agentRun.outcome === 'proposal_ready' ? '已完成 · 生成提案' : '已完成 · 无安全改进';
+        setRuntimeState(outcomeLabel, 'is-pass');
+        agentRuntimeTraceId.textContent = agentRun.trace_id;
+        agentRuntimeIdentity.textContent = `${agentRun.runtime_id} · ${agentRun.planner_id}`;
+        agentRuntimeCounts.textContent = `${agentRun.steps_used} 个步骤 · ${agentRun.tool_calls_used} 次工具调用`;
+        agentRuntimeReplay.classList.add('is-ready');
+        agentRuntimeReplay.textContent = '可确定性回放';
+        agentRuntimeTimeline.innerHTML = agentRun.actions.map((action) => {
+            const isBaseline = action.tool_name === 'diagnose_baseline_retrieval';
+            const toolFailed = action.status === 'failed';
+            const passed = action.gate_passed === true;
+            const gateLabel = toolFailed
+                ? '工具失败 · 已按预算重试'
+                : isBaseline
+                ? '阶段证据已生成'
+                : passed
+                    ? '12 项门禁通过'
+                    : `${action.failed_gates.length} 项门禁拦截`;
+            const actionTitle = isBaseline
+                ? '诊断基线召回链路'
+                : runtimeVariantLabels[action.pipeline_variant];
+            const actionType = isBaseline ? 'Baseline diagnosis' : 'Candidate experiment';
+            return `<li class="${action.status === 'succeeded' ? 'is-pass' : 'is-fail'}">
+                <span class="agent-runtime-index" aria-hidden="true">${String(action.sequence).padStart(2, '0')}</span>
+                <article class="agent-runtime-action">
+                    <header><div><small>${escapeHtml(actionType)} · ${escapeHtml(action.reason_code)}</small><strong>${escapeHtml(actionTitle)}</strong></div><span class="agent-runtime-status">${action.status === 'succeeded' ? '执行成功' : '执行失败'}</span></header>
+                    <p><b>为什么运行：</b>${escapeHtml(explainRuntimeAction(action))}</p>
+                    <footer><code>${escapeHtml(action.evidence_ref || '无证据 · 工具未完成')}</code><span class="agent-runtime-gate ${toolFailed || (!isBaseline && !passed) ? 'is-fail' : ''}">${escapeHtml(gateLabel)}</span></footer>
+                </article>
+            </li>`;
+        }).join('');
+        runtimeDebug('runtime_trace_rendered', {
+            traceId: agentRun.trace_id,
+            runtimeId: agentRun.runtime_id,
+            plannerId: agentRun.planner_id,
+            actionCount: agentRun.actions.length,
+            toolCallCount: agentRun.tool_calls_used,
+            failedActionCount: agentRun.actions.filter((action) => action.status === 'failed').length
+        });
+    };
+
     const renderRetrievalAnalysis = (analysis) => {
         const comparison = analysis?.comparison || {};
         const aggregate = comparison.aggregate_deltas || {};
@@ -503,6 +625,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedWeights = comparison.candidate_strategy?.fusion_weights || {};
         const experiments = Array.isArray(analysis.experiments) ? analysis.experiments : [];
         const passed = gateResult.passed === true;
+
+        renderAgentRuntimeTrace(analysis.agent_run);
 
         pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
         pipelineDiagnosisState.classList.add(passed ? 'is-pass' : 'is-fail');
@@ -568,6 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderLoading = () => {
+        renderRuntimeLoading();
         strategyName.textContent = 'Agent 正在找 Bad Case';
         setState('分析中', 'is-running');
         proposalGrid.innerHTML = `
@@ -591,6 +716,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderError = (message) => {
+        clearRuntimeTrace({
+            label: '轨迹不可用',
+            className: 'is-fail',
+            message: '分析没有完成，本轮未保留任何可展示或回放的运行轨迹。'
+        });
         strategyName.textContent = 'Agent 分析失败';
         setState('分析失败', 'is-error');
         proposalGrid.innerHTML = `<div class="proposal-full"><span>错误</span><strong>${escapeHtml(message)}</strong><p>本轮没有产生可审阅的 proposal，请按提示重试。</p></div>`;
@@ -612,6 +742,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderLegacyProposal = (proposal) => {
         renderProposal(proposal);
+        clearRuntimeTrace({
+            label: '旧接口未提供',
+            message: '兼容接口没有 Agent Runtime Trace；页面不会用推测步骤替代真实轨迹。'
+        });
         pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
         pipelineDiagnosisState.textContent = '兼容模式';
         pipelineStageGrid.innerHTML = '<article class="is-warn"><span>01 · Recall</span><strong>旧后端未提供</strong><p>本轮只显示旧版候选集排序分析。</p></article><article class="is-warn"><span>02 · Fusion</span><strong>旧后端未提供</strong><p>没有阶段融合证据。</p></article><article class="is-warn"><span>03 · Coarse rank</span><strong>旧后端未提供</strong><p>没有独立粗排证据。</p></article><article class="is-warn"><span>04 · Fine rank</span><strong>未实现</strong><p>没有证据时不会归因到这一层。</p></article>';

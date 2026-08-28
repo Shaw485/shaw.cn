@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260828-stage-v2">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260829-runtime-trace-v2">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -124,6 +124,26 @@
             </div>
         </section>
 
+        <section class="agent-runtime-section" aria-labelledby="agentRuntimeTitle">
+            <header class="agent-runtime-heading">
+                <div>
+                    <span>Agent Runtime Trace</span>
+                    <h2 id="agentRuntimeTitle">Agent 实际执行了什么</h2>
+                    <p>按真实执行顺序展示每次诊断与候选实验、触发原因和证据对象；这里是只读轨迹，不执行策略审批。</p>
+                </div>
+                <strong id="agentRuntimeState" aria-live="polite">等待运行</strong>
+            </header>
+            <dl class="agent-runtime-meta" aria-label="Agent 运行摘要">
+                <div><dt>Trace ID</dt><dd><code id="agentRuntimeTraceId">—</code></dd></div>
+                <div><dt>Runtime</dt><dd id="agentRuntimeIdentity">search-agent-runtime-v1</dd></div>
+                <div><dt>执行预算</dt><dd id="agentRuntimeCounts">— 个步骤 · — 次工具调用</dd></div>
+                <div><dt>Replay</dt><dd><span class="agent-replay-badge" id="agentRuntimeReplay">等待证据</span></dd></div>
+            </dl>
+            <ol class="agent-runtime-timeline" id="agentRuntimeTimeline" aria-label="Agent 按执行顺序排列的动作">
+                <li class="is-empty"><p>开始分析后，这里会显示由上一条证据触发的每一步动作。</p></li>
+            </ol>
+        </section>
+
         <section class="agent-reasoning-section" aria-labelledby="agentReasoningTitle">
             <header class="agent-reasoning-heading">
                 <div>
@@ -172,7 +192,7 @@
         </section>
     </main>
 
-    <script src="js/search-agent-contract.js?v=20260828-stage-v2"></script>
-    <script src="js/search-agent.js?v=20260828-stage-v2"></script>
+    <script src="js/search-agent-contract.js?v=20260829-runtime-trace-v2"></script>
+    <script src="js/search-agent.js?v=20260829-runtime-trace-v2"></script>
 </body>
 </html>

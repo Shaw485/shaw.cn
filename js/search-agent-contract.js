@@ -8,6 +8,32 @@
     const RUN_ID = /^retrieval-[0-9a-f]{12}$/;
     const COMPARISON_ID = /^retrieval-comparison-[0-9a-f]{12}$/;
     const DIAGNOSIS_ID = /^stage-diagnosis-[0-9a-f]{12}$/;
+    const TRACE_ID = /^[0-9a-f]{32}$/;
+    const SAFE_REASON_CODE = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/;
+    const AGENT_RUN_KEYS = [
+        'actions',
+        'outcome',
+        'planner_id',
+        'reason_code',
+        'replay_supported',
+        'runtime_id',
+        'schema_version',
+        'state',
+        'steps_used',
+        'tool_calls_used',
+        'trace_id'
+    ];
+    const AGENT_ACTION_KEYS = [
+        'evidence_ref',
+        'failed_gates',
+        'gate_passed',
+        'pipeline_variant',
+        'reason_code',
+        'retryable',
+        'sequence',
+        'status',
+        'tool_name'
+    ];
     const REQUIRED_GATES = new Set([
         'unique_relevant_contribution',
         'union_coverage_improvement',
@@ -78,6 +104,15 @@
         return number;
     };
     const identifier = (value, pattern) => pattern.test(text(value)) ? value : fail();
+    const exactKeys = (value, expectedKeys) => {
+        const keys = Object.keys(object(value)).sort();
+        if (keys.length !== expectedKeys.length || keys.some((key, index) => key !== expectedKeys[index])) fail();
+        return value;
+    };
+
+    const sameStrings = (left, right) => (
+        left.length === right.length && left.every((value, index) => value === right[index])
+    );
 
     const validateDelta = (value) => {
         const item = object(value);
@@ -140,6 +175,75 @@
             if (!['relevant_item_micro_rate', 'mean_query_metric_delta'].includes(finding.impact_aggregation)) fail();
         }
         return diagnosis;
+    };
+
+    const validateAgentRun = (value, analysis, experiments) => {
+        const agentRun = exactKeys(value, AGENT_RUN_KEYS);
+        if (agentRun.schema_version !== 'retrieval-agent-run-summary-v1') fail();
+        identifier(agentRun.trace_id, TRACE_ID);
+        if (agentRun.runtime_id !== 'search-agent-runtime-v1') fail();
+        if (agentRun.planner_id !== 'stage-aware-retrieval-planner-v1') fail();
+        if (!['completed', 'failed'].includes(agentRun.state)) fail();
+        if (!['proposal_ready', 'no_safe_improvement', 'inconclusive'].includes(agentRun.outcome)) fail();
+        identifier(agentRun.reason_code, SAFE_REASON_CODE);
+        if (!Number.isInteger(agentRun.steps_used) || agentRun.steps_used < 1) fail();
+        if (!Number.isInteger(agentRun.tool_calls_used) || agentRun.tool_calls_used < 0) fail();
+        if (agentRun.replay_supported !== true) fail();
+
+        const actions = array(agentRun.actions);
+        if (agentRun.tool_calls_used !== actions.length || agentRun.steps_used !== actions.length + 1) fail();
+        if (agentRun.state !== 'completed' || agentRun.outcome !== analysis.status) fail();
+        if (!actions.length) fail();
+
+        const experimentByVariant = new Map(experiments.map((experiment) => [experiment.pipeline_variant, experiment]));
+        const observedVariants = new Set();
+        let baselineSucceeded = false;
+        let successfulExperimentCount = 0;
+        actions.forEach((actionValue, index) => {
+            const action = exactKeys(actionValue, AGENT_ACTION_KEYS);
+            if (action.sequence !== index + 1) fail();
+            if (!['diagnose_baseline_retrieval', 'run_retrieval_candidate'].includes(action.tool_name)) fail();
+            identifier(action.reason_code, SAFE_REASON_CODE);
+            if (!['succeeded', 'failed'].includes(action.status)) fail();
+            if (action.evidence_ref !== null) text(action.evidence_ref);
+            if (action.pipeline_variant !== null && !EXPECTED_VARIANTS.has(action.pipeline_variant)) fail();
+            if (action.gate_passed !== null && typeof action.gate_passed !== 'boolean') fail();
+            const failedGates = array(action.failed_gates);
+            const failedGateNames = new Set();
+            failedGates.forEach((nameValue) => {
+                const name = text(nameValue);
+                if (!REQUIRED_GATES.has(name) || failedGateNames.has(name)) fail();
+                failedGateNames.add(name);
+            });
+            if (typeof action.retryable !== 'boolean') fail();
+
+            if (action.status === 'failed') {
+                if (!action.retryable || action.evidence_ref !== null || action.gate_passed !== null || failedGates.length) fail();
+                const retry = index + 1 < actions.length ? object(actions[index + 1]) : fail();
+                if (retry.status !== 'succeeded' || retry.tool_name !== action.tool_name || retry.pipeline_variant !== action.pipeline_variant || retry.reason_code !== action.reason_code) fail();
+                return;
+            }
+            if (action.retryable) fail();
+
+            if (action.tool_name === 'diagnose_baseline_retrieval') {
+                if (baselineSucceeded || successfulExperimentCount > 0) fail();
+                if (action.evidence_ref !== `run:${analysis.retrieval_run_id}`) fail();
+                if (action.pipeline_variant !== null || action.gate_passed !== null || failedGates.length) fail();
+                baselineSucceeded = true;
+                return;
+            }
+
+            if (!baselineSucceeded || action.tool_name !== 'run_retrieval_candidate' || action.pipeline_variant === null) fail();
+            const experiment = experimentByVariant.get(action.pipeline_variant);
+            if (!experiment || observedVariants.has(action.pipeline_variant)) fail();
+            observedVariants.add(action.pipeline_variant);
+            successfulExperimentCount += 1;
+            if (action.evidence_ref !== `comparison:${experiment.comparison_id}`) fail();
+            if (action.gate_passed !== experiment.gate_passed) fail();
+            if (!sameStrings(failedGates, experiment.failed_gates)) fail();
+        });
+        if (!baselineSucceeded || successfulExperimentCount !== experiments.length || observedVariants.size !== experiments.length) fail();
+        return agentRun;
     };
 
     const validateAnalysis = (value) => {
@@ -292,6 +396,7 @@
         text(proposal.candidate_strategy_id);
         text(proposal.next_action);
         text(proposal.reason);
+        validateAgentRun(analysis.agent_run, analysis, experiments);
         return analysis;
     };
 
