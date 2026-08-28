@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!strategies.length) {
             if (strategyCatalogState) {
                 strategyCatalogState.classList.remove('error');
-                strategyCatalogState.textContent = '暂无已批准策略。回到搜索体验页，在 Agent 工作台点击“开始 Agent 分析”，再选择“更新策略”。';
+                strategyCatalogState.textContent = '暂无已批准策略。可在搜索体验页运行 Agent 查看候选提案；批准由站长在服务器后台完成。';
             }
             if (approvedStrategyList) approvedStrategyList.innerHTML = '';
             return;
