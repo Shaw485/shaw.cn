@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryConstructorBuildButton = document.getElementById('queryConstructorBuildButton');
     const queryConstructorStatus = document.getElementById('queryConstructorStatus');
     const queryConstructorResult = document.getElementById('queryConstructorResult');
+    const badCaseRunButton = document.getElementById('badCaseRunButton');
+    const badCaseStatus = document.getElementById('badCaseStatus');
+    const badCaseResult = document.getElementById('badCaseResult');
     const agentContract = window.SearchAgentContract;
     const agentToolsContract = window.SearchAgentToolsContract;
 
@@ -68,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const toolUiLog = (module, event, context = {}, level = 'debug') => {
-        if (!['agent-eval-ui', 'query-constructor-ui'].includes(module)) return;
+        if (!['agent-eval-ui', 'query-constructor-ui', 'bad-case-ui'].includes(module)) return;
         if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
         const modules = enabledDebugModules();
         if (modules.size && !modules.has(module)) return;
@@ -631,22 +634,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const setToolStatus = (node, label, className = '') => {
-        node.classList.remove('is-running', 'is-pass', 'is-fail');
+        node.classList.remove('is-running', 'is-pass', 'is-fail', 'is-complete');
         node.textContent = label;
         if (className) node.classList.add(className);
     };
 
     const renderToolLoading = (statusNode, resultNode, message) => {
         setToolStatus(statusNode, '运行中', 'is-running');
+        resultNode.setAttribute('aria-busy', 'true');
         resultNode.innerHTML = `<p class="agent-tool-empty">${escapeHtml(message)}</p>`;
     };
 
     const renderToolError = (statusNode, resultNode, message) => {
         setToolStatus(statusNode, '运行失败', 'is-fail');
+        resultNode.removeAttribute('aria-busy');
         resultNode.innerHTML = `<p class="agent-tool-empty is-error">${escapeHtml(message)}</p>`;
     };
 
     const renderAgentEvalSummary = (summary) => {
+        agentEvalResult.removeAttribute('aria-busy');
         const metrics = summary.metrics;
         const production = summary.subject_summaries.find((item) => item.subject_kind === 'production_planner');
         const containment = summary.subject_summaries.find((item) => item.subject_kind === 'harness_stimulus');
@@ -681,6 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderQueryConstructorSummary = (summary) => {
+        queryConstructorResult.removeAttribute('aria-busy');
         setToolStatus(queryConstructorStatus, '构造完成', 'is-pass');
         const items = [
             ['Query 总数', summary.query_count],
@@ -700,10 +707,111 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="agent-tool-boundary"><b>边界：</b>来源固定为已提交的 20-Query smoke 视图；合成 Query 没有 ESCI 标签，只能用于发现 Bad Case，不能进入正式 nDCG / MRR。构造过程没有读取 500-Query dev 或 frozen test。</p>`;
     };
 
+    const badCaseCategoryLabels = {
+        zero_result: '零结果候选',
+        spelling_sensitive: '拼写敏感',
+        order_sensitive: '词序敏感',
+        ranking_instability_needs_judgment: '排序稳定性待判断'
+    };
+
+    const badCaseReasonLabels = {
+        identity_zero_result: '原始 Query 没有返回结果',
+        variant_zero_result: '变体 Query 没有返回结果',
+        variant_result_set_changed: 'Top 10 结果集合发生变化',
+        variant_ranking_changed: 'Top 10 商品顺序发生变化',
+        token_order_result_changed: '词序反转后结果发生变化，合理性需人工或标签判断'
+    };
+
+    const badCaseConstructionLabels = {
+        identity: '原始 Query',
+        adjacent_transposition: '相邻字母交换',
+        token_order_reversal: '词序反转'
+    };
+
+    const renderBadCaseHits = (hits) => hits.length
+        ? `<ol class="bad-case-hit-list">${hits.map((hit) => `<li>
+            <b>#${hit.rank}</b>
+            <div><strong dir="auto">${escapeHtml(hit.title)}</strong><code>${escapeHtml(hit.locale)} · ${escapeHtml(hit.product_id)}</code></div>
+        </li>`).join('')}</ol>`
+        : '<p class="bad-case-hit-empty">没有可展示的 Top 结果</p>';
+
+    const renderBadCaseSample = (sample) => `
+        <li>
+            <article class="bad-case-sample">
+                <header>
+                    <h5><span class="sr-only">诊断样本 </span><code>${escapeHtml(sample.case_id)}</code></h5>
+                    <div class="bad-case-tags">${sample.categories.map((category) =>
+                        `<span class="bad-case-tag">${escapeHtml(badCaseCategoryLabels[category])}</span>`
+                    ).join('')}</div>
+                </header>
+                <div class="bad-case-query-pair">
+                    <div><span>来源 Query</span><strong dir="auto">${escapeHtml(sample.source_query_text)}</strong></div>
+                    <div><span>${escapeHtml(badCaseConstructionLabels[sample.construction])}</span><strong dir="auto">${escapeHtml(sample.query_text)}</strong></div>
+                </div>
+                <div class="bad-case-hit-comparison">
+                    <section class="bad-case-hit-column" aria-label="来源 Query 的 Top 结果">
+                        <header><span>来源结果</span><strong>Top 10 返回 ${sample.source_returned_at_k}</strong></header>
+                        ${renderBadCaseHits(sample.source_top_hits)}
+                    </section>
+                    <section class="bad-case-hit-column" aria-label="当前 Query 的 Top 结果">
+                        <header><span>当前结果</span><strong>Top 10 返回 ${sample.variant_returned_at_k}</strong></header>
+                        ${renderBadCaseHits(sample.variant_top_hits)}
+                    </section>
+                </div>
+                <p class="bad-case-sample-note"><b>观察：</b>${escapeHtml(badCaseReasonLabels[sample.reason_code])}；两侧 Top 10 有 ${sample.overlap_at_k} 个商品重合。这里只标记需要判断的变化，不判断哪一侧更相关。</p>
+            </article>
+        </li>`;
+
+    const renderBadCaseSummary = (summary) => {
+        badCaseResult.removeAttribute('aria-busy');
+        setToolStatus(badCaseStatus, '诊断完成', 'is-complete');
+        const categories = [
+            ['zero_result', '零结果候选'],
+            ['spelling_sensitive', '拼写敏感'],
+            ['order_sensitive', '词序敏感'],
+            ['ranking_instability_needs_judgment', '排序稳定性待判断']
+        ];
+        const samples = summary.samples;
+        badCaseResult.innerHTML = `
+            <div class="bad-case-summary">
+                <div class="agent-tool-result-heading">
+                    <div><span>Development diagnostics</span><strong>${summary.diagnostic_candidate_count} 个候选需要判断</strong></div>
+                    <div class="bad-case-run-ids"><code>${escapeHtml(summary.execution_id)}</code><code>${escapeHtml(summary.diagnostic_id)}</code><code>${escapeHtml(summary.query_set_id)}</code><code>${escapeHtml(summary.index_id)}</code></div>
+                </div>
+                <div class="agent-tool-metrics">
+                    <div><span>运行 Query</span><strong>${summary.query_count}</strong></div>
+                    <div><span>搜索调用 / 失败</span><strong>${summary.search_call_count} / ${summary.operational_failure_count}</strong></div>
+                    <div><span>基线策略</span><strong>${escapeHtml(summary.search_strategy_id)}</strong></div>
+                    <div><span>原始 / 合成</span><strong>${summary.original_count} / ${summary.synthetic_count}</strong></div>
+                    <div><span>字母交换 / 词序反转</span><strong>${summary.construction_counts.adjacent_transposition} / ${summary.construction_counts.token_order_reversal}</strong></div>
+                    <div><span>诊断候选</span><strong>${summary.diagnostic_candidate_count}</strong></div>
+                    <div><span>结果窗口</span><strong>Top ${summary.top_k}</strong></div>
+                    <div><span>相关性标签</span><strong class="is-boundary">未使用</strong></div>
+                    <div><span>相关性指标</span><strong class="is-boundary">未计算</strong></div>
+                    <div><span>阶段丢失归因</span><strong class="is-boundary">未计算</strong></div>
+                    <div><span>受保护评测档案调度</span><strong class="is-pass">${summary.protected_profile_dispatch_count}</strong></div>
+                    <div><span>策略写入</span><strong class="is-pass">${summary.strategy_write_count}</strong></div>
+                </div>
+                <div class="bad-case-category-grid" aria-label="可重叠的诊断分类计数">${categories.map(([key, label]) => `
+                    <div><span>${escapeHtml(label)}</span><strong>${summary.category_counts[key]}</strong></div>`).join('')}
+                </div>
+                <div class="bad-case-samples-heading">
+                    <div><h4>代表样本</h4><p>展示 ${samples.length} / ${summary.diagnostic_candidate_count} 个诊断候选</p></div>
+                    <p>分类可能重叠，因此四类数量不能直接相加。</p>
+                </div>
+                ${samples.length
+                    ? `<ol class="bad-case-sample-list">${samples.map(renderBadCaseSample).join('')}</ol>`
+                    : `<p class="agent-tool-empty">${summary.diagnostic_candidate_count === 0
+                        ? '本轮没有发现符合固定规则的诊断候选。'
+                        : `本轮发现 ${summary.diagnostic_candidate_count} 个诊断候选，但没有返回可展示的代表样本。`}</p>`}
+                <p class="agent-tool-boundary"><b>边界：</b>这些是无标签开发诊断候选，不是已经确认的搜索 Bad Case，也不证明相关性提升。当前只观察单阶段全量商品 BM25 的零结果和稳定性，不能据此判断多路召回、融合、粗排或精排在哪一层丢失；正式结论仍需独立标签与 Search Harness。</p>
+            </div>`;
+    };
+
     const toolErrorMessage = (error, invalidCode, noun) => {
         if (error.status === 401) return '登录状态已失效，请刷新页面并重新输入凭据。';
         if (error.status === 403) return '当前登录身份没有运行该只读工具的权限。';
-        if (error.status === 409) return '已有一轮 Agent 自检正在运行，请稍后重试。';
+        if (error.status === 409) return `已有一轮${noun}正在运行，请稍后重试。`;
         if (error.code === invalidCode) return `${noun}摘要字段不完整或不一致，本轮结果已拒绝展示。`;
         return `${noun}服务暂时不可用，请稍后重试。`;
     };
@@ -777,6 +885,50 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             queryConstructorBuildButton.disabled = false;
             queryConstructorBuildButton.textContent = '重新构造 Query 集';
+        }
+    };
+
+    const runBadCaseDiagnostics = async () => {
+        renderToolLoading(badCaseStatus, badCaseResult, '正在全量商品基线中运行固定 59 条开发 Query；上一轮诊断摘要已清除。');
+        badCaseRunButton.disabled = true;
+        badCaseRunButton.textContent = '59 条诊断运行中…';
+        toolUiLog('bad-case-ui', 'bad_case_diagnostics_requested');
+        try {
+            if (!agentToolsContract?.fetchBadCaseDiagnostics) throw new Error('agent_tools_contract_unavailable');
+            const summary = await agentToolsContract.fetchBadCaseDiagnostics(
+                window.fetch.bind(window),
+                protectedToolApiRoot
+            );
+            renderBadCaseSummary(summary);
+            toolUiLog('bad-case-ui', 'bad_case_diagnostics_summary_rendered', {
+                diagnosticId: summary.diagnostic_id,
+                executionId: summary.execution_id,
+                querySetId: summary.query_set_id,
+                indexId: summary.index_id,
+                queryCount: summary.query_count,
+                searchCallCount: summary.search_call_count,
+                operationalFailureCount: summary.operational_failure_count,
+                diagnosticCandidateCount: summary.diagnostic_candidate_count,
+                displayedSampleCount: summary.samples.length,
+                zeroResultCount: summary.category_counts.zero_result,
+                spellingSensitiveCount: summary.category_counts.spelling_sensitive,
+                orderSensitiveCount: summary.category_counts.order_sensitive,
+                rankingInstabilityCount: summary.category_counts.ranking_instability_needs_judgment
+            });
+        } catch (error) {
+            const errorCode = error.code || 'network_error';
+            renderToolError(
+                badCaseStatus,
+                badCaseResult,
+                toolErrorMessage(error, 'invalid_bad_case_summary', 'Bad Case 诊断')
+            );
+            toolUiLog('bad-case-ui', 'bad_case_diagnostics_failed', {
+                errorCode,
+                statusCode: Number(error.status) || 0
+            }, 'warn');
+        } finally {
+            badCaseRunButton.disabled = false;
+            badCaseRunButton.textContent = '重新运行 59 条诊断 Query';
         }
     };
 
@@ -961,6 +1113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton?.addEventListener('click', requestProposal);
     agentEvalRunButton?.addEventListener('click', runAgentEval);
     queryConstructorBuildButton?.addEventListener('click', buildQuerySet);
+    badCaseRunButton?.addEventListener('click', runBadCaseDiagnostics);
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');

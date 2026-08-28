@@ -53,6 +53,8 @@ location.reload();
 
 控制台会记录 proposal 请求状态、诊断/候选数量、门禁状态、proposal ID 与安全错误码，不输出 Query、商品标题或后端证据正文。网页不发送审批请求；批准动作仅能在受控服务器后台执行，策略平台的读取流程可单独开启 `strategy-ui` 模块排查。
 
+59-Query 开发诊断可独立开启 `bad-case-ui` 模块。Owner 页面会展示后端严格限量的 Query 与 Top 商品样本，调试日志只记录执行/数据集/索引 ID、分类聚合数量和错误码，不记录任何 Query、商品 ID/标题、样本数组或响应正文。详细步骤见 `SEARCH_STRATEGY_DEBUG.md`。
+
 ```js
 localStorage.removeItem('shaw.debug.search-console');
 localStorage.removeItem('shaw.debug.search-console.modules');

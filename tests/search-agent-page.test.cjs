@@ -110,7 +110,7 @@ test('Agent workbench renders a read-only, accessible runtime trace', () => {
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
-test('Agent self-check and Query constructor are isolated read-only tools', () => {
+test('Agent self-check, Query constructor and Bad Case runner are isolated diagnostic tools', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
     const contract = read('js/search-agent-tools-contract.js');
@@ -123,20 +123,29 @@ test('Agent self-check and Query constructor are isolated read-only tools', () =
         'agentEvalResult',
         'queryConstructorBuildButton',
         'queryConstructorStatus',
-        'queryConstructorResult'
+        'queryConstructorResult',
+        'badCaseRunButton',
+        'badCaseStatus',
+        'badCaseResult'
     ]) {
         assert.match(page, new RegExp(`id="${id}"`));
     }
     assert.match(page, /Agent 自检与工具/);
-    assert.match(page, /两项操作都不会审批、激活或修改搜索策略/);
+    assert.match(page, /三项操作都不会审批、激活或修改搜索策略/);
     assert.match(page, /id="agentEvalStatus" aria-live="polite"/);
     assert.match(page, /id="queryConstructorStatus" aria-live="polite"/);
-    assert.doesNotMatch(page, /id="(?:agentEvalResult|queryConstructorResult)"[^>]*aria-live=/);
+    assert.match(page, /id="badCaseStatus" aria-live="polite"/);
+    assert.match(page, /id="agentEvalRunButton" aria-controls="agentEvalResult"/);
+    assert.match(page, /id="queryConstructorBuildButton" aria-controls="queryConstructorResult"/);
+    assert.match(page, /id="badCaseRunButton" aria-controls="badCaseResult"/);
+    assert.doesNotMatch(page, /id="(?:agentEvalResult|queryConstructorResult|badCaseResult)"[^>]*aria-live=/);
     assert.match(page, /js\/search-agent-tools-contract\.js/);
     assert.match(contract, /agent-eval-api-summary-v1/);
     assert.match(contract, /query-constructor-api-summary-v1/);
+    assert.match(contract, /bad-case-api-summary-v1/);
     assert.match(contract, /\/agent\/eval\/run/);
     assert.match(contract, /\/agent\/query-constructor\/build/);
+    assert.match(contract, /\/agent\/bad-cases\/run/);
     assert.match(contract, /credentials:\s*'same-origin'/);
     assert.match(script, /protectedToolApiRoot = isLocal \? apiRoot : '\/search-eval-api'/);
     assert.match(script, /renderAgentEvalSummary/);
@@ -145,12 +154,18 @@ test('Agent self-check and Query constructor are isolated read-only tools', () =
     assert.match(script, /受保护数据读取/);
     assert.match(contract, /harness_stimulus/);
     assert.match(script, /renderQueryConstructorSummary/);
+    assert.match(script, /renderBadCaseSummary/);
     assert.match(script, /上一轮成绩已清除/);
     assert.match(script, /上一轮摘要已清除/);
+    assert.match(script, /上一轮诊断摘要已清除/);
+    assert.match(script, /resultNode\.setAttribute\('aria-busy', 'true'\)/);
+    assert.match(script, /resultNode\.removeAttribute\('aria-busy'\)/);
     assert.match(styles, /\.agent-tools-grid/);
     assert.match(styles, /\.agent-tool-action button:focus-visible/);
+    assert.match(styles, /\.bad-case-hit-comparison/);
     assert.match(docs, /agent-eval-ui/);
     assert.match(docs, /query-constructor-ui/);
+    assert.match(docs, /bad-case-ui/);
     assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
 });
 
@@ -237,6 +252,7 @@ test('large dynamic panels are not duplicated as live announcements', () => {
         'agentExperimentTable',
         'agentGateChecks',
         'agentRuntimeTimeline',
+        'badCaseResult',
         'queryComparisonList'
     ]) {
         assert.doesNotMatch(page, new RegExp(`id="${id}"[^>]*aria-live=`));
@@ -337,6 +353,65 @@ test('self-check tool diagnostics are independently filtered and contain no raw 
     assert.match(queryLog[1], /querySetId:/);
     assert.match(queryLog[1], /queryCount:/);
     assert.doesNotMatch(`${evalLog[1]}\n${queryLog[1]}`, /query_text|product|response|credential|authorization|payload|tasks|limitations/i);
+});
+
+test('Bad Case diagnostics render understandable samples but log only IDs and counts', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const contract = read('js/search-agent-tools-contract.js');
+    const docs = read('docs/SEARCH_STRATEGY_DEBUG.md');
+    assert.match(page, /运行 59 条诊断 Query/);
+    assert.match(page, /开发诊断不等于正式搜索质量评测/);
+    assert.match(script, /来源 Query/);
+    assert.match(script, /当前结果/);
+    assert.match(script, /只标记需要判断的变化，不判断哪一侧更相关/);
+    assert.match(script, /词序反转后结果发生变化，合理性需人工或标签判断/);
+    assert.doesNotMatch(`${script}\n${contract}`, /order_invariance_violation|不应发生的结果变化/);
+    assert.match(script, /不能据此判断多路召回、融合、粗排或精排在哪一层丢失/);
+    assert.match(script, /escapeHtml\(sample\.query_text\)/);
+    assert.match(script, /escapeHtml\(sample\.source_query_text\)/);
+    assert.match(script, /escapeHtml\(hit\.title\)/);
+    assert.match(script, /escapeHtml\(hit\.product_id\)/);
+    assert.match(script, /escapeHtml\(hit\.locale\)/);
+    assert.match(contract, /diagnostic_candidate_count/);
+    assert.match(contract, /relevance_labels_used/);
+    assert.match(contract, /quality_metrics_computed/);
+    assert.match(contract, /search_strategy_id/);
+    assert.match(contract, /search_call_count/);
+    assert.match(contract, /operational_failure_count/);
+    assert.match(contract, /stage_drop_diagnostics_computed/);
+    assert.match(contract, /protected_profile_dispatch_count/);
+    assert.match(contract, /single_stage_catalog_cannot_diagnose_stage_drop/);
+    assert.match(contract, /no_hard_worker_deadline_enforcement/);
+    assert.match(docs, /四类诊断信号可重叠，不能相加/);
+    assert.match(docs, /不会把样本写入 URL 或 `localStorage`/);
+
+    const runner = script.match(/const runBadCaseDiagnostics = async \(\) => \{([\s\S]*?)\n\s*\};\n\n\s*const renderRetrievalAnalysis/);
+    assert.ok(runner);
+    assert.doesNotMatch(runner[1], /localStorage|URLSearchParams|location\./);
+
+    const successLog = script.match(/toolUiLog\('bad-case-ui', 'bad_case_diagnostics_summary_rendered', \{([\s\S]*?)\n\s*\}\);/);
+    assert.ok(successLog);
+    for (const key of [
+        'diagnosticId',
+        'executionId',
+        'querySetId',
+        'indexId',
+        'queryCount',
+        'searchCallCount',
+        'operationalFailureCount',
+        'diagnosticCandidateCount',
+        'displayedSampleCount',
+        'zeroResultCount',
+        'spellingSensitiveCount',
+        'orderSensitiveCount',
+        'rankingInstabilityCount'
+    ]) assert.match(successLog[1], new RegExp(`${key}:`));
+    assert.doesNotMatch(
+        successLog[1],
+        /query_text|queryText|source_query|product|title|hit|response|credential|authorization|payload|sample:/i
+    );
+    assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
 });
 
 test('risk card uses regression evidence and supports engineering terminal state', () => {

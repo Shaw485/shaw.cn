@@ -15,7 +15,7 @@
 
 ```js
 localStorage.setItem('shaw.debug.search-console', '1');
-localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui,agent-ui,agent-runtime-ui,agent-eval-ui,query-constructor-ui');
+localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui,agent-ui,agent-runtime-ui,agent-eval-ui,query-constructor-ui,bad-case-ui');
 location.reload();
 ```
 
@@ -28,6 +28,7 @@ location.reload();
 - `agent-runtime-ui`：只读 Agent Runtime Trace 渲染状态。只记录 Trace/Runtime/Planner ID、动作数、工具调用数和失败动作数；不记录 Query、商品、完整响应、凭据或 Authorization。
 - `agent-eval-ui`：Agent Eval 只读成绩单请求与渲染。页面把生产 Planner 任务和 Harness stimulus 围栏任务分开展示，并显示受保护数据读取/策略写入计数；成功日志只记录 Evidence/Execution ID、任务数和工具调用数，失败日志只记录稳定错误码与 HTTP 状态。
 - `query-constructor-ui`：Query 构造器只读摘要请求与渲染。成功事件只记录 Query Set ID 和数量；不记录或渲染任何原始 Query。
+- `bad-case-ui`：59-Query 开发诊断请求与渲染。Owner 页面会展示后端严格限量的 Query 与 Top 商品样本，但不会把样本写入 URL 或 `localStorage`；控制台只记录 Diagnostic/Execution/Query Set/Index ID、聚合数量和稳定错误码，绝不记录 Query、商品 ID/标题、完整响应、凭据或 Authorization。
 
 关闭调试：
 
@@ -51,6 +52,7 @@ localStorage.removeItem('shaw.debug.search-console.modules');
 4. Runtime Trace：单独开启 `agent-runtime-ui`，重新运行分析并检查 `runtime_trace_rendered`。日志里的 `actionCount` 必须等于轨迹动作数，`toolCallCount` 必须等于后端工具调用数；如果工具出现一次可恢复错误，时间线会先显示“工具失败 · 已按预算重试”，下一步必须是同一工具和同一候选的成功重试，失败动作不会伪造 evidence ID。页面加载、HTTP/契约错误和旧接口回退都会先清掉上一轮 Trace，避免把旧证据误认成当前运行。Replay 徽标只表示后端声明可按相同固定输入与工具动作确定性重放，不代表页面会触发重放或审批。
 5. Agent Eval：单独开启 `agent-eval-ui` 并点击“运行 Agent 自检”，检查 `agent_eval_requested` 和 `agent_eval_summary_rendered`。接口或契约失败时检查 `agent_eval_failed` 的稳定错误码；不要把 Stage 5 Runtime 成绩解释成搜索质量成绩。
 6. Query 构造器：单独开启 `query-constructor-ui` 并点击“构造 Query 集”，检查 `query_constructor_requested` 和 `query_constructor_summary_rendered`。页面只显示 ID、原始/合成/去重计数和正式评测禁用状态；合成 Query 没有 ESCI 标签，不能进入 nDCG/MRR。
-7. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 的 `strategy_history` 与 `strategy_activity_logs` 数量；控制台不会打印配置正文、Query 或完整响应。
-8. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
-9. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。
+7. Bad Case 诊断：单独开启 `bad-case-ui` 并点击“运行 59 条诊断 Query”，检查 `bad_case_diagnostics_requested` 和 `bad_case_diagnostics_summary_rendered`。成功日志中的聚合数量应与页面一致，但不得出现 Query、商品 ID/标题或样本数组；失败只查看 `bad_case_diagnostics_failed` 的稳定错误码与 HTTP 状态。四类诊断信号可重叠，不能相加；无标签结果不能解释为相关性好坏，也不能推断多路召回、融合、粗排或精排的阶段丢失。
+8. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 的 `strategy_history` 与 `strategy_activity_logs` 数量；控制台不会打印配置正文、Query 或完整响应。
+9. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
+10. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。
