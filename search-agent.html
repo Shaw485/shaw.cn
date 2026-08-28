@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260828-optimizer-v4">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260828-stage-v2">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -49,7 +49,7 @@
             <header class="workbench-header">
                 <div>
                     <span class="workbench-kicker">受控分析流程</span>
-                    <h2 id="agentWorkbenchTitle">一次运行，一个可解释提案</h2>
+                    <h2 id="agentWorkbenchTitle">先诊断，再决定是否形成提案</h2>
                 </div>
                 <button class="workbench-start" type="button" id="agentStartAnalysis">开始 Agent 分析</button>
             </header>
@@ -63,7 +63,7 @@
                         </li>
                         <li>
                             <span>02</span>
-                            <div><strong>提出候选策略</strong><p>只在受控策略空间内尝试查询词覆盖、数字/型号与完整短语增益。</p></div>
+                            <div><strong>运行候选实验</strong><p>先增加多字段召回，再自动比较均匀、保守和激进三组 RRF 融合方式。</p></div>
                         </li>
                         <li>
                             <span>03</span>
@@ -71,7 +71,7 @@
                         </li>
                         <li>
                             <span>04</span>
-                            <div><strong>等待站长审批</strong><p>工作台只生成提案与证据，不会自动修改线上搜索策略。</p></div>
+                            <div><strong>通过后才请求审批</strong><p>失败候选自动淘汰；只有全部门禁通过者进入站长审批，页面不会修改线上策略。</p></div>
                         </li>
                     </ol>
                 </article>
@@ -98,6 +98,29 @@
 
                     <p class="proposal-note">该页面与提案接口仅对登录用户开放；策略变更仍需站长在服务器后台审批。</p>
                 </article>
+            </div>
+        </section>
+
+        <section class="pipeline-diagnosis-section" aria-labelledby="pipelineDiagnosisTitle">
+            <header class="pipeline-diagnosis-heading">
+                <div>
+                    <span>Stage-aware diagnosis</span>
+                    <h2 id="pipelineDiagnosisTitle">问题发生在哪一层</h2>
+                    <p>同一批已标注候选依次经过召回、融合和粗排；每一层只看自己的输入与输出，不从最终结果倒推根因。</p>
+                </div>
+                <strong id="pipelineDiagnosisState" aria-live="polite">等待运行</strong>
+            </header>
+            <div class="pipeline-stage-grid" id="pipelineStageGrid">
+                <article><span>01 · Recall</span><strong>召回</strong><p>等待检查相关商品是否进入任一召回通道。</p></article>
+                <article><span>02 · Fusion</span><strong>融合</strong><p>等待检查通道并集是否在 RRF 截断时丢失。</p></article>
+                <article><span>03 · Coarse rank</span><strong>粗排</strong><p>等待检查融合候选进入 Top 10 后的质量变化。</p></article>
+                <article><span>04 · Fine rank</span><strong>精排</strong><p>当前尚未实现；没有证据时不会把问题归因到这里。</p></article>
+            </div>
+            <div class="pipeline-decision-summary" id="pipelineDecisionSummary">
+                点击“开始 Agent 分析”后，Agent 会先定位阶段，再按前一轮证据运行受控消融候选。
+            </div>
+            <div class="pipeline-evidence-strip" id="pipelineEvidenceStrip" aria-label="阶段诊断证据标识">
+                <span>Retrieval Run</span><span>Candidate Run</span><span>Retrieval Comparison</span><span>Stage Diagnosis</span>
             </div>
         </section>
 
@@ -138,17 +161,18 @@
                 <div>
                     <span>10 Query Comparisons</span>
                     <h2 id="queryComparisonTitle">搜索结果对比</h2>
-                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批候选商品，并计算 Success@5、MRR@10、nDCG@10。</p>
+                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批已判断商品，并展示优化前后 Top 5 与新增召回商品。</p>
                 </div>
                 <strong id="queryComparisonCount" aria-live="polite">0 / 10</strong>
             </header>
             <p class="query-comparison-scope">当前证据来自固定 smoke 评测集的候选重排，不代表全量商品召回效果。</p>
             <div class="query-comparison-list" id="queryComparisonList">
-                <div class="query-comparison-empty">运行 Agent 后，在这里查看 10 个 Query 的优化前后 Top 10。</div>
+                <div class="query-comparison-empty">运行 Agent 后，在这里查看 10 个 Query 的优化前后 Top 5。</div>
             </div>
         </section>
     </main>
 
-    <script src="js/search-agent.js?v=20260828-optimizer-v4"></script>
+    <script src="js/search-agent-contract.js?v=20260828-stage-v2"></script>
+    <script src="js/search-agent.js?v=20260828-stage-v2"></script>
 </body>
 </html>

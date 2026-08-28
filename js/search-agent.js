@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const modelMode = document.getElementById('agentModelMode');
     const queryComparisonList = document.getElementById('queryComparisonList');
     const queryComparisonCount = document.getElementById('queryComparisonCount');
+    const pipelineDiagnosisState = document.getElementById('pipelineDiagnosisState');
+    const pipelineStageGrid = document.getElementById('pipelineStageGrid');
+    const pipelineDecisionSummary = document.getElementById('pipelineDecisionSummary');
+    const pipelineEvidenceStrip = document.getElementById('pipelineEvidenceStrip');
+    const agentContract = window.SearchAgentContract;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -51,6 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const formatMetric = (value) => {
         const number = Number(value);
         return Number.isFinite(number) ? number.toFixed(4) : '—';
+    };
+
+    const formatPercent = (value) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? `${(number * 100).toFixed(2)}%` : '—';
+    };
+
+    const formatPointDelta = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return '—';
+        return `${number > 0 ? '+' : ''}${(number * 100).toFixed(2)} 个百分点`;
     };
 
     const rootCauseLabels = {
@@ -410,6 +426,147 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const retrievalGateLabels = {
+        unique_relevant_contribution: '新通道必须带来独有相关商品',
+        union_coverage_improvement: '召回并集覆盖率必须提升',
+        fusion_recall_at_10_floor: '融合 Recall@10 不得下降',
+        fusion_ndcg_at_10_floor: '融合 nDCG@10 不得下降',
+        fusion_mrr_at_10_floor: '融合 MRR@10 不得下降',
+        coarse_recall_at_10_floor: '粗排 Recall@10 不得下降',
+        coarse_ndcg_at_10_floor: '粗排 nDCG@10 不得下降',
+        coarse_mrr_at_10_floor: '粗排 MRR@10 不得下降',
+        worst_query_coarse_ndcg_delta_floor: '单 Query 粗排 nDCG 最差下降不超 0.02',
+        regressed_query_rate_ceiling: '粗排退化 Query 比例不超 10%',
+        worst_query_fusion_ndcg_delta_floor: '单 Query 融合 nDCG 最差下降不超 0.02',
+        fusion_regressed_query_rate_ceiling: '融合退化 Query 比例不超 10%'
+    };
+
+    const findingBySubtype = (diagnosis, subtype) => (
+        (diagnosis?.findings || []).find((item) => item.subtype === subtype) || null
+    );
+
+    const recoveredStageLabels = {
+        fusion: '进入召回并集后未进入融合 Top 20',
+        coarse_rank: '进入融合后未进入最终 Top 10',
+        retained: '已保留到最终 Top 10'
+    };
+
+    const renderRetrievalResults = (items) => {
+        const results = Array.isArray(items) ? items : [];
+        if (!results.length) return '<li class="result-list-empty">Top 5 无结果</li>';
+        return results.map((result) => `<li>
+            <span class="result-rank">#${escapeHtml(result.rank)}</span>
+            <div class="result-copy"><strong>${escapeHtml(result.product_title)}</strong><p><span class="result-label label-${escapeHtml(String(result.label).toLowerCase())}">${escapeHtml(result.label)}</span>${escapeHtml(result.product_id)}</p></div>
+        </li>`).join('');
+    };
+
+    const renderRetrievalQueryComparisons = (items) => {
+        const rows = Array.isArray(items) ? items.slice(0, 10) : [];
+        queryComparisonCount.textContent = `${rows.length} / 10`;
+        if (!rows.length) {
+            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮没有逐 Query 阶段对比。</div>';
+            return;
+        }
+        queryComparisonList.innerHTML = rows.map((item, index) => {
+            const ndcgDelta = Number(item['coarse_ndcg@10_delta']);
+            const recovered = Array.isArray(item.recovered_relevant) ? item.recovered_relevant : [];
+            const outcome = ndcgDelta > 1e-12 ? 'improvement' : ndcgDelta < -1e-12 ? 'regression' : 'unchanged';
+            const outcomeLabel = { improvement: '改善', regression: '退化', unchanged: '持平' }[outcome];
+            return `<article class="query-comparison-card">
+                <header class="query-card-header">
+                    <div><span>Query ${String(index + 1).padStart(2, '0')} · ${escapeHtml(item.locale || '—')}</span><h3>${escapeHtml(item.query_text || '未返回 Query')}</h3></div>
+                    <strong class="query-outcome is-${outcome}">${escapeHtml(outcomeLabel)} · 粗排 nDCG ${escapeHtml(formatDelta(ndcgDelta))}</strong>
+                </header>
+                <div class="query-columns-shell"><div class="query-columns">
+                    <section class="query-column"><header><div><span>优化前</span><strong>标题 BM25 基线</strong></div></header><ol class="result-list">${renderRetrievalResults(item.baseline_top_results)}</ol></section>
+                    <section class="query-column is-after"><header><div><span>候选</span><strong>多字段召回 + 保守 RRF</strong></div></header><ol class="result-list">${renderRetrievalResults(item.candidate_top_results)}</ol></section>
+                </div></div>
+                ${recovered.length ? `<div class="recovered-results"><strong>新增召回的相关 Query-商品项</strong><ul>${recovered.slice(0, 4).map((result) => `<li><span class="result-label label-${escapeHtml(String(result.label).toLowerCase())}">${escapeHtml(result.label)}</span><b>${escapeHtml(result.product_title)}</b><small>${escapeHtml(result.product_id)} · ${escapeHtml(result.candidate_multi_field_rank === null ? '多字段通道名次未知' : `多字段通道 #${result.candidate_multi_field_rank}`)} · ${escapeHtml(recoveredStageLabels[result.candidate_first_loss_stage])}</small></li>`).join('')}</ul></div>` : ''}
+                <div class="query-stage-summary">召回覆盖变化：<b>${escapeHtml(formatPointDelta(item.union_coverage_delta))}</b>；融合 nDCG：<b>${escapeHtml(formatDelta(item['fusion_ndcg@10_delta']))}</b>；粗排 nDCG：<b>${escapeHtml(formatDelta(ndcgDelta))}</b>。</div>
+            </article>`;
+        }).join('');
+    };
+
+    const renderRetrievalAnalysis = (analysis) => {
+        const comparison = analysis?.comparison || {};
+        const aggregate = comparison.aggregate_deltas || {};
+        const union = aggregate.recall_union?.judged_relevant_coverage || {};
+        const fusion = aggregate.fusion || {};
+        const coarse = aggregate.coarse_rank || {};
+        const gateResult = comparison.gate_result || {};
+        const checks = Array.isArray(gateResult.checks) ? gateResult.checks : [];
+        const failedChecks = checks.filter((item) => item.passed !== true);
+        const uniqueRelevant = Number(comparison.candidate_strategy?.unique_relevant_contribution) || 0;
+        const baselineRecallLoss = Number(findingBySubtype(analysis.diagnosis, 'known_relevant_missing_from_all_channels')?.stage_dropped_relevant_count) || 0;
+        const candidateRecallLoss = Number(findingBySubtype(analysis.candidate_diagnosis, 'known_relevant_missing_from_all_channels')?.stage_dropped_relevant_count) || 0;
+        const transitions = comparison.candidate_stage_transitions || {};
+        const selectedWeights = comparison.candidate_strategy?.fusion_weights || {};
+        const experiments = Array.isArray(analysis.experiments) ? analysis.experiments : [];
+        const passed = gateResult.passed === true;
+
+        pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
+        pipelineDiagnosisState.classList.add(passed ? 'is-pass' : 'is-fail');
+        pipelineDiagnosisState.textContent = passed ? '候选通过' : '候选已拦截';
+        pipelineStageGrid.innerHTML = `
+            <article class="is-pass"><span>01 · Recall</span><strong>召回覆盖提升</strong><p>多字段通道新增 <b>${uniqueRelevant}</b> 个仅由该通道找回的相关 Query-商品项；宏平均覆盖率 ${escapeHtml(formatPercent(union.baseline))} → ${escapeHtml(formatPercent(union.candidate))}（${escapeHtml(formatPointDelta(union.delta))}）。微平均第一丢失数从 ${baselineRecallLoss} 降至 ${candidateRecallLoss}。</p></article>
+            <article class="${Number(fusion['ndcg@10']?.delta) < 0 || Number(fusion['mrr@10']?.delta) < 0 ? 'is-fail' : 'is-pass'}"><span>02 · Fusion</span><strong>${Number(fusion['ndcg@10']?.delta) < 0 || Number(fusion['mrr@10']?.delta) < 0 ? '融合候选被淘汰' : '保守融合通过'}</strong><p>均匀 RRF 先失败，Agent 再把多字段通道权重降为 <b>${escapeHtml(formatMetric(selectedWeights['multi-field-bm25-recall-v1']))}</b>。最终融合 Recall@10 ${escapeHtml(formatDelta(fusion['judged_recall@10']?.delta))}、nDCG@10 ${escapeHtml(formatDelta(fusion['ndcg@10']?.delta))}、MRR@10 ${escapeHtml(formatDelta(fusion['mrr@10']?.delta))}。</p></article>
+            <article class="${Number(coarse['ndcg@10']?.delta) < 0 || Number(coarse['mrr@10']?.delta) < 0 ? 'is-fail' : 'is-pass'}"><span>03 · Coarse rank</span><strong>${Number(coarse['ndcg@10']?.delta) < 0 || Number(coarse['mrr@10']?.delta) < 0 ? '最终质量未守住' : '最终质量守住'}</strong><p>相对候选融合，标题粗排的 nDCG@10 ${escapeHtml(formatDelta(transitions['ndcg@10']?.delta))}、MRR@10 ${escapeHtml(formatDelta(transitions['mrr@10']?.delta))}；相对基线最终 nDCG ${escapeHtml(formatDelta(coarse['ndcg@10']?.delta))}、MRR ${escapeHtml(formatDelta(coarse['mrr@10']?.delta))}。这不能证明粗排已利用多字段，只证明本轮没有被它拖坏。</p></article>
+            <article class="is-warn"><span>04 · Fine rank</span><strong>证据不足</strong><p>精排和最终业务重排尚未实现；Agent 不会根据最终结果虚构这一层的根因。</p></article>`;
+        pipelineDecisionSummary.classList.remove('is-pass', 'is-fail');
+        pipelineDecisionSummary.classList.add(passed ? 'is-pass' : 'is-fail');
+        pipelineDecisionSummary.innerHTML = passed
+            ? '<b>结论：</b>均匀融合和激进权重都被淘汰；保守 RRF 通过 12 项 smoke 工程门禁，可以进入站长审批。它尚未写入策略平台，也没有改变线上搜索。'
+            : '<b>结论：</b>多字段召回找回了相关项，但全部受控融合候选均未通过门禁，本轮不生成可更新策略。';
+        pipelineEvidenceStrip.innerHTML = `
+            <span>${escapeHtml(analysis.retrieval_run_id || 'Retrieval Run')}</span>
+            <span>${escapeHtml(analysis.candidate_run_id || 'Candidate Run')}</span>
+            <span>${escapeHtml(analysis.comparison_id || 'Retrieval Comparison')}</span>
+            <span>${escapeHtml(analysis.diagnosis_id || 'Stage Diagnosis')}</span>`;
+
+        strategyName.textContent = '多字段 BM25 + 保守 RRF 候选';
+        setState(passed ? '等待站长审批' : '门禁拒绝', 'is-pending');
+        proposalGrid.innerHTML = `
+            <div class="proposal-full strategy-detail-card">
+                <span>Agent 选择的候选</span><strong>品牌 + 标题 + 卖点 + 描述召回，RRF 权重 1 / 1 / 0.1</strong>
+                <p><b>为什么尝试：</b>标题词法召回有 ${baselineRecallLoss} 个相关项在召回层首先丢失；“精确词通道无独有覆盖”只是疑点，不能直接当作冗余结论。</p>
+                <p><b>做了什么：</b>新增 label-blind BM25F 风格通道；均匀融合失败后，继续跑保守和激进权重消融，由 12 项门禁选择保守方案。</p>
+                <p><b>本轮结论：</b>${escapeHtml(passed ? '通过 smoke 工程门禁，只请求审批；未更新 active 策略。' : '没有安全候选，本轮不更新策略。')}</p>
+            </div>
+            <div class="proposal-full proposal-metrics-card"><span>阶段指标变化</span>
+                <div class="metric-triplet">
+                    <div class="metric-item"><span>召回并集覆盖率</span><strong class="metric-up">${escapeHtml(formatPointDelta(union.delta))}</strong><small>${escapeHtml(formatPercent(union.baseline))} → ${escapeHtml(formatPercent(union.candidate))}</small></div>
+                    <div class="metric-item"><span>融合 nDCG@10</span><strong class="${metricClass(fusion['ndcg@10']?.delta)}">${escapeHtml(formatDelta(fusion['ndcg@10']?.delta))}</strong><small>${escapeHtml(formatMetric(fusion['ndcg@10']?.baseline))} → ${escapeHtml(formatMetric(fusion['ndcg@10']?.candidate))}</small></div>
+                    <div class="metric-item"><span>粗排 MRR@10</span><strong class="${metricClass(coarse['mrr@10']?.delta)}">${escapeHtml(formatDelta(coarse['mrr@10']?.delta))}</strong><small>${escapeHtml(formatMetric(coarse['mrr@10']?.baseline))} → ${escapeHtml(formatMetric(coarse['mrr@10']?.candidate))}</small></div>
+                </div>
+            </div>
+            <div><span>新增召回</span><strong class="metric-up">+${uniqueRelevant} 个独有相关 Query-商品项</strong><p>说明新通道扩大了封闭池覆盖；不代表 Amazon 全库 Recall。</p></div>
+            <div><span>门禁结果</span><strong class="${passed ? 'metric-up' : 'metric-risk'}">${passed ? '全部通过' : `${failedChecks.length} 项未通过`}</strong><p>${escapeHtml(failedChecks.map((item) => retrievalGateLabels[item.name] || item.name).join('；') || '等待审批')}</p></div>`;
+        evidenceStrip.innerHTML = pipelineEvidenceStrip.innerHTML;
+
+        const findings = analysis?.diagnosis?.findings || [];
+        diagnosisSummary.innerHTML = `<div class="diagnosis-total"><strong>${escapeHtml(findings.length)}</strong><span>项阶段证据</span></div><ul class="diagnosis-list">${findings.map((item) => `<li><span>${escapeHtml({ known_relevant_missing_from_all_channels: '所有现有召回通道都遗漏相关项', no_unique_relevant_coverage: '精确词通道无独有覆盖，需做消融', fusion_quality_regression: 'RRF 低于最佳单通道' }[item.subtype] || item.subtype)}</span><strong>${escapeHtml(item.stage_dropped_relevant_count)}</strong></li>`).join('')}</ul><p class="diagnosis-basis">右侧数字是该阶段首先丢失的相关项数；指标影响另按 20 个 Query 宏平均计算，两者不能互相当作补数。</p>`;
+        const experimentLabels = {
+            'title-exact-multifield-v1': '均匀 RRF · 1 / 1 / 1',
+            'title-exact-multifield-weighted-v1': '保守 RRF · 1 / 1 / 0.1',
+            'title-exact-multifield-weighted-aggressive-v1': '激进 RRF · 1 / 0.5 / 0.25'
+        };
+        experimentTable.innerHTML = `<div class="experiment-list">${experiments.map((experiment) => {
+            const selected = experiment.candidate_run_id === analysis.candidate_run_id;
+            const failed = experiment.failed_gates || [];
+            return `<article class="experiment-row ${selected ? 'is-selected' : ''}"><div class="experiment-name"><span>${selected ? 'Agent 最终候选' : '受控候选'}</span><strong>${escapeHtml(experimentLabels[experiment.pipeline_variant] || experiment.pipeline_variant)}</strong><small>${escapeHtml(experiment.candidate_run_id)}</small></div><div class="experiment-metric"><span>融合变化</span><strong class="${metricClass(experiment.fusion_ndcg_at_10_delta)}">nDCG ${escapeHtml(formatDelta(experiment.fusion_ndcg_at_10_delta))}</strong><small>MRR ${escapeHtml(formatDelta(experiment.fusion_mrr_at_10_delta))} · 最差 Query ${escapeHtml(formatDelta(experiment.worst_fusion_query_ndcg_at_10_delta))}</small></div><div class="experiment-gate"><span>门禁判定</span><strong class="${experiment.gate_passed ? 'metric-up' : 'metric-risk'}">${experiment.gate_passed ? '通过' : '淘汰'}</strong><small>${escapeHtml(failed.length ? failed.map((name) => retrievalGateLabels[name] || name).join('；') : '12 项全部通过')}</small></div></article>`;
+        }).join('')}</div>`;
+        gateChecks.innerHTML = `<ul class="gate-list">${checks.map((check) => `<li class="${check.passed ? 'is-pass' : 'is-fail'}"><span>${escapeHtml(retrievalGateLabels[check.name] || check.name)}</span><strong>${check.passed ? '通过' : '未通过'}</strong><small>${escapeHtml(formatDelta(check.observed))} ${escapeHtml(check.comparator || '')} ${escapeHtml(formatDelta(check.threshold))}</small></li>`).join('')}</ul>`;
+        modelMode.textContent = '确定性阶段诊断 · 0 次模型调用';
+        renderRetrievalQueryComparisons(comparison.per_query);
+        debug('retrieval_stage_analysis_rendered', {
+            candidateRunId: analysis.candidate_run_id || null,
+            comparisonId: analysis.comparison_id || null,
+            diagnosisId: analysis.diagnosis_id || null,
+            failedGateCount: failedChecks.length,
+            uniqueRelevantCount: uniqueRelevant
+        });
+    };
+
     const renderLoading = () => {
         strategyName.textContent = 'Agent 正在找 Bad Case';
         setState('分析中', 'is-running');
@@ -424,6 +581,13 @@ document.addEventListener('DOMContentLoaded', () => {
         modelMode.textContent = '确定性规则 · 运行中';
         queryComparisonCount.textContent = '— / 10';
         queryComparisonList.innerHTML = '<div class="query-comparison-empty">正在生成 10 组排序对比…</div>';
+        pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
+        pipelineDiagnosisState.textContent = '分析中';
+        pipelineStageGrid.innerHTML = '<article><span>01 · Recall</span><strong>扫描中…</strong><p>检查相关商品是否进入召回并集。</p></article><article><span>02 · Fusion</span><strong>等待中…</strong><p>等待召回结果后运行 RRF。</p></article><article><span>03 · Coarse rank</span><strong>等待中…</strong><p>等待融合候选进入粗排。</p></article><article><span>04 · Fine rank</span><strong>未实现</strong><p>本轮不会虚构这一层的证据。</p></article>';
+        pipelineDecisionSummary.classList.remove('is-pass', 'is-fail');
+        pipelineDecisionSummary.textContent = 'Agent 正在用阶段 lineage 定位第一处相关商品丢失。';
+        pipelineEvidenceStrip.innerHTML = '<span>Retrieval Run</span><span>Candidate Run</span><span>Retrieval Comparison</span><span>Stage Diagnosis</span>';
+        evidenceStrip.innerHTML = '<span>等待本轮证据</span>';
     };
 
     const renderError = (message) => {
@@ -436,38 +600,53 @@ document.addEventListener('DOMContentLoaded', () => {
         modelMode.textContent = '不可用';
         queryComparisonCount.textContent = '0 / 10';
         queryComparisonList.innerHTML = '<div class="query-comparison-empty is-error">对比结果加载失败，请重新分析。</div>';
+        pipelineDiagnosisState.classList.remove('is-pass');
+        pipelineDiagnosisState.classList.add('is-fail');
+        pipelineDiagnosisState.textContent = '诊断失败';
+        pipelineStageGrid.innerHTML = '<article class="is-warn"><span>01 · Recall</span><strong>未完成</strong><p>没有生成可验证的召回证据。</p></article><article class="is-warn"><span>02 · Fusion</span><strong>未完成</strong><p>没有生成可验证的融合证据。</p></article><article class="is-warn"><span>03 · Coarse rank</span><strong>未完成</strong><p>没有生成可验证的粗排证据。</p></article><article class="is-warn"><span>04 · Fine rank</span><strong>未实现</strong><p>本轮不会虚构这一层的证据。</p></article>';
+        pipelineDecisionSummary.classList.add('is-fail');
+        pipelineDecisionSummary.textContent = '阶段诊断没有完成，本轮不会产生或更新策略。';
+        pipelineEvidenceStrip.innerHTML = '<span>本轮无 Retrieval Run</span><span>本轮无 Candidate Run</span><span>本轮无 Comparison</span><span>本轮无 Diagnosis</span>';
+        evidenceStrip.innerHTML = '<span>本轮没有生成证据</span>';
+    };
+
+    const renderLegacyProposal = (proposal) => {
+        renderProposal(proposal);
+        pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
+        pipelineDiagnosisState.textContent = '兼容模式';
+        pipelineStageGrid.innerHTML = '<article class="is-warn"><span>01 · Recall</span><strong>旧后端未提供</strong><p>本轮只显示旧版候选集排序分析。</p></article><article class="is-warn"><span>02 · Fusion</span><strong>旧后端未提供</strong><p>没有阶段融合证据。</p></article><article class="is-warn"><span>03 · Coarse rank</span><strong>旧后端未提供</strong><p>没有独立粗排证据。</p></article><article class="is-warn"><span>04 · Fine rank</span><strong>未实现</strong><p>没有证据时不会归因到这一层。</p></article>';
+        pipelineDecisionSummary.classList.remove('is-pass', 'is-fail');
+        pipelineDecisionSummary.textContent = '服务器尚未提供阶段诊断接口；当前展示的是旧版候选集排序分析，不能据此判断多路召回或粗排问题。';
+        pipelineEvidenceStrip.innerHTML = '<span>Legacy proposal evidence only</span>';
     };
 
     const requestProposal = async () => {
         renderLoading();
         startButton.disabled = true;
         startButton.textContent = '分析中…';
-        debug('strategy_proposal_requested');
+        debug('retrieval_stage_analysis_requested');
         let errorCode = null;
         try {
-            const response = await fetch(`${apiRoot}/agent/strategy/propose`, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ profile: 'smoke' })
-            });
-            if (!response.ok) {
-                errorCode = `http_${response.status}`;
-                if (response.status === 401) {
-                    renderError('登录状态已失效，请刷新页面并重新输入凭据');
-                    return;
-                }
-                throw new Error(errorCode);
+            if (!agentContract?.fetchAnalysis) throw new Error('analysis_contract_unavailable');
+            const outcome = await agentContract.fetchAnalysis(window.fetch.bind(window), apiRoot);
+            if (outcome.kind === 'legacy') {
+                debug('retrieval_stage_analysis_fallback');
+                renderLegacyProposal(outcome.proposal);
+            } else {
+                renderRetrievalAnalysis(outcome.analysis);
             }
-            renderProposal(await response.json());
         } catch (error) {
-            errorCode = errorCode || error.message || 'network_error';
+            errorCode = errorCode || error.code || error.message || 'network_error';
             console.warn('[search-console:agent-ui]', {
                 timestamp: new Date().toISOString(),
-                event: 'strategy_proposal_failed',
+                event: 'retrieval_stage_analysis_failed',
                 errorCode
             });
-            renderError('策略分析服务暂时不可用，请稍后重试');
+            renderError(error.status === 401
+                ? '登录状态已失效，请刷新页面并重新输入凭据'
+                : errorCode === 'invalid_analysis_response'
+                    ? '分析证据不完整或不一致，本轮已拒绝展示和更新'
+                    : '策略分析服务暂时不可用，请稍后重试');
         } finally {
             startButton.disabled = false;
             startButton.textContent = '重新分析';

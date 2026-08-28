@@ -1,0 +1,336 @@
+const assert = require('node:assert/strict');
+const test = require('node:test');
+
+const {
+    AnalysisContractError,
+    AnalysisHttpError,
+    fetchAnalysis,
+    validateAnalysis
+} = require('../js/search-agent-contract.js');
+
+const delta = (baseline, candidate) => ({
+    baseline,
+    candidate,
+    delta: candidate - baseline
+});
+
+const result = (rank, productId, title, label) => ({
+    rank,
+    locale: 'us',
+    product_id: productId,
+    product_title: title,
+    label
+});
+
+const WEIGHTED = {
+    'exact-title-recall-v1': 1,
+    'multi-field-bm25-recall-v1': 0.1,
+    'title-bm25-recall-v1': 1
+};
+
+const AGGRESSIVE = {
+    'exact-title-recall-v1': 0.5,
+    'multi-field-bm25-recall-v1': 0.25,
+    'title-bm25-recall-v1': 1
+};
+
+const validAnalysis = () => {
+    const baselineRunId = 'retrieval-aaaaaaaaaaaa';
+    const candidateRunId = 'retrieval-bbbbbbbbbbbb';
+    const comparisonId = 'retrieval-comparison-cccccccccccc';
+    const diagnosisId = 'stage-diagnosis-dddddddddddd';
+    const candidateDiagnosisId = 'stage-diagnosis-eeeeeeeeeeee';
+    return {
+        schema_version: 'retrieval-stage-analysis-response-v1',
+        profile: 'smoke',
+        retrieval_run_id: baselineRunId,
+        candidate_run_id: candidateRunId,
+        comparison_id: comparisonId,
+        diagnosis_id: diagnosisId,
+        candidate_diagnosis_id: candidateDiagnosisId,
+        diagnosis: {
+            diagnosis_id: diagnosisId,
+            findings: [{
+                subtype: 'recall_gap',
+                stage_dropped_relevant_count: 2,
+                impact: 0.1,
+                impact_aggregation: 'relevant_item_micro_rate'
+            }]
+        },
+        candidate_diagnosis: {
+            diagnosis_id: candidateDiagnosisId,
+            findings: []
+        },
+        comparison: {
+            schema_version: 'query-scoped-retrieval-comparison-v1',
+            baseline_run_id: baselineRunId,
+            candidate_run_id: candidateRunId,
+            comparison_id: comparisonId,
+            aggregate_deltas: {
+                recall_union: {
+                    judged_relevant_coverage: delta(0.8, 0.85)
+                },
+                fusion: {
+                    'judged_recall@5': delta(0.4, 0.42),
+                    'judged_recall@10': delta(0.5, 0.53),
+                    'mrr@10': delta(0.8, 0.8),
+                    'ndcg@10': delta(0.67, 0.68)
+                },
+                coarse_rank: {
+                    'judged_recall@5': delta(0.41, 0.43),
+                    'judged_recall@10': delta(0.52, 0.53),
+                    'mrr@10': delta(0.84, 0.85),
+                    'ndcg@10': delta(0.68, 0.69)
+                }
+            },
+            candidate_strategy: {
+                unique_relevant_contribution: 14,
+                pipeline_variant: 'title-exact-multifield-weighted-v1',
+                fusion_weights: WEIGHTED
+            },
+            candidate_stage_transitions: {
+                'judged_recall@10': {
+                    fusion: 0.53,
+                    coarse_rank: 0.53,
+                    delta: 0
+                },
+                'mrr@10': {
+                    fusion: 0.8,
+                    coarse_rank: 0.85,
+                    delta: 0.05
+                },
+                'ndcg@10': {
+                    fusion: 0.68,
+                    coarse_rank: 0.69,
+                    delta: 0.01
+                }
+            },
+            gate_result: {
+                passed: true,
+                checks: [
+                    ['unique_relevant_contribution', '>', 14, 0],
+                    ['union_coverage_improvement', '>', 0.05, 0],
+                    ['fusion_recall_at_10_floor', '>=', 0.03, 0],
+                    ['fusion_ndcg_at_10_floor', '>=', 0.01, 0],
+                    ['fusion_mrr_at_10_floor', '>=', 0, 0],
+                    ['coarse_recall_at_10_floor', '>=', 0.01, 0],
+                    ['coarse_ndcg_at_10_floor', '>=', 0.01, 0],
+                    ['coarse_mrr_at_10_floor', '>=', 0.01, 0],
+                    ['worst_query_coarse_ndcg_delta_floor', '>=', 0.01, -0.02],
+                    ['regressed_query_rate_ceiling', '<=', 0, 0.1],
+                    ['worst_query_fusion_ndcg_delta_floor', '>=', 0.005, -0.02],
+                    ['fusion_regressed_query_rate_ceiling', '<=', 0, 0.1]
+                ].map(([name, comparator, observed, threshold]) => ({
+                    name, passed: true, comparator, observed, threshold
+                }))
+            },
+            per_query: [{
+                query_id: 1,
+                locale: 'us',
+                query_text: 'wireless mouse',
+                'coarse_ndcg@10_delta': 0.01,
+                'fusion_ndcg@10_delta': 0.005,
+                union_coverage_delta: 0.1,
+                baseline_top_results: [
+                    result(1, 'B000BASELINE', 'Baseline Wireless Mouse', 'E')
+                ],
+                candidate_top_results: [
+                    result(1, 'B000CANDIDATE', 'Candidate Wireless Mouse', 'E')
+                ],
+                recovered_relevant: [{
+                    locale: 'us',
+                    product_id: 'B000RECOVERED',
+                    product_title: 'Recovered Wireless Mouse',
+                    label: 'E',
+                    candidate_first_loss_stage: 'coarse_rank',
+                    candidate_multi_field_rank: 3
+                }]
+            }]
+        },
+        experiments: [
+            {
+                candidate_run_id: candidateRunId,
+                comparison_id: comparisonId,
+                pipeline_variant: 'title-exact-multifield-weighted-v1',
+                gate_passed: true,
+                failed_gates: [],
+                fusion_mrr_at_10_delta: 0,
+                fusion_ndcg_at_10_delta: 0.01,
+                worst_fusion_query_ndcg_at_10_delta: 0.005,
+                fusion_weights: WEIGHTED
+            },
+            {
+                candidate_run_id: 'retrieval-ffffffffffff',
+                comparison_id: 'retrieval-comparison-111111111111',
+                pipeline_variant: 'title-exact-multifield-v1',
+                gate_passed: false,
+                failed_gates: ['fusion_mrr_at_10_floor'],
+                fusion_mrr_at_10_delta: -0.02,
+                fusion_ndcg_at_10_delta: 0.02,
+                worst_fusion_query_ndcg_at_10_delta: -0.04,
+                fusion_weights: 'uniform'
+            },
+            {
+                candidate_run_id: 'retrieval-222222222222',
+                comparison_id: 'retrieval-comparison-333333333333',
+                pipeline_variant: 'title-exact-multifield-weighted-aggressive-v1',
+                gate_passed: false,
+                failed_gates: ['fusion_regressed_query_rate_ceiling'],
+                fusion_mrr_at_10_delta: -0.01,
+                fusion_ndcg_at_10_delta: 0.02,
+                worst_fusion_query_ndcg_at_10_delta: -0.01,
+                fusion_weights: AGGRESSIVE
+            }
+        ],
+        status: 'proposal_ready',
+        proposal: {
+            decision: 'request_owner_review',
+            candidate_strategy_id: 'candidate-title-exact-multifield-weighted-v1',
+            next_action: 'owner_review',
+            reason: 'The conservative candidate passed every smoke gate.'
+        }
+    };
+};
+
+const jsonResponse = (status, body, onJson = () => {}) => ({
+    status,
+    ok: status >= 200 && status < 300,
+    json: async () => {
+        onJson();
+        return body;
+    }
+});
+
+const expectContractFailure = async (analysis) => {
+    const fetchImpl = async () => jsonResponse(200, analysis);
+    await assert.rejects(
+        fetchAnalysis(fetchImpl, '/search-eval-api'),
+        (error) => error instanceof AnalysisContractError
+            && error.code === 'invalid_analysis_response'
+            && error.message === 'invalid_analysis_response'
+    );
+};
+
+test('accepts a complete stage-analysis response and preserves the validated object', async () => {
+    const analysis = validAnalysis();
+    assert.equal(validateAnalysis(analysis), analysis);
+
+    const calls = [];
+    const fetchImpl = async (url, options) => {
+        calls.push({ url, options });
+        return jsonResponse(200, analysis);
+    };
+    const response = await fetchAnalysis(fetchImpl, '/search-eval-api');
+
+    assert.deepEqual(response, { kind: 'stage', analysis });
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].url, '/search-eval-api/agent/retrieval/analyze');
+    assert.equal(calls[0].options.method, 'POST');
+    assert.equal(calls[0].options.credentials, 'same-origin');
+    assert.deepEqual(JSON.parse(calls[0].options.body), { profile: 'smoke' });
+});
+
+test('rejects 200 responses with missing, NaN, or arithmetically inconsistent evidence', async (t) => {
+    await t.test('missing required metric', async () => {
+        const analysis = validAnalysis();
+        delete analysis.comparison.aggregate_deltas.fusion['mrr@10'];
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('NaN metric', async () => {
+        const analysis = validAnalysis();
+        analysis.comparison.per_query[0]['fusion_ndcg@10_delta'] = Number.NaN;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('delta does not equal candidate minus baseline', async () => {
+        const analysis = validAnalysis();
+        analysis.comparison.aggregate_deltas.fusion['ndcg@10'].delta = 0.5;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('gate policy threshold is altered', async () => {
+        const analysis = validAnalysis();
+        analysis.comparison.gate_result.checks[0].threshold = -1;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('overall gate result conflicts with its checks', async () => {
+        const analysis = validAnalysis();
+        analysis.comparison.gate_result.passed = false;
+        await expectContractFailure(analysis);
+    });
+});
+
+test('accepts an explicitly empty Top 5 result set', () => {
+    const analysis = validAnalysis();
+    analysis.comparison.per_query[0].baseline_top_results = [];
+    analysis.comparison.per_query[0].candidate_top_results = [];
+    assert.equal(validateAnalysis(analysis), analysis);
+});
+
+test('a 404 stage endpoint falls back once to the legacy proposal endpoint', async () => {
+    const legacyProposal = { schema_version: 'agent-proposal-response-v1', proposal_id: 'proposal-1' };
+    const calls = [];
+    const fetchImpl = async (url, options) => {
+        calls.push({ url, options });
+        if (calls.length === 1) return jsonResponse(404, { error: 'not_found' });
+        return jsonResponse(200, legacyProposal);
+    };
+
+    const response = await fetchAnalysis(fetchImpl, '/search-eval-api');
+
+    assert.deepEqual(response, { kind: 'legacy', proposal: legacyProposal });
+    assert.deepEqual(calls.map(({ url }) => url), [
+        '/search-eval-api/agent/retrieval/analyze',
+        '/search-eval-api/agent/strategy/propose'
+    ]);
+    for (const { options } of calls) {
+        assert.equal(options.method, 'POST');
+        assert.equal(options.credentials, 'same-origin');
+    }
+});
+
+test('a 401 is a safe HTTP error and never falls back or reads the error body', async () => {
+    let calls = 0;
+    let jsonReads = 0;
+    const fetchImpl = async () => {
+        calls += 1;
+        return jsonResponse(401, { secret: 'must-not-surface' }, () => { jsonReads += 1; });
+    };
+
+    await assert.rejects(
+        fetchAnalysis(fetchImpl, '/search-eval-api'),
+        (error) => error instanceof AnalysisHttpError
+            && error.status === 401
+            && error.code === 'http_401'
+            && error.message === 'http_401'
+            && !String(error).includes('must-not-surface')
+    );
+    assert.equal(calls, 1);
+    assert.equal(jsonReads, 0);
+});
+
+test('a 5xx stage response never falls back to the legacy endpoint', async () => {
+    const calls = [];
+    const fetchImpl = async (url) => {
+        calls.push(url);
+        return jsonResponse(503, { error: 'temporarily_unavailable' });
+    };
+
+    await assert.rejects(
+        fetchAnalysis(fetchImpl, '/search-eval-api'),
+        (error) => error instanceof AnalysisHttpError
+            && error.status === 503
+            && error.code === 'http_503'
+    );
+    assert.deepEqual(calls, ['/search-eval-api/agent/retrieval/analyze']);
+});
+
+test('validates every experiment, including an unselected candidate', async () => {
+    const analysis = validAnalysis();
+    assert.equal(analysis.experiments[0].candidate_run_id, analysis.candidate_run_id);
+    analysis.experiments[1].fusion_ndcg_at_10_delta = Number.NaN;
+
+    await expectContractFailure(analysis);
+});

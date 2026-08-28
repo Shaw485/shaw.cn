@@ -23,6 +23,7 @@ test('Agent workbench is a dedicated page with the required dynamic nodes', () =
     ]) {
         assert.match(page, new RegExp(`id="${id}"`));
     }
+    assert.match(page, /js\/search-agent-contract\.js/);
     assert.match(page, /js\/search-agent\.js/);
     assert.match(page, /search-eval\.html/);
     assert.match(page, /search-strategy\.html/);
@@ -45,12 +46,42 @@ test('Agent workbench exposes diagnosis, candidate search and release gates', ()
     assert.match(styles, /\.gate-list/);
 });
 
+test('Agent button runs stage diagnosis before choosing a strategy experiment', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const contract = read('js/search-agent-contract.js');
+    const styles = read('css/search-agent.css');
+    for (const id of [
+        'pipelineDiagnosisState',
+        'pipelineStageGrid',
+        'pipelineDecisionSummary',
+        'pipelineEvidenceStrip'
+    ]) {
+        assert.match(page, new RegExp(`id="${id}"`));
+    }
+    assert.match(contract, /\/agent\/retrieval\/analyze/);
+    assert.match(contract, /validateAnalysis/);
+    assert.match(contract, /invalid_analysis_response/);
+    assert.match(script, /renderRetrievalAnalysis/);
+    assert.match(script, /unique_relevant_contribution/);
+    assert.match(script, /fusion_ndcg_at_10_floor/);
+    assert.match(script, /coarse_mrr_at_10_floor/);
+    assert.match(contract, /proposal\.next_action/);
+    assert.match(script, /保守 RRF 通过 12 项 smoke 工程门禁/);
+    assert.match(script, /服务器尚未提供阶段诊断接口/);
+    assert.match(script, /本轮没有生成证据/);
+    assert.match(script, /本轮无 Retrieval Run/);
+    assert.match(styles, /\.pipeline-stage-grid/);
+    assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
+});
+
 test('strategy scope and approval authority are described accurately', () => {
     const agentPage = read('search-agent.html');
     const strategyPage = read('search-strategy.html');
     const strategyScript = read('js/search-strategy.js');
-    assert.match(agentPage, /查询词覆盖、数字\/型号与完整短语增益/);
-    assert.doesNotMatch(agentPage, /尝试字段权重/);
+    assert.match(agentPage, /增加多字段召回/);
+    assert.match(agentPage, /均匀、保守和激进三组 RRF/);
+    assert.match(agentPage, /页面不会修改线上策略/);
     assert.match(strategyPage, /策略历史与日志/);
     assert.doesNotMatch(strategyPage, /Agent 批准策略/);
     assert.match(strategyScript, /采用与生效必须由站长在服务器后台批准/);
@@ -159,9 +190,10 @@ test('public search page no longer embeds the Agent workbench', () => {
 
 test('Agent script can request proposals but cannot approve decisions', () => {
     const script = read('js/search-agent.js');
-    assert.match(script, /agent\/strategy\/propose/);
-    assert.match(script, /credentials:\s*'same-origin'/);
-    assert.doesNotMatch(script, /agent\/strategy\/decision/);
+    const contract = read('js/search-agent-contract.js');
+    assert.match(contract, /agent\/strategy\/propose/);
+    assert.match(contract, /credentials:\s*'same-origin'/);
+    assert.doesNotMatch(`${script}\n${contract}`, /agent\/strategy\/decision/);
     assert.doesNotMatch(script, /decision:\s*['"](?:approve|reject)['"]/);
 });
 
@@ -170,8 +202,13 @@ test('Agent workbench renders ten side-by-side query result comparisons', () => 
     const script = read('js/search-agent.js');
     const styles = read('css/search-agent.css');
     assert.match(page, /10 Query Comparisons/);
+    assert.match(page, /优化前后 Top 5 与新增召回商品/);
     assert.match(page, /候选重排，不代表全量商品召回效果/);
     assert.match(script, /query_comparisons/);
+    assert.match(script, /renderRetrievalQueryComparisons/);
+    assert.match(script, /baseline_top_results/);
+    assert.match(script, /candidate_top_results/);
+    assert.match(script, /recovered_relevant/);
     assert.match(script, /comparisons\.slice\(0, 10\)/);
     assert.match(script, /results\.slice\(0, 10\)/);
     assert.match(styles, /grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
@@ -197,6 +234,7 @@ test('risk card uses regression evidence and supports engineering terminal state
 test('portfolio points to the dedicated Agent page without frontend credentials', () => {
     const files = [
         'search-agent.html',
+        'js/search-agent-contract.js',
         'js/search-agent.js',
         'search-eval.html',
         'js/main.js'
