@@ -45,6 +45,18 @@ test('Agent workbench exposes diagnosis, candidate search and release gates', ()
     assert.match(styles, /\.gate-list/);
 });
 
+test('strategy scope and approval authority are described accurately', () => {
+    const agentPage = read('search-agent.html');
+    const strategyPage = read('search-strategy.html');
+    const strategyScript = read('js/search-strategy.js');
+    assert.match(agentPage, /查询词覆盖、数字\/型号与完整短语增益/);
+    assert.doesNotMatch(agentPage, /尝试字段权重/);
+    assert.match(strategyPage, /站长已批准策略/);
+    assert.doesNotMatch(strategyPage, /Agent 批准策略/);
+    assert.match(strategyScript, /后台记录的已批准策略/);
+    assert.doesNotMatch(strategyScript, /后端批准策略/);
+});
+
 test('Agent workbench explains candidate strategies in Chinese', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');

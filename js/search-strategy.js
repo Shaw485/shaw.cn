@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (strategyCatalogState) {
             strategyCatalogState.classList.remove('error');
-            strategyCatalogState.textContent = `已读取 ${strategies.length} 个后端批准策略。`;
+            strategyCatalogState.textContent = `已读取 ${strategies.length} 个后台记录的已批准策略。`;
         }
         if (approvedStrategyList) {
             approvedStrategyList.innerHTML = strategies.map((strategy) => `
