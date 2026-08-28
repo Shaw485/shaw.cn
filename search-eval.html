@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
-    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-api">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-live">
 </head>
 <body class="search-eval-page">
     <nav class="navbar">
@@ -141,16 +141,16 @@
                                 <span>04</span>
                                 <div>
                                     <strong>等待人工审批</strong>
-                                    <p>人只判断策略取舍；点击更新后，系统再自动写入版本化策略并验证。</p>
+                                    <p>公开页面只展示证据；更新或拒绝由站长在服务器后台完成。</p>
                                 </div>
                             </li>
                         </ol>
                     </article>
 
-                    <article class="agent-panel approval-panel" aria-label="策略审批面板">
+                    <article class="agent-panel approval-panel" aria-label="策略提案面板">
                         <div class="approval-topline">
                             <div>
-                                <span>待审批策略</span>
+                                <span>候选策略</span>
                                 <h3 id="agentStrategyName">等待 Agent 开始分析</h3>
                             </div>
                             <small id="agentDecisionState">Idle</small>
@@ -186,10 +186,7 @@
                             <span>Proposal</span>
                         </div>
 
-                        <div class="approval-actions">
-                            <button class="approval-btn approval-accept" type="button" id="agentApproveStrategy" disabled>更新策略</button>
-                            <button class="approval-btn approval-reject" type="button" id="agentRejectStrategy" disabled>拒绝策略</button>
-                        </div>
+                        <p class="approval-owner-note">提案与评测证据可公开查看；策略变更仅由站长在受保护的服务器后台审批。</p>
                     </article>
                 </div>
             </div>
@@ -197,6 +194,6 @@
     </main>
 
     <script src="js/search-console-store.js?v=20260828-console"></script>
-    <script src="js/search-eval.js?v=20260828-agent-api"></script>
+    <script src="js/search-eval.js?v=20260828-agent-live"></script>
 </body>
 </html>

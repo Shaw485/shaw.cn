@@ -13,11 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const agentStrategyName = document.getElementById('agentStrategyName');
     const agentProposalGrid = document.getElementById('agentProposalGrid');
     const agentEvidenceStrip = document.getElementById('agentEvidenceStrip');
-    const agentApproveStrategy = document.getElementById('agentApproveStrategy');
-    const agentRejectStrategy = document.getElementById('agentRejectStrategy');
     let activeRequest = null;
     let activeLogId = null;
-    let activeAgentProposal = null;
 
     const productVisuals = [
         ['📦', '#edf0f2'], ['⌨️', '#eef0ea'], ['🎧', '#ece9f4'],
@@ -250,11 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (className) agentDecisionState.classList.add(className);
     };
 
-    const setApprovalButtons = (enabled) => {
-        if (agentApproveStrategy) agentApproveStrategy.disabled = !enabled;
-        if (agentRejectStrategy) agentRejectStrategy.disabled = !enabled;
-    };
-
     const formatDelta = (value) => {
         const number = Number(value);
         if (!Number.isFinite(number)) return '—';
@@ -285,10 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const strategyName = proposal?.strategy?.catalog_entry?.name || '候选策略';
         const recommendation = proposal?.agent_summary?.recommendation || 'continue_experiment';
 
-        activeAgentProposal = proposal;
         if (agentStrategyName) agentStrategyName.textContent = strategyName;
         setAgentState('Pending', 'is-pending');
-        setApprovalButtons(true);
 
         if (agentProposalGrid) {
             agentProposalGrid.innerHTML = `
@@ -329,10 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderAgentLoading = () => {
-        activeAgentProposal = null;
         if (agentStrategyName) agentStrategyName.textContent = 'Agent 正在找 Bad Case';
         setAgentState('Running', 'is-running');
-        setApprovalButtons(false);
         if (agentProposalGrid) {
             agentProposalGrid.innerHTML = `
                 <div><span>Bad Case 样本</span><strong>分析中…</strong><p>正在跑 baseline 与候选策略。</p></div>
@@ -343,10 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderAgentError = (message) => {
-        activeAgentProposal = null;
         if (agentStrategyName) agentStrategyName.textContent = 'Agent 分析失败';
         setAgentState('Error', 'is-error');
-        setApprovalButtons(false);
         if (agentProposalGrid) {
             agentProposalGrid.innerHTML = `<div class="proposal-full"><span>错误</span><strong>${escapeHtml(message)}</strong><p>后端暂时没有返回可审批 proposal，请稍后重试。</p></div>`;
         }
@@ -379,51 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const decideAgentProposal = async (decision) => {
-        if (!activeAgentProposal?.proposal_id) return;
-        setApprovalButtons(false);
-        setAgentState(decision === 'approve' ? 'Applying' : 'Rejecting', 'is-running');
-        agentDebug('strategy_decision_requested', {
-            decision,
-            proposalId: activeAgentProposal.proposal_id
-        });
-        try {
-            const response = await fetch(`${apiRoot}/agent/strategy/decision`, {
-                method: 'POST',
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    proposal_id: activeAgentProposal.proposal_id,
-                    decision
-                })
-            });
-            if (!response.ok) throw new Error(`http_${response.status}`);
-            const payload = await response.json();
-            setAgentState(decision === 'approve' ? 'Applied' : 'Rejected', decision === 'approve' ? 'is-approved' : 'is-rejected');
-            if (agentStrategyName && decision === 'approve') {
-                agentStrategyName.textContent = '已更新到策略平台';
-            }
-            if (agentEvidenceStrip) {
-                agentEvidenceStrip.innerHTML += `<span>${escapeHtml(payload.decision_id || 'Decision recorded')}</span>`;
-            }
-            agentDebug('strategy_decision_completed', {
-                decision,
-                decisionId: payload.decision_id,
-                applied: Boolean(payload.applied)
-            });
-        } catch (error) {
-            setAgentState('Error', 'is-error');
-            setApprovalButtons(true);
-            console.warn('[search-console:agent-ui]', {
-                timestamp: new Date().toISOString(),
-                event: 'strategy_decision_failed',
-                errorCode: error.message || 'network_error'
-            });
-        }
-    };
-
     agentStartAnalysis?.addEventListener('click', requestAgentProposal);
-    agentApproveStrategy?.addEventListener('click', () => decideAgentProposal('approve'));
-    agentRejectStrategy?.addEventListener('click', () => decideAgentProposal('reject'));
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
