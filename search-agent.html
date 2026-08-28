@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260828-query-comparisons">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260828-optimizer-v4">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -82,13 +82,13 @@
                             <span>候选策略</span>
                             <h3 id="agentStrategyName">等待 Agent 开始分析</h3>
                         </div>
-                        <small id="agentDecisionState" aria-live="polite">Idle</small>
+                        <small id="agentDecisionState" aria-live="polite">等待运行</small>
                     </div>
 
-                    <div class="proposal-grid" id="agentProposalGrid" aria-live="polite">
+                    <div class="proposal-grid" id="agentProposalGrid">
+                        <div class="proposal-full strategy-detail-card"><span>候选策略说明</span><strong>等待分析</strong><p>运行后会用中文解释适用问题、具体机制、参数含义、预期收益和主要风险。</p></div>
+                        <div class="proposal-full proposal-metrics-card"><span>三项核心指标</span><strong>Success@5 · MRR@10 · nDCG@10</strong><p>同时展示优化前、优化后与变化值，全部来自同集 Harness 计算。</p></div>
                         <div><span>Bad Case 样本</span><strong>尚未运行</strong><p>运行后会展示本轮最差样本及优化前后 Top 结果。</p></div>
-                        <div><span>候选策略</span><strong>等待分析</strong><p>Agent 每轮只返回一个可解释、可回滚的候选改动。</p></div>
-                        <div><span>指标变化</span><strong>—</strong><p>真实数值来自 baseline 与 candidate 的同集 Harness 比较。</p></div>
                         <div><span>局部风险</span><strong>—</strong><p>除平均指标外，也会显示退化 Query 数量与代表样本。</p></div>
                     </div>
 
@@ -101,22 +101,54 @@
             </div>
         </section>
 
+        <section class="agent-reasoning-section" aria-labelledby="agentReasoningTitle">
+            <header class="agent-reasoning-heading">
+                <div>
+                    <span>Analysis → Experiments → Gate</span>
+                    <h2 id="agentReasoningTitle">Agent 为什么提出这个策略</h2>
+                    <p>先归纳失败模式，再逐个运行候选策略；平均分更高但回归过大的方案会被门禁淘汰。</p>
+                </div>
+                <strong id="agentModelMode">确定性规则</strong>
+            </header>
+            <div class="agent-reasoning-grid">
+                <article class="reasoning-card">
+                    <header><span>01</span><div><small>Root-cause analysis</small><h3>根因诊断</h3></div></header>
+                    <div id="agentDiagnosisSummary" class="reasoning-content">
+                        <p class="reasoning-empty">运行后展示本轮覆盖的 Query 数及各类失败信号。</p>
+                    </div>
+                </article>
+                <article class="reasoning-card reasoning-card-wide">
+                    <header><span>02</span><div><small>Bounded strategy search</small><h3>候选实验</h3></div></header>
+                    <div id="agentExperimentTable" class="reasoning-content">
+                        <p class="reasoning-empty">运行后用中文展示每个候选的适用问题、机制、参数、三项指标、风险及淘汰原因。</p>
+                    </div>
+                </article>
+                <article class="reasoning-card">
+                    <header><span>03</span><div><small>Release guardrails</small><h3>发布门禁</h3></div></header>
+                    <div id="agentGateChecks" class="reasoning-content">
+                        <p class="reasoning-empty">只有全部门禁通过的候选，才会进入待审批提案。</p>
+                    </div>
+                </article>
+            </div>
+            <p class="agent-policy-note">当前门禁是 smoke 阶段的工程默认值，尚不代表生产发布政策；正式阈值仍需站长决策并在更大评测集验证。</p>
+        </section>
+
         <section class="query-comparison-section" aria-labelledby="queryComparisonTitle">
             <header class="query-comparison-heading">
                 <div>
                     <span>10 Query Comparisons</span>
                     <h2 id="queryComparisonTitle">搜索结果对比</h2>
-                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批候选商品，对比优化前后 Top 10 排序。</p>
+                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批候选商品，并计算 Success@5、MRR@10、nDCG@10。</p>
                 </div>
                 <strong id="queryComparisonCount" aria-live="polite">0 / 10</strong>
             </header>
             <p class="query-comparison-scope">当前证据来自固定 smoke 评测集的候选重排，不代表全量商品召回效果。</p>
-            <div class="query-comparison-list" id="queryComparisonList" aria-live="polite">
+            <div class="query-comparison-list" id="queryComparisonList">
                 <div class="query-comparison-empty">运行 Agent 后，在这里查看 10 个 Query 的优化前后 Top 10。</div>
             </div>
         </section>
     </main>
 
-    <script src="js/search-agent.js?v=20260828-query-comparisons"></script>
+    <script src="js/search-agent.js?v=20260828-optimizer-v4"></script>
 </body>
 </html>

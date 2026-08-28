@@ -51,7 +51,7 @@ localStorage.setItem('shaw.debug.search-console.modules', 'agent-ui');
 location.reload();
 ```
 
-控制台会记录 proposal/decision 请求状态、proposal ID、decision ID 与安全错误码，不输出 Query、商品标题或后端证据正文。批准动作会通过后端写入策略目录，策略平台的读取流程可单独开启 `strategy-ui` 模块排查。
+控制台会记录 proposal 请求状态、诊断/候选数量、门禁状态、proposal ID 与安全错误码，不输出 Query、商品标题或后端证据正文。网页不发送审批请求；批准动作仅能在受控服务器后台执行，策略平台的读取流程可单独开启 `strategy-ui` 模块排查。
 
 ```js
 localStorage.removeItem('shaw.debug.search-console');
