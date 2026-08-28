@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const strategyName = document.getElementById('agentStrategyName');
     const proposalGrid = document.getElementById('agentProposalGrid');
     const evidenceStrip = document.getElementById('agentEvidenceStrip');
+    const queryComparisonList = document.getElementById('queryComparisonList');
+    const queryComparisonCount = document.getElementById('queryComparisonCount');
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -55,6 +57,77 @@ document.addEventListener('DOMContentLoaded', () => {
             .join('；');
     };
 
+    const resultLabel = (value) => ({
+        E: 'Exact',
+        S: 'Substitute',
+        C: 'Complement',
+        I: 'Irrelevant'
+    }[String(value || '').toUpperCase()] || 'Unknown');
+
+    const resultLabelClass = (value) => {
+        const label = String(value || '').toUpperCase();
+        return ['E', 'S', 'C', 'I'].includes(label) ? `label-${label.toLowerCase()}` : 'label-unknown';
+    };
+
+    const renderResultList = (results) => {
+        const rows = Array.isArray(results) ? results.slice(0, 10) : [];
+        if (!rows.length) return '<p class="result-list-empty">暂无排序结果</p>';
+        return `<ol class="result-list">${rows.map((item, index) => `
+            <li>
+                <span class="result-rank">${escapeHtml(item.rank || index + 1)}</span>
+                <div class="result-copy">
+                    <strong>${escapeHtml(item.title || item.product_id || '未命名商品')}</strong>
+                    <p><span>${escapeHtml(item.product_id || '—')}</span><span class="result-label ${resultLabelClass(item.label)}">${escapeHtml(resultLabel(item.label))}</span></p>
+                </div>
+                <span class="result-score">${escapeHtml(formatMetric(item.score))}</span>
+            </li>`).join('')}</ol>`;
+    };
+
+    const renderQueryComparisons = (comparisons) => {
+        const rows = Array.isArray(comparisons) ? comparisons.slice(0, 10) : [];
+        queryComparisonCount.textContent = `${rows.length} / 10`;
+        if (!rows.length) {
+            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮未返回可对比的 Query 结果。</div>';
+            debug('query_comparisons_rendered', { comparisonCount: 0, outcomeCounts: {} });
+            return;
+        }
+
+        const outcomeCounts = rows.reduce((counts, item) => {
+            const outcome = ['improvement', 'regression', 'unchanged'].includes(item.outcome) ? item.outcome : 'unknown';
+            counts[outcome] = (counts[outcome] || 0) + 1;
+            return counts;
+        }, {});
+        queryComparisonList.innerHTML = rows.map((item, index) => {
+            const outcome = ['improvement', 'regression', 'unchanged'].includes(item.outcome) ? item.outcome : 'unknown';
+            const outcomeLabel = {
+                improvement: '改善', regression: '退化', unchanged: '持平', unknown: '未判定'
+            }[outcome];
+            return `
+                <article class="query-comparison-card">
+                    <header class="query-card-header">
+                        <div>
+                            <span>Query ${String(index + 1).padStart(2, '0')} · ${escapeHtml(item.locale || '—')} · ${escapeHtml(item.candidate_count || 0)} candidates</span>
+                            <h3>${escapeHtml(item.query_text || '未返回 Query')}</h3>
+                        </div>
+                        <strong class="query-outcome is-${outcome}">${escapeHtml(outcomeLabel)} ${escapeHtml(formatDelta(item['ndcg@10_delta']))}</strong>
+                    </header>
+                    <div class="query-columns-shell">
+                        <div class="query-columns">
+                            <section class="query-column is-before" aria-label="优化前 Top 10">
+                                <header><div><span>优化前</span><strong>Top 10</strong></div><em>nDCG@10 ${escapeHtml(formatMetric(item['baseline_ndcg@10']))}</em></header>
+                                ${renderResultList(item.top_baseline)}
+                            </section>
+                            <section class="query-column is-after" aria-label="优化后 Top 10">
+                                <header><div><span>优化后</span><strong>Top 10</strong></div><em>nDCG@10 ${escapeHtml(formatMetric(item['candidate_ndcg@10']))}</em></header>
+                                ${renderResultList(item.top_candidate)}
+                            </section>
+                        </div>
+                    </div>
+                </article>`;
+        }).join('');
+        debug('query_comparisons_rendered', { comparisonCount: rows.length, outcomeCounts });
+    };
+
     const renderProposal = (proposal) => {
         const metrics = proposal?.evidence?.aggregate_metrics || {};
         const ndcg = metrics['ndcg@10'] || {};
@@ -94,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span>${escapeHtml(proposal?.candidate_run_id || 'Candidate Run')}</span>
             <span>${escapeHtml(proposal?.comparison_id || 'Comparison')}</span>
             <span>${escapeHtml(proposal?.proposal_id || 'Proposal')}</span>`;
+        renderQueryComparisons(proposal?.evidence?.query_comparisons);
         debug('strategy_proposal_rendered', {
             proposalId: proposal?.proposal_id || null,
             recommendation,
@@ -109,12 +183,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <div><span>候选策略</span><strong>分析中…</strong><p>正在从受控策略空间生成一个可解释候选。</p></div>
             <div><span>指标变化</span><strong>计算中…</strong><p>Harness 正在比较同一批 Query 的两个 Run。</p></div>
             <div><span>局部风险</span><strong>扫描中…</strong><p>正在检查退化 Query，避免只看平均分。</p></div>`;
+        queryComparisonCount.textContent = '— / 10';
+        queryComparisonList.innerHTML = '<div class="query-comparison-empty">正在生成 10 组排序对比…</div>';
     };
 
     const renderError = (message) => {
         strategyName.textContent = 'Agent 分析失败';
         setState('Error', 'is-error');
         proposalGrid.innerHTML = `<div class="proposal-full"><span>错误</span><strong>${escapeHtml(message)}</strong><p>本轮没有产生可审阅的 proposal，请按提示重试。</p></div>`;
+        queryComparisonCount.textContent = '0 / 10';
+        queryComparisonList.innerHTML = '<div class="query-comparison-empty is-error">对比结果加载失败，请重新分析。</div>';
     };
 
     const requestProposal = async () => {

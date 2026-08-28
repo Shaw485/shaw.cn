@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260828-agent-split">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260828-query-comparisons">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -100,8 +100,23 @@
                 </article>
             </div>
         </section>
+
+        <section class="query-comparison-section" aria-labelledby="queryComparisonTitle">
+            <header class="query-comparison-heading">
+                <div>
+                    <span>10 Query Comparisons</span>
+                    <h2 id="queryComparisonTitle">搜索结果对比</h2>
+                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批候选商品，对比优化前后 Top 10 排序。</p>
+                </div>
+                <strong id="queryComparisonCount" aria-live="polite">0 / 10</strong>
+            </header>
+            <p class="query-comparison-scope">当前证据来自固定 smoke 评测集的候选重排，不代表全量商品召回效果。</p>
+            <div class="query-comparison-list" id="queryComparisonList" aria-live="polite">
+                <div class="query-comparison-empty">运行 Agent 后，在这里查看 10 个 Query 的优化前后 Top 10。</div>
+            </div>
+        </section>
     </main>
 
-    <script src="js/search-agent.js?v=20260828-agent-split"></script>
+    <script src="js/search-agent.js?v=20260828-query-comparisons"></script>
 </body>
 </html>

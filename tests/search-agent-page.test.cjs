@@ -13,7 +13,9 @@ test('Agent workbench is a dedicated page with the required dynamic nodes', () =
         'agentDecisionState',
         'agentStrategyName',
         'agentProposalGrid',
-        'agentEvidenceStrip'
+        'agentEvidenceStrip',
+        'queryComparisonCount',
+        'queryComparisonList'
     ]) {
         assert.match(page, new RegExp(`id="${id}"`));
     }
@@ -35,6 +37,26 @@ test('Agent script can request proposals but cannot approve decisions', () => {
     assert.match(script, /agent\/strategy\/propose/);
     assert.match(script, /credentials:\s*'same-origin'/);
     assert.doesNotMatch(script, /agent\/strategy\/decision|approve|reject/);
+});
+
+test('Agent workbench renders ten side-by-side query result comparisons', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const styles = read('css/search-agent.css');
+    assert.match(page, /10 Query Comparisons/);
+    assert.match(page, /候选重排，不代表全量商品召回效果/);
+    assert.match(script, /query_comparisons/);
+    assert.match(script, /comparisons\.slice\(0, 10\)/);
+    assert.match(script, /results\.slice\(0, 10\)/);
+    assert.match(styles, /grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+});
+
+test('comparison diagnostics log counts but not query or result content', () => {
+    const script = read('js/search-agent.js');
+    assert.match(script, /query_comparisons_rendered/);
+    assert.match(script, /comparisonCount:\s*rows\.length/);
+    assert.match(script, /outcomeCounts/);
+    assert.doesNotMatch(script, /debug\('query_comparisons_rendered',[\s\S]{0,180}query_text/);
 });
 
 test('portfolio points to the dedicated Agent page without frontend credentials', () => {
