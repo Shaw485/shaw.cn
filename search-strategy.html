@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-strategy-compact">
-    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-agent-api">
+    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-history-center">
 </head>
 <body class="strategy-page">
     <nav class="navbar">
@@ -41,8 +41,7 @@
         <nav class="strategy-tabs" aria-label="页面目录">
             <a href="#online-strategies">在线检索链路</a>
             <a href="#foundation-strategies">数据、评测与治理</a>
-            <a href="#approved-strategies">已批准策略 <span id="approvedStrategyCount">0</span></a>
-            <a href="#query-logs">查询日志 <span id="tabLogCount">0</span></a>
+            <a href="#strategy-history">策略历史与日志 <span id="approvedStrategyCount">0</span></a>
         </nav>
 
         <section class="strategy-section" id="online-strategies">
@@ -76,31 +75,44 @@
             </div>
         </section>
 
-        <section class="strategy-section" id="approved-strategies">
+        <section class="strategy-section history-center" id="strategy-history">
             <header class="section-heading">
-                <div><span>03 · APPROVED STRATEGIES</span><h2>站长已批准策略</h2></div>
-                <p>这里只读取站长在服务器后台审核并批准的策略目录。</p>
+                <div><span>03 · HISTORY &amp; LOGS</span><h2>策略历史与日志</h2></div>
+                <p>在一个地方查看已采用策略、配置细节、三项核心指标、审批生效记录和本机搜索日志。</p>
             </header>
             <div class="strategy-catalog-state" id="strategyCatalogState">正在读取策略目录…</div>
-            <div class="approved-strategy-list" id="approvedStrategyList" aria-live="polite"></div>
-        </section>
-
-        <section class="strategy-section log-section" id="query-logs">
-            <header class="section-heading">
-                <div><span>04 · QUERY LOGS</span><h2>查询日志</h2></div>
-                <p>展示当前浏览器在“开始搜索”页面产生的体验记录，最多保留 100 条。</p>
-            </header>
-            <div class="privacy-note"><strong>隐私说明</strong><span>Query 仅存储在你的当前浏览器，不上传到公开日志，也不会显示其他访客的搜索内容。</span></div>
-            <div class="log-toolbar">
-                <label><span class="sr-only">搜索 Query 或请求 ID</span><input id="logSearch" type="search" placeholder="筛选 Query、日志 ID 或请求 ID"></label>
-                <select id="logStatus" aria-label="按状态筛选"><option value="all">全部状态</option><option value="success">成功</option><option value="error">失败</option><option value="aborted">已取消</option><option value="running">进行中</option></select>
-                <span id="visibleLogCount">0 条记录</span>
+            <div class="history-summary" aria-label="策略历史摘要">
+                <div><strong id="historyStrategyCount">0</strong><span>采用版本</span></div>
+                <div><strong id="historyActivityCount">0</strong><span>变更记录</span></div>
+                <div><strong id="tabLogCount">0</strong><span>本机查询</span></div>
             </div>
-            <div class="log-list" id="logList" aria-live="polite"></div>
+            <div class="history-controls">
+                <div class="history-view-tabs" role="tablist" aria-label="历史记录类型">
+                    <button class="active" type="button" role="tab" aria-selected="true" data-history-view="versions">策略版本</button>
+                    <button type="button" role="tab" aria-selected="false" data-history-view="activity">变更日志</button>
+                    <button type="button" role="tab" aria-selected="false" data-history-view="queries">本机查询日志</button>
+                </div>
+                <label class="history-search"><span class="sr-only">筛选策略历史</span><input id="historySearch" type="search" placeholder="筛选策略名、ID 或审批记录"></label>
+            </div>
+            <div class="history-panel active" id="historyVersions" data-history-panel="versions">
+                <div class="approved-strategy-list" id="approvedStrategyList" aria-live="polite"></div>
+            </div>
+            <div class="history-panel" id="historyActivity" data-history-panel="activity">
+                <div class="activity-list" id="strategyActivityList" aria-live="polite"></div>
+            </div>
+            <div class="history-panel" id="historyQueries" data-history-panel="queries">
+                <div class="privacy-note"><strong>仅当前浏览器</strong><span>Query 不上传到公开策略日志，也不会显示其他访客的搜索内容；最多保留 100 条。</span></div>
+                <div class="log-toolbar">
+                    <label><span class="sr-only">搜索 Query 或请求 ID</span><input id="logSearch" type="search" placeholder="筛选 Query、日志 ID 或请求 ID"></label>
+                    <select id="logStatus" aria-label="按状态筛选"><option value="all">全部状态</option><option value="success">成功</option><option value="error">失败</option><option value="aborted">已取消</option><option value="running">进行中</option></select>
+                    <span id="visibleLogCount">0 条记录</span>
+                </div>
+                <div class="log-list" id="logList" aria-live="polite"></div>
+            </div>
         </section>
     </main>
 
     <script src="js/search-console-store.js?v=20260828-strategy-compact"></script>
-    <script src="js/search-strategy.js?v=20260828-agent-live-v2"></script>
+    <script src="js/search-strategy.js?v=20260828-history-center"></script>
 </body>
 </html>

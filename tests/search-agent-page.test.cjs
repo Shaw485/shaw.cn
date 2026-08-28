@@ -51,10 +51,36 @@ test('strategy scope and approval authority are described accurately', () => {
     const strategyScript = read('js/search-strategy.js');
     assert.match(agentPage, /查询词覆盖、数字\/型号与完整短语增益/);
     assert.doesNotMatch(agentPage, /尝试字段权重/);
-    assert.match(strategyPage, /站长已批准策略/);
+    assert.match(strategyPage, /策略历史与日志/);
     assert.doesNotMatch(strategyPage, /Agent 批准策略/);
-    assert.match(strategyScript, /后台记录的已批准策略/);
+    assert.match(strategyScript, /采用与生效必须由站长在服务器后台批准/);
     assert.doesNotMatch(strategyScript, /后端批准策略/);
+});
+
+test('strategy history center joins adopted versions, lifecycle logs and local query logs', () => {
+    const page = read('search-strategy.html');
+    const script = read('js/search-strategy.js');
+    const styles = read('css/search-strategy.css');
+    for (const id of [
+        'historyStrategyCount',
+        'historyActivityCount',
+        'historySearch',
+        'approvedStrategyList',
+        'strategyActivityList',
+        'logList'
+    ]) {
+        assert.match(page, new RegExp(`id="${id}"`));
+    }
+    assert.match(script, /strategy_history/);
+    assert.match(script, /strategy_activity_logs/);
+    assert.match(script, /Success@5/);
+    assert.match(script, /MRR@10/);
+    assert.match(script, /nDCG@10/);
+    assert.match(script, /配置参数/);
+    assert.match(script, /history_filter_applied/);
+    assert.doesNotMatch(script, /strategyDebug\([^)]*(?:query|config|description)/i);
+    assert.match(styles, /\.history-view-tabs/);
+    assert.match(styles, /\.activity-list/);
 });
 
 test('Agent workbench explains candidate strategies in Chinese', () => {
