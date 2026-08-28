@@ -247,6 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 url: 'search-strategy.html',
                 label: '策略平台'
             },
+            tertiaryAction: {
+                url: 'search-eval.html#agentWorkbench',
+                label: 'Agent 工作台'
+            },
             resources: {
                 first: {
                     heading: '01 · 建设路线图',
@@ -495,6 +499,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalApkLabel = document.getElementById('modalApkLabel');
     const modalSecondaryDownload = document.getElementById('modalSecondaryDownload');
     const modalSecondaryLabel = document.getElementById('modalSecondaryLabel');
+    const modalTertiaryAction = document.getElementById('modalTertiaryAction');
+    const modalTertiaryLabel = document.getElementById('modalTertiaryLabel');
     const modalPlatformActions = document.getElementById('modalPlatformActions');
     const modalDownloadStats = document.getElementById('modalDownloadStats');
     const modalDownloadCount = document.getElementById('modalDownloadCount');
@@ -649,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalFeatureDetails || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalFeatureDetails || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalTertiaryAction || !modalTertiaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
@@ -675,6 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
         const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
         const secondaryAction = app.secondaryAction || app.downloads?.[1];
+        const tertiaryAction = app.tertiaryAction;
         const platformStatus = modalPlatformActions.querySelector('.app-modal-platform-status');
         if (primaryAction) {
             modalApkDownload.href = primaryAction.url;
@@ -699,6 +706,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalSecondaryDownload.hidden = true;
                 modalSecondaryDownload.style.display = 'none';
             }
+            if (tertiaryAction) {
+                modalTertiaryAction.href = tertiaryAction.url;
+                modalTertiaryLabel.textContent = tertiaryAction.label;
+                modalTertiaryAction.hidden = false;
+                modalTertiaryAction.style.removeProperty('display');
+            } else {
+                modalTertiaryAction.hidden = true;
+                modalTertiaryAction.style.display = 'none';
+            }
             if (platformStatus) {
                 const statusText = app.platformStatus || (app.apk ? '苹果版开发中' : primaryAction.status);
                 platformStatus.textContent = statusText || '';
@@ -716,6 +732,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             modalApkDownload.classList.remove('is-navigation');
             modalSecondaryDownload.classList.remove('is-navigation');
+            modalTertiaryAction.hidden = true;
+            modalTertiaryAction.style.display = 'none';
             modalPlatformActions.hidden = true;
             modalPlatformActions.style.display = 'none';
             modalApkDownload.hidden = true;
