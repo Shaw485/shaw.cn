@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = document.getElementById('baselineState');
     const results = document.getElementById('baselineResults');
     const logStore = window.SearchConsoleStore;
+    const agentDecisionState = document.getElementById('agentDecisionState');
+    const agentApproveStrategy = document.getElementById('agentApproveStrategy');
+    const agentRejectStrategy = document.getElementById('agentRejectStrategy');
     let activeRequest = null;
     let activeLogId = null;
 
@@ -33,6 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const modules = enabledDebugModules();
         if (modules.size && !modules.has('search-ui')) return;
         console.debug('[search-console:search-ui]', {
+            timestamp: new Date().toISOString(),
+            event,
+            ...context
+        });
+    };
+
+    const agentDebug = (event, context = {}) => {
+        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
+        const modules = enabledDebugModules();
+        if (modules.size && !modules.has('agent-ui')) return;
+        console.debug('[search-console:agent-ui]', {
             timestamp: new Date().toISOString(),
             event,
             ...context
@@ -223,6 +237,22 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         runSearch(input.value);
     });
+
+    const setAgentDecision = (decision) => {
+        if (!agentDecisionState) return;
+        agentDecisionState.classList.remove('is-approved', 'is-rejected');
+        if (decision === 'approved') {
+            agentDecisionState.textContent = 'Approved demo';
+            agentDecisionState.classList.add('is-approved');
+        } else {
+            agentDecisionState.textContent = 'Rejected demo';
+            agentDecisionState.classList.add('is-rejected');
+        }
+        agentDebug('strategy_decision_previewed', { decision });
+    };
+
+    agentApproveStrategy?.addEventListener('click', () => setAgentDecision('approved'));
+    agentRejectStrategy?.addEventListener('click', () => setAgentDecision('rejected'));
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');

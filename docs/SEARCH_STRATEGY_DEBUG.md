@@ -14,7 +14,7 @@
 
 ```js
 localStorage.setItem('shaw.debug.search-console', '1');
-localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui');
+localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui,agent-ui');
 location.reload();
 ```
 
@@ -23,6 +23,7 @@ location.reload();
 - `search-ui`：搜索请求、响应与渲染流程。
 - `log-store`：本地日志写入与状态完成。
 - `strategy-ui`：策略平台日志筛选和展示。
+- `agent-ui`：Agent 工作台审批按钮的前端展示状态。
 
 关闭调试：
 

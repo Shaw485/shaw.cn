@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
-    <link rel="stylesheet" href="css/search-eval.css?v=20260828-search-form-fix">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-workbench">
 </head>
 <body class="search-eval-page">
     <nav class="navbar">
@@ -38,6 +38,7 @@
             </a>
             <span class="store-bar-title">Amazon ESCI 全量商品 · 两套搜索结果</span>
             <div class="store-links">
+                <a class="store-strategy" href="#agentWorkbench">Agent 工作台</a>
                 <a class="store-strategy" href="search-strategy.html">策略平台</a>
                 <a class="store-back" href="index.html">返回作品集</a>
             </div>
@@ -101,9 +102,101 @@
                 </div>
             </article>
         </section>
+
+        <section class="agent-workbench" id="agentWorkbench" aria-labelledby="agentWorkbenchTitle">
+            <div class="workbench-shell">
+                <header class="workbench-header">
+                    <div>
+                        <span class="workbench-kicker">Search Evaluation Agent · Workbench</span>
+                        <h2 id="agentWorkbenchTitle">Agent 工作台</h2>
+                    </div>
+                    <span class="workbench-badge">展示版 · 等待后端接入</span>
+                </header>
+
+                <div class="workbench-layout">
+                    <article class="agent-panel agent-loop-panel" aria-label="Agent 自动优化流程">
+                        <ol class="agent-loop">
+                            <li>
+                                <span>01</span>
+                                <div>
+                                    <strong>自己找 Bad Case</strong>
+                                    <p>读取搜索体验、评测 Run 或抽样 Query，发现当前排序不好的地方。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>02</span>
+                                <div>
+                                    <strong>提出候选策略</strong>
+                                    <p>只在受控空间内尝试，比如字段权重、型号精确匹配、同义词扩展。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>03</span>
+                                <div>
+                                    <strong>Harness 比较</strong>
+                                    <p>同一批数据上跑优化前和候选策略，比较指标、样本和退化 Query。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span>04</span>
+                                <div>
+                                    <strong>等待人工审批</strong>
+                                    <p>人只判断策略取舍；点击更新后，系统再自动写入版本化策略并验证。</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </article>
+
+                    <article class="agent-panel approval-panel" aria-label="策略审批面板">
+                        <div class="approval-topline">
+                            <div>
+                                <span>待审批策略</span>
+                                <h3>提高 title + brand 权重</h3>
+                            </div>
+                            <small id="agentDecisionState">Pending</small>
+                        </div>
+
+                        <div class="proposal-grid">
+                            <div>
+                                <span>Bad Case 样本</span>
+                                <strong>wireless mouse</strong>
+                                <p>优化前结果可搜，但品牌和属性相关性仍需验证。</p>
+                            </div>
+                            <div>
+                                <span>希望改善</span>
+                                <strong>属性词 + 品牌词</strong>
+                                <p>让明确匹配 title / brand 的商品更靠前。</p>
+                            </div>
+                            <div>
+                                <span>指标变化</span>
+                                <strong class="metric-up">nDCG@10 +0.04</strong>
+                                <p>示例占位，真实数值将来自 Harness。</p>
+                            </div>
+                            <div>
+                                <span>局部风险</span>
+                                <strong class="metric-risk">2 个 Query 退化</strong>
+                                <p>上线前必须打开退化样本复查。</p>
+                            </div>
+                        </div>
+
+                        <div class="evidence-strip">
+                            <span>Run baseline</span>
+                            <span>Run candidate</span>
+                            <span>Compare</span>
+                            <span>Trace</span>
+                        </div>
+
+                        <div class="approval-actions">
+                            <button class="approval-btn approval-accept" type="button" id="agentApproveStrategy">更新策略</button>
+                            <button class="approval-btn approval-reject" type="button" id="agentRejectStrategy">拒绝策略</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script src="js/search-console-store.js?v=20260828-console"></script>
-    <script src="js/search-eval.js?v=20260828-catalog"></script>
+    <script src="js/search-eval.js?v=20260828-agent-workbench"></script>
 </body>
 </html>
