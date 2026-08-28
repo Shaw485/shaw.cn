@@ -1,16 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const isLocal = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
+    const apiRoot = isLocal ? 'http://127.0.0.1:8000' : '/search-eval-api';
     const store = window.SearchConsoleStore;
     const logList = document.getElementById('logList');
     const logSearch = document.getElementById('logSearch');
     const logStatus = document.getElementById('logStatus');
     const tabCount = document.getElementById('tabLogCount');
     const visibleCount = document.getElementById('visibleLogCount');
+    const approvedStrategyCount = document.getElementById('approvedStrategyCount');
+    const strategyCatalogState = document.getElementById('strategyCatalogState');
+    const approvedStrategyList = document.getElementById('approvedStrategyList');
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     }[char]));
 
     const statusLabel = { success: '成功', error: '失败', aborted: '已取消', running: '进行中' };
+    const enabledDebugModules = () => new Set(
+        (localStorage.getItem('shaw.debug.search-console.modules') || '')
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean)
+    );
+    const strategyDebug = (event, context = {}) => {
+        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
+        const modules = enabledDebugModules();
+        if (modules.size && !modules.has('strategy-ui')) return;
+        console.debug('[search-console:strategy-ui]', {
+            timestamp: new Date().toISOString(),
+            event,
+            ...context
+        });
+    };
     const formatTime = (iso) => {
         const value = new Date(iso);
         return Number.isNaN(value.getTime()) ? '—' : value.toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
@@ -43,6 +64,68 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     };
 
+    const renderStrategyCatalog = (payload) => {
+        const strategies = Array.isArray(payload?.strategies) ? payload.strategies : [];
+        if (approvedStrategyCount) approvedStrategyCount.textContent = String(strategies.length);
+        if (!strategies.length) {
+            if (strategyCatalogState) {
+                strategyCatalogState.classList.remove('error');
+                strategyCatalogState.textContent = '暂无已批准策略。回到搜索体验页，在 Agent 工作台点击“开始 Agent 分析”，再选择“更新策略”。';
+            }
+            if (approvedStrategyList) approvedStrategyList.innerHTML = '';
+            return;
+        }
+        if (strategyCatalogState) {
+            strategyCatalogState.classList.remove('error');
+            strategyCatalogState.textContent = `已读取 ${strategies.length} 个后端批准策略。`;
+        }
+        if (approvedStrategyList) {
+            approvedStrategyList.innerHTML = strategies.map((strategy) => `
+                <article class="approved-strategy-card">
+                    <header>
+                        <div>
+                            <h3>${escapeHtml(strategy.name || strategy.strategy_id || '未命名策略')}</h3>
+                            <p>${escapeHtml(strategy.description || '暂无策略描述。')}</p>
+                        </div>
+                        <small>${escapeHtml(strategy.stage || 'strategy')}</small>
+                    </header>
+                    <div class="approved-strategy-meta">
+                        <span title="${escapeHtml(strategy.strategy_id || '')}">策略 ID：<code>${escapeHtml(strategy.strategy_id || '—')}</code></span>
+                        <span title="${escapeHtml(strategy.proposal_id || '')}">Proposal：${escapeHtml(strategy.proposal_id || '—')}</span>
+                        <span title="${escapeHtml(strategy.comparison_id || '')}">Comparison：${escapeHtml(strategy.comparison_id || '—')}</span>
+                    </div>
+                </article>`).join('');
+        }
+    };
+
+    const loadStrategyCatalog = async () => {
+        if (!strategyCatalogState || !approvedStrategyList) return;
+        try {
+            strategyDebug('strategy_catalog_requested');
+            const response = await fetch(`${apiRoot}/agent/strategy/catalog`, {
+                method: 'GET',
+                headers: { Accept: 'application/json' }
+            });
+            if (!response.ok) throw new Error(`http_${response.status}`);
+            const payload = await response.json();
+            renderStrategyCatalog(payload);
+            strategyDebug('strategy_catalog_loaded', {
+                strategyCount: Array.isArray(payload?.strategies) ? payload.strategies.length : 0,
+                activeStrategyId: payload?.active_strategy_id || null
+            });
+        } catch (error) {
+            if (approvedStrategyCount) approvedStrategyCount.textContent = '0';
+            strategyCatalogState.classList.add('error');
+            strategyCatalogState.textContent = '策略目录暂时不可用：后端可能还没有部署新的 Agent 接口。';
+            approvedStrategyList.innerHTML = '';
+            console.warn('[search-console:strategy-ui]', {
+                timestamp: new Date().toISOString(),
+                event: 'strategy_catalog_failed',
+                errorCode: error.message || 'network_error'
+            });
+        }
+    };
+
     logSearch.addEventListener('input', render);
     logStatus.addEventListener('change', render);
     window.addEventListener('storage', render);
@@ -57,4 +140,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     render();
+    loadStrategyCatalog();
 });

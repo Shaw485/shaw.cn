@@ -8,11 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = document.getElementById('baselineState');
     const results = document.getElementById('baselineResults');
     const logStore = window.SearchConsoleStore;
+    const agentStartAnalysis = document.getElementById('agentStartAnalysis');
     const agentDecisionState = document.getElementById('agentDecisionState');
+    const agentStrategyName = document.getElementById('agentStrategyName');
+    const agentProposalGrid = document.getElementById('agentProposalGrid');
+    const agentEvidenceStrip = document.getElementById('agentEvidenceStrip');
     const agentApproveStrategy = document.getElementById('agentApproveStrategy');
     const agentRejectStrategy = document.getElementById('agentRejectStrategy');
     let activeRequest = null;
     let activeLogId = null;
+    let activeAgentProposal = null;
 
     const productVisuals = [
         ['📦', '#edf0f2'], ['⌨️', '#eef0ea'], ['🎧', '#ece9f4'],
@@ -238,21 +243,187 @@ document.addEventListener('DOMContentLoaded', () => {
         runSearch(input.value);
     });
 
-    const setAgentDecision = (decision) => {
+    const setAgentState = (label, className = '') => {
         if (!agentDecisionState) return;
-        agentDecisionState.classList.remove('is-approved', 'is-rejected');
-        if (decision === 'approved') {
-            agentDecisionState.textContent = 'Approved demo';
-            agentDecisionState.classList.add('is-approved');
-        } else {
-            agentDecisionState.textContent = 'Rejected demo';
-            agentDecisionState.classList.add('is-rejected');
-        }
-        agentDebug('strategy_decision_previewed', { decision });
+        agentDecisionState.classList.remove('is-approved', 'is-rejected', 'is-running', 'is-error', 'is-pending');
+        agentDecisionState.textContent = label;
+        if (className) agentDecisionState.classList.add(className);
     };
 
-    agentApproveStrategy?.addEventListener('click', () => setAgentDecision('approved'));
-    agentRejectStrategy?.addEventListener('click', () => setAgentDecision('rejected'));
+    const setApprovalButtons = (enabled) => {
+        if (agentApproveStrategy) agentApproveStrategy.disabled = !enabled;
+        if (agentRejectStrategy) agentRejectStrategy.disabled = !enabled;
+    };
+
+    const formatDelta = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return '—';
+        const prefix = number > 0 ? '+' : '';
+        return `${prefix}${number.toFixed(4)}`;
+    };
+
+    const formatMetric = (value) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? number.toFixed(4) : '—';
+    };
+
+    const summarizeTopProducts = (products) => {
+        const rows = Array.isArray(products) ? products.slice(0, 3) : [];
+        if (!rows.length) return '暂无 Top 商品证据。';
+        return rows
+            .map((item) => `#${item.rank || '—'} ${item.product_id || '—'} / ${item.label || '—'}`)
+            .join('；');
+    };
+
+    const renderAgentProposal = (proposal) => {
+        const metrics = proposal?.evidence?.aggregate_metrics || {};
+        const ndcg = metrics['ndcg@10'] || {};
+        const outcome = proposal?.evidence?.outcome_counts?.['ndcg@10'] || {};
+        const badCase = proposal?.evidence?.bad_cases?.[0] || null;
+        const improvement = proposal?.evidence?.improvements?.[0] || null;
+        const regressionCount = Number(outcome.regressed) || 0;
+        const strategyName = proposal?.strategy?.catalog_entry?.name || '候选策略';
+        const recommendation = proposal?.agent_summary?.recommendation || 'continue_experiment';
+
+        activeAgentProposal = proposal;
+        if (agentStrategyName) agentStrategyName.textContent = strategyName;
+        setAgentState('Pending', 'is-pending');
+        setApprovalButtons(true);
+
+        if (agentProposalGrid) {
+            agentProposalGrid.innerHTML = `
+                <div>
+                    <span>Bad Case 样本</span>
+                    <strong>${escapeHtml(badCase?.query_text || '未返回样本')}</strong>
+                    <p>优化前：${escapeHtml(summarizeTopProducts(badCase?.top_baseline))}<br>候选后：${escapeHtml(summarizeTopProducts(badCase?.top_candidate))}</p>
+                </div>
+                <div>
+                    <span>希望增加的策略</span>
+                    <strong>${escapeHtml(strategyName)}</strong>
+                    <p>${escapeHtml(proposal?.strategy?.catalog_entry?.description || '等待 Agent 返回策略说明。')}</p>
+                </div>
+                <div>
+                    <span>效果变化</span>
+                    <strong class="${Number(ndcg.delta) >= 0 ? 'metric-up' : 'metric-risk'}">nDCG@10 ${escapeHtml(formatDelta(ndcg.delta))}</strong>
+                    <p>Baseline ${escapeHtml(formatMetric(ndcg.baseline))} → Candidate ${escapeHtml(formatMetric(ndcg.candidate))}；建议：${escapeHtml(recommendation)}</p>
+                </div>
+                <div>
+                    <span>退化与风险</span>
+                    <strong class="${regressionCount ? 'metric-risk' : 'metric-up'}">${regressionCount} 个 Query 退化</strong>
+                    <p>${escapeHtml(improvement ? `最大改善样本：${improvement.query_text}，Δ ${formatDelta(improvement['ndcg@10_delta'])}` : '本轮没有明显改善样本，建议拒绝或继续实验。')}</p>
+                </div>`;
+        }
+
+        if (agentEvidenceStrip) {
+            agentEvidenceStrip.innerHTML = `
+                <span>${escapeHtml(proposal?.baseline_run_id || 'Baseline Run')}</span>
+                <span>${escapeHtml(proposal?.candidate_run_id || 'Candidate Run')}</span>
+                <span>${escapeHtml(proposal?.comparison_id || 'Comparison')}</span>
+                <span>${escapeHtml(proposal?.proposal_id || 'Proposal')}</span>`;
+        }
+        agentDebug('strategy_proposal_rendered', {
+            proposalId: proposal?.proposal_id,
+            recommendation,
+            regressionCount
+        });
+    };
+
+    const renderAgentLoading = () => {
+        activeAgentProposal = null;
+        if (agentStrategyName) agentStrategyName.textContent = 'Agent 正在找 Bad Case';
+        setAgentState('Running', 'is-running');
+        setApprovalButtons(false);
+        if (agentProposalGrid) {
+            agentProposalGrid.innerHTML = `
+                <div><span>Bad Case 样本</span><strong>分析中…</strong><p>正在跑 baseline 与候选策略。</p></div>
+                <div><span>候选策略</span><strong>分析中…</strong><p>正在用受控策略空间生成一个可解释候选。</p></div>
+                <div><span>指标变化</span><strong>计算中…</strong><p>Harness 会比较同一批 Query 的两个 Run。</p></div>
+                <div><span>局部风险</span><strong>扫描中…</strong><p>会列出退化 Query，避免只看平均分。</p></div>`;
+        }
+    };
+
+    const renderAgentError = (message) => {
+        activeAgentProposal = null;
+        if (agentStrategyName) agentStrategyName.textContent = 'Agent 分析失败';
+        setAgentState('Error', 'is-error');
+        setApprovalButtons(false);
+        if (agentProposalGrid) {
+            agentProposalGrid.innerHTML = `<div class="proposal-full"><span>错误</span><strong>${escapeHtml(message)}</strong><p>后端暂时没有返回可审批 proposal，请稍后重试。</p></div>`;
+        }
+    };
+
+    const requestAgentProposal = async () => {
+        if (!agentStartAnalysis) return;
+        renderAgentLoading();
+        agentStartAnalysis.disabled = true;
+        agentStartAnalysis.textContent = '分析中…';
+        agentDebug('strategy_proposal_requested');
+        try {
+            const response = await fetch(`${apiRoot}/agent/strategy/propose`, {
+                method: 'POST',
+                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ profile: 'smoke' })
+            });
+            if (!response.ok) throw new Error(`http_${response.status}`);
+            renderAgentProposal(await response.json());
+        } catch (error) {
+            console.warn('[search-console:agent-ui]', {
+                timestamp: new Date().toISOString(),
+                event: 'strategy_proposal_failed',
+                errorCode: error.message || 'network_error'
+            });
+            renderAgentError('策略分析服务暂时不可用');
+        } finally {
+            agentStartAnalysis.disabled = false;
+            agentStartAnalysis.textContent = '重新分析';
+        }
+    };
+
+    const decideAgentProposal = async (decision) => {
+        if (!activeAgentProposal?.proposal_id) return;
+        setApprovalButtons(false);
+        setAgentState(decision === 'approve' ? 'Applying' : 'Rejecting', 'is-running');
+        agentDebug('strategy_decision_requested', {
+            decision,
+            proposalId: activeAgentProposal.proposal_id
+        });
+        try {
+            const response = await fetch(`${apiRoot}/agent/strategy/decision`, {
+                method: 'POST',
+                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    proposal_id: activeAgentProposal.proposal_id,
+                    decision
+                })
+            });
+            if (!response.ok) throw new Error(`http_${response.status}`);
+            const payload = await response.json();
+            setAgentState(decision === 'approve' ? 'Applied' : 'Rejected', decision === 'approve' ? 'is-approved' : 'is-rejected');
+            if (agentStrategyName && decision === 'approve') {
+                agentStrategyName.textContent = '已更新到策略平台';
+            }
+            if (agentEvidenceStrip) {
+                agentEvidenceStrip.innerHTML += `<span>${escapeHtml(payload.decision_id || 'Decision recorded')}</span>`;
+            }
+            agentDebug('strategy_decision_completed', {
+                decision,
+                decisionId: payload.decision_id,
+                applied: Boolean(payload.applied)
+            });
+        } catch (error) {
+            setAgentState('Error', 'is-error');
+            setApprovalButtons(true);
+            console.warn('[search-console:agent-ui]', {
+                timestamp: new Date().toISOString(),
+                event: 'strategy_decision_failed',
+                errorCode: error.message || 'network_error'
+            });
+        }
+    };
+
+    agentStartAnalysis?.addEventListener('click', requestAgentProposal);
+    agentApproveStrategy?.addEventListener('click', () => decideAgentProposal('approve'));
+    agentRejectStrategy?.addEventListener('click', () => decideAgentProposal('reject'));
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');

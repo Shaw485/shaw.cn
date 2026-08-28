@@ -22,8 +22,8 @@ location.reload();
 
 - `search-ui`：搜索请求、响应与渲染流程。
 - `log-store`：本地日志写入与状态完成。
-- `strategy-ui`：策略平台日志筛选和展示。
-- `agent-ui`：Agent 工作台审批按钮的前端展示状态。
+- `strategy-ui`：策略平台日志筛选、后端策略目录读取与展示。
+- `agent-ui`：Agent 工作台 proposal 请求、审批请求与前端展示状态。
 
 关闭调试：
 
@@ -41,7 +41,9 @@ localStorage.removeItem('shaw.debug.search-console.modules');
 
 ## 独立排查
 
-1. UI：开启 `search-ui`，检查请求开始、HTTP 状态和渲染完成事件。
+1. 搜索 UI：开启 `search-ui`，检查请求开始、HTTP 状态和渲染完成事件。
 2. 存储：开启 `log-store`，检查日志 ID、状态与数量；写入失败会输出不含敏感字段的 warning。
-3. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
-4. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。
+3. Agent 工作台：开启 `agent-ui`，检查 proposal/decision 请求是否成功；控制台只记录 proposal ID、decision ID、状态和错误码。
+4. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 是否返回已批准策略。
+5. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
+6. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。

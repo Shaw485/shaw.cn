@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-strategy-compact">
-    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-strategy-navfix">
+    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-agent-api">
 </head>
 <body class="strategy-page">
     <nav class="navbar">
@@ -40,6 +40,7 @@
         <nav class="strategy-tabs" aria-label="页面目录">
             <a href="#online-strategies">在线检索链路</a>
             <a href="#foundation-strategies">数据、评测与治理</a>
+            <a href="#approved-strategies">已批准策略 <span id="approvedStrategyCount">0</span></a>
             <a href="#query-logs">查询日志 <span id="tabLogCount">0</span></a>
         </nav>
 
@@ -74,9 +75,18 @@
             </div>
         </section>
 
+        <section class="strategy-section" id="approved-strategies">
+            <header class="section-heading">
+                <div><span>03 · APPROVED STRATEGIES</span><h2>Agent 批准策略</h2></div>
+                <p>这里读取后端策略目录。只有你在 Agent 工作台点击“更新策略”后，策略才会进入这里。</p>
+            </header>
+            <div class="strategy-catalog-state" id="strategyCatalogState">正在读取策略目录…</div>
+            <div class="approved-strategy-list" id="approvedStrategyList" aria-live="polite"></div>
+        </section>
+
         <section class="strategy-section log-section" id="query-logs">
             <header class="section-heading">
-                <div><span>03 · QUERY LOGS</span><h2>查询日志</h2></div>
+                <div><span>04 · QUERY LOGS</span><h2>查询日志</h2></div>
                 <p>展示当前浏览器在“开始搜索”页面产生的体验记录，最多保留 100 条。</p>
             </header>
             <div class="privacy-note"><strong>隐私说明</strong><span>Query 仅存储在你的当前浏览器，不上传到公开日志，也不会显示其他访客的搜索内容。</span></div>
@@ -90,6 +100,6 @@
     </main>
 
     <script src="js/search-console-store.js?v=20260828-strategy-compact"></script>
-    <script src="js/search-strategy.js?v=20260828-strategy-compact"></script>
+    <script src="js/search-strategy.js?v=20260828-agent-api"></script>
 </body>
 </html>

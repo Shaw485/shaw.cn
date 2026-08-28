@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
-    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-workbench">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-api">
 </head>
 <body class="search-eval-page">
     <nav class="navbar">
@@ -110,7 +110,7 @@
                         <span class="workbench-kicker">Search Evaluation Agent · Workbench</span>
                         <h2 id="agentWorkbenchTitle">Agent 工作台</h2>
                     </div>
-                    <span class="workbench-badge">展示版 · 等待后端接入</span>
+                    <button class="workbench-badge workbench-start" type="button" id="agentStartAnalysis">开始 Agent 分析</button>
                 </header>
 
                 <div class="workbench-layout">
@@ -151,44 +151,44 @@
                         <div class="approval-topline">
                             <div>
                                 <span>待审批策略</span>
-                                <h3>提高 title + brand 权重</h3>
+                                <h3 id="agentStrategyName">等待 Agent 开始分析</h3>
                             </div>
-                            <small id="agentDecisionState">Pending</small>
+                            <small id="agentDecisionState">Idle</small>
                         </div>
 
-                        <div class="proposal-grid">
+                        <div class="proposal-grid" id="agentProposalGrid">
                             <div>
                                 <span>Bad Case 样本</span>
-                                <strong>wireless mouse</strong>
-                                <p>优化前结果可搜，但品牌和属性相关性仍需验证。</p>
+                                <strong>尚未运行</strong>
+                                <p>点“开始 Agent 分析”后，后台会跑 smoke harness 并挑出最差样本。</p>
                             </div>
                             <div>
                                 <span>希望改善</span>
-                                <strong>属性词 + 品牌词</strong>
-                                <p>让明确匹配 title / brand 的商品更靠前。</p>
+                                <strong>等待候选策略</strong>
+                                <p>Agent 只会在受控策略空间内提出一个可解释改动。</p>
                             </div>
                             <div>
                                 <span>指标变化</span>
-                                <strong class="metric-up">nDCG@10 +0.04</strong>
-                                <p>示例占位，真实数值将来自 Harness。</p>
+                                <strong>—</strong>
+                                <p>真实数值将来自 baseline Run 与 candidate Run 的 Harness 比较。</p>
                             </div>
                             <div>
                                 <span>局部风险</span>
-                                <strong class="metric-risk">2 个 Query 退化</strong>
-                                <p>上线前必须打开退化样本复查。</p>
+                                <strong>—</strong>
+                                <p>如果候选策略伤害某些 Query，会在这里展示退化数量和样本。</p>
                             </div>
                         </div>
 
-                        <div class="evidence-strip">
-                            <span>Run baseline</span>
-                            <span>Run candidate</span>
-                            <span>Compare</span>
-                            <span>Trace</span>
+                        <div class="evidence-strip" id="agentEvidenceStrip">
+                            <span>Baseline Run</span>
+                            <span>Candidate Run</span>
+                            <span>Comparison</span>
+                            <span>Proposal</span>
                         </div>
 
                         <div class="approval-actions">
-                            <button class="approval-btn approval-accept" type="button" id="agentApproveStrategy">更新策略</button>
-                            <button class="approval-btn approval-reject" type="button" id="agentRejectStrategy">拒绝策略</button>
+                            <button class="approval-btn approval-accept" type="button" id="agentApproveStrategy" disabled>更新策略</button>
+                            <button class="approval-btn approval-reject" type="button" id="agentRejectStrategy" disabled>拒绝策略</button>
                         </div>
                     </article>
                 </div>
@@ -197,6 +197,6 @@
     </main>
 
     <script src="js/search-console-store.js?v=20260828-console"></script>
-    <script src="js/search-eval.js?v=20260828-agent-workbench"></script>
+    <script src="js/search-eval.js?v=20260828-agent-api"></script>
 </body>
 </html>
