@@ -110,6 +110,50 @@ test('Agent workbench renders a read-only, accessible runtime trace', () => {
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
+test('Agent self-check and Query constructor are isolated read-only tools', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const contract = read('js/search-agent-tools-contract.js');
+    const styles = read('css/search-agent.css');
+    const docs = read('docs/SEARCH_STRATEGY_DEBUG.md');
+    for (const id of [
+        'agentToolsTitle',
+        'agentEvalRunButton',
+        'agentEvalStatus',
+        'agentEvalResult',
+        'queryConstructorBuildButton',
+        'queryConstructorStatus',
+        'queryConstructorResult'
+    ]) {
+        assert.match(page, new RegExp(`id="${id}"`));
+    }
+    assert.match(page, /Agent 自检与工具/);
+    assert.match(page, /两项操作都不会审批、激活或修改搜索策略/);
+    assert.match(page, /id="agentEvalStatus" aria-live="polite"/);
+    assert.match(page, /id="queryConstructorStatus" aria-live="polite"/);
+    assert.doesNotMatch(page, /id="(?:agentEvalResult|queryConstructorResult)"[^>]*aria-live=/);
+    assert.match(page, /js\/search-agent-tools-contract\.js/);
+    assert.match(contract, /agent-eval-api-summary-v1/);
+    assert.match(contract, /query-constructor-api-summary-v1/);
+    assert.match(contract, /\/agent\/eval\/run/);
+    assert.match(contract, /\/agent\/query-constructor\/build/);
+    assert.match(contract, /credentials:\s*'same-origin'/);
+    assert.match(script, /protectedToolApiRoot = isLocal \? apiRoot : '\/search-eval-api'/);
+    assert.match(script, /renderAgentEvalSummary/);
+    assert.match(script, /生产 Planner/);
+    assert.match(script, /Runtime 对抗围栏/);
+    assert.match(script, /受保护数据读取/);
+    assert.match(contract, /harness_stimulus/);
+    assert.match(script, /renderQueryConstructorSummary/);
+    assert.match(script, /上一轮成绩已清除/);
+    assert.match(script, /上一轮摘要已清除/);
+    assert.match(styles, /\.agent-tools-grid/);
+    assert.match(styles, /\.agent-tool-action button:focus-visible/);
+    assert.match(docs, /agent-eval-ui/);
+    assert.match(docs, /query-constructor-ui/);
+    assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
+});
+
 test('strategy scope and approval authority are described accurately', () => {
     const agentPage = read('search-agent.html');
     const strategyPage = read('search-strategy.html');
@@ -236,6 +280,7 @@ test('Agent script can request proposals but cannot approve decisions', () => {
 test('local Agent QA keeps the page hostname when selecting the API origin', () => {
     const script = read('js/search-agent.js');
     assert.match(script, /window\.location\.hostname}:8000/);
+    assert.match(script, /protectedToolApiRoot = isLocal \? apiRoot/);
     assert.doesNotMatch(script, /isLocal \? 'http:\/\/127\.0\.0\.1:8000'/);
 });
 
@@ -274,6 +319,24 @@ test('runtime diagnostics are independently filtered and log IDs and counts only
         assert.match(runtimeLog[1], new RegExp(`${key}:`));
     }
     assert.doesNotMatch(runtimeLog[1], /query|product|response|credential|authorization|evidence|reason/i);
+});
+
+test('self-check tool diagnostics are independently filtered and contain no raw content', () => {
+    const script = read('js/search-agent.js');
+    assert.match(script, /modules\.has\(module\)/);
+    for (const module of ['agent-eval-ui', 'query-constructor-ui']) {
+        assert.match(script, new RegExp(`toolUiLog\\('${module}'`));
+    }
+    const evalLog = script.match(/toolUiLog\('agent-eval-ui', 'agent_eval_summary_rendered', \{([\s\S]*?)\n\s*\}\);/);
+    const queryLog = script.match(/toolUiLog\('query-constructor-ui', 'query_constructor_summary_rendered', \{([\s\S]*?)\n\s*\}\);/);
+    assert.ok(evalLog);
+    assert.ok(queryLog);
+    assert.match(evalLog[1], /evidenceId:/);
+    assert.match(evalLog[1], /executionId:/);
+    assert.match(evalLog[1], /taskCount:/);
+    assert.match(queryLog[1], /querySetId:/);
+    assert.match(queryLog[1], /queryCount:/);
+    assert.doesNotMatch(`${evalLog[1]}\n${queryLog[1]}`, /query_text|product|response|credential|authorization|payload|tasks|limitations/i);
 });
 
 test('risk card uses regression evidence and supports engineering terminal state', () => {

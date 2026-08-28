@@ -15,7 +15,7 @@
 
 ```js
 localStorage.setItem('shaw.debug.search-console', '1');
-localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui,agent-ui,agent-runtime-ui');
+localStorage.setItem('shaw.debug.search-console.modules', 'search-ui,log-store,strategy-ui,agent-ui,agent-runtime-ui,agent-eval-ui,query-constructor-ui');
 location.reload();
 ```
 
@@ -26,6 +26,8 @@ location.reload();
 - `strategy-ui`：策略版本、变更日志、本机查询日志的筛选、后端目录读取与展示。调试事件只记录数量、视图和是否存在筛选词。
 - `agent-ui`：受保护的 Agent 工作台阶段诊断、retrieval candidate、根因/候选/门禁展示和 10 组 Query 对比渲染状态。页面不发送审批请求。
 - `agent-runtime-ui`：只读 Agent Runtime Trace 渲染状态。只记录 Trace/Runtime/Planner ID、动作数、工具调用数和失败动作数；不记录 Query、商品、完整响应、凭据或 Authorization。
+- `agent-eval-ui`：Agent Eval 只读成绩单请求与渲染。页面把生产 Planner 任务和 Harness stimulus 围栏任务分开展示，并显示受保护数据读取/策略写入计数；成功日志只记录 Evidence/Execution ID、任务数和工具调用数，失败日志只记录稳定错误码与 HTTP 状态。
+- `query-constructor-ui`：Query 构造器只读摘要请求与渲染。成功事件只记录 Query Set ID 和数量；不记录或渲染任何原始 Query。
 
 关闭调试：
 
@@ -47,6 +49,8 @@ localStorage.removeItem('shaw.debug.search-console.modules');
 2. 存储：开启 `log-store`，检查日志 ID、状态与数量；写入失败会输出不含敏感字段的 warning。
 3. Agent 工作台：访问 `/search-agent.html` 并完成服务器鉴权，再开启 `agent-ui` 检查 `/agent/retrieval/analyze` 请求、`retrieval_stage_analysis_rendered`、`optimizer_reasoning_rendered` 与 Query 对比渲染。阶段事件只记录 Run/Diagnosis/Comparison ID、失败门禁数和独有相关商品计数；控制台不记录 Query、商品标题、结果列表、凭据、Authorization 或完整响应。若新阶段接口尚未部署并返回 `404`，页面会记录 `retrieval_stage_analysis_fallback` 并回退到旧 proposal 接口；遇到 `401` 时刷新页面重新登录。策略审批仅在服务器后台执行。
 4. Runtime Trace：单独开启 `agent-runtime-ui`，重新运行分析并检查 `runtime_trace_rendered`。日志里的 `actionCount` 必须等于轨迹动作数，`toolCallCount` 必须等于后端工具调用数；如果工具出现一次可恢复错误，时间线会先显示“工具失败 · 已按预算重试”，下一步必须是同一工具和同一候选的成功重试，失败动作不会伪造 evidence ID。页面加载、HTTP/契约错误和旧接口回退都会先清掉上一轮 Trace，避免把旧证据误认成当前运行。Replay 徽标只表示后端声明可按相同固定输入与工具动作确定性重放，不代表页面会触发重放或审批。
-5. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 的 `strategy_history` 与 `strategy_activity_logs` 数量；控制台不会打印配置正文、Query 或完整响应。
-6. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
-7. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。
+5. Agent Eval：单独开启 `agent-eval-ui` 并点击“运行 Agent 自检”，检查 `agent_eval_requested` 和 `agent_eval_summary_rendered`。接口或契约失败时检查 `agent_eval_failed` 的稳定错误码；不要把 Stage 5 Runtime 成绩解释成搜索质量成绩。
+6. Query 构造器：单独开启 `query-constructor-ui` 并点击“构造 Query 集”，检查 `query_constructor_requested` 和 `query_constructor_summary_rendered`。页面只显示 ID、原始/合成/去重计数和正式评测禁用状态；合成 Query 没有 ESCI 标签，不能进入 nDCG/MRR。
+7. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 的 `strategy_history` 与 `strategy_activity_logs` 数量；控制台不会打印配置正文、Query 或完整响应。
+8. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
+9. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。

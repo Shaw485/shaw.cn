@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260829-runtime-trace-v2">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260829-agent-tools-v1">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -144,6 +144,46 @@
             </ol>
         </section>
 
+        <section class="agent-tools-section" aria-labelledby="agentToolsTitle">
+            <header class="agent-tools-heading">
+                <div>
+                    <span>Read-only diagnostics</span>
+                    <h2 id="agentToolsTitle">Agent 自检与工具</h2>
+                    <p>分别验证 Agent 的工具使用能力，并构造只用于探索 Bad Case 的 smoke Query 集；两项操作都不会审批、激活或修改搜索策略。</p>
+                </div>
+                <strong>2 个受控工具</strong>
+            </header>
+            <div class="agent-tools-grid">
+                <article class="agent-tool-card" aria-labelledby="agentEvalTitle">
+                    <header>
+                        <div><span>Tool 01</span><h3 id="agentEvalTitle">Agent Eval 自检</h3></div>
+                        <p>运行固定 12 项任务，检查工具选择、证据绑定、恢复、预算和离线 Replay。</p>
+                    </header>
+                    <div class="agent-tool-action">
+                        <button type="button" id="agentEvalRunButton">运行 Agent 自检</button>
+                        <span id="agentEvalStatus" aria-live="polite">等待运行</span>
+                    </div>
+                    <div class="agent-tool-result" id="agentEvalResult">
+                        <p class="agent-tool-empty">运行后只显示成绩单摘要，不显示任务 Trace 或工具响应正文。</p>
+                    </div>
+                </article>
+
+                <article class="agent-tool-card" aria-labelledby="queryConstructorTitle">
+                    <header>
+                        <div><span>Tool 02</span><h3 id="queryConstructorTitle">Query 构造器</h3></div>
+                        <p>从固定 smoke 来源生成确定性变体，用于扩充待观察的 Bad Case，不继承相关性标签。</p>
+                    </header>
+                    <div class="agent-tool-action">
+                        <button type="button" id="queryConstructorBuildButton">构造 Query 集</button>
+                        <span id="queryConstructorStatus" aria-live="polite">等待运行</span>
+                    </div>
+                    <div class="agent-tool-result" id="queryConstructorResult">
+                        <p class="agent-tool-empty">运行后只显示 Query 集 ID 和数量边界，不显示任何原始 Query。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
         <section class="agent-reasoning-section" aria-labelledby="agentReasoningTitle">
             <header class="agent-reasoning-heading">
                 <div>
@@ -192,7 +232,8 @@
         </section>
     </main>
 
-    <script src="js/search-agent-contract.js?v=20260829-runtime-trace-v2"></script>
-    <script src="js/search-agent.js?v=20260829-runtime-trace-v2"></script>
+    <script src="js/search-agent-contract.js?v=20260829-agent-tools-v1"></script>
+    <script src="js/search-agent-tools-contract.js?v=20260829-agent-tools-v1"></script>
+    <script src="js/search-agent.js?v=20260829-agent-tools-v1"></script>
 </body>
 </html>

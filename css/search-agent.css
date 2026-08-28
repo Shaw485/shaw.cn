@@ -145,6 +145,45 @@
 .agent-runtime-gate { flex: 0 0 auto; color: #176746; font-size: 10px; font-weight: 800; }
 .agent-runtime-gate.is-fail { color: #91342d; }
 
+.agent-tools-section { margin-top: 16px; border: 1px solid var(--agent-line); background: #fff; box-shadow: 0 8px 28px rgba(20,31,42,.04); }
+.agent-tools-heading { padding: 20px 22px 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--agent-line); }
+.agent-tools-heading span { color: #31516f; font-size: 9px; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.agent-tools-heading h2 { margin-top: 5px; font-size: 23px; }
+.agent-tools-heading p { max-width: 780px; margin-top: 7px; color: var(--agent-muted); font-size: 12px; line-height: 1.65; }
+.agent-tools-heading > strong { padding: 7px 10px; border-radius: 999px; color: #31516f; background: #e8f1f8; font-size: 11px; white-space: nowrap; }
+.agent-tools-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.agent-tool-card { min-width: 0; padding: 20px 22px; }
+.agent-tool-card:first-child { border-right: 1px solid var(--agent-line); }
+.agent-tool-card > header { min-height: 92px; }
+.agent-tool-card > header > div { display: flex; gap: 9px; align-items: baseline; }
+.agent-tool-card > header span { color: #8b5d0e; font-size: 9px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+.agent-tool-card > header h3 { font-size: 17px; }
+.agent-tool-card > header p { max-width: 58ch; margin-top: 8px; color: var(--agent-muted); font-size: 11px; line-height: 1.6; }
+.agent-tool-action { padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #e2e7ea; border-bottom: 1px solid #e2e7ea; }
+.agent-tool-action button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--agent-navy); border-radius: 4px; color: #fff; background: var(--agent-navy); font-size: 12px; font-weight: 800; cursor: pointer; }
+.agent-tool-action button:hover:not(:disabled) { border-color: #34495b; background: #34495b; }
+.agent-tool-action button:focus-visible { outline: 3px solid #1c79b8; outline-offset: 3px; }
+.agent-tool-action button:disabled { cursor: not-allowed; opacity: .62; }
+.agent-tool-action > span { padding: 6px 8px; border-radius: 999px; color: #53626f; background: #edf1f3; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.agent-tool-action > span.is-running { color: #8b5d0e; background: #fff3dc; }
+.agent-tool-action > span.is-pass { color: #176746; background: #e6f5ed; }
+.agent-tool-action > span.is-fail { color: #91342d; background: #fff0ee; }
+.agent-tool-result { min-height: 218px; padding-top: 14px; }
+.agent-tool-empty { min-height: 190px; padding: 24px; display: grid; place-items: center; border: 1px dashed #cfd7dd; color: #607080; background: #fafbfc; font-size: 11px; line-height: 1.6; text-align: center; }
+.agent-tool-empty.is-error { border-color: #e3aaa5; color: #91342d; background: #fff6f5; }
+.agent-tool-result-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.agent-tool-result-heading span { display: block; color: #657584; font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.agent-tool-result-heading strong { display: block; margin-top: 4px; font-size: 17px; }
+.agent-tool-result-heading code { max-width: 52%; color: #53626f; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 10px; text-align: right; overflow-wrap: anywhere; }
+.agent-tool-metrics { margin-top: 12px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid #dfe4e8; border-left: 1px solid #dfe4e8; }
+.agent-tool-metrics > div { min-width: 0; padding: 9px; border-right: 1px solid #dfe4e8; border-bottom: 1px solid #dfe4e8; background: #fbfcfd; }
+.agent-tool-metrics span { display: block; color: #657584; font-size: 9px; line-height: 1.35; }
+.agent-tool-metrics strong { display: block; margin-top: 4px; color: #27323c; font-size: 13px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.agent-tool-metrics strong.is-pass { color: #08704f; }
+.agent-tool-metrics strong.is-fail { color: #91342d; }
+.agent-tool-boundary { margin-top: 12px; padding: 10px 11px; border-left: 3px solid #aeb9c2; color: #53626f; background: #f7f8f9; font-size: 10px; line-height: 1.6; }
+.agent-tool-boundary b { color: #27323c; }
+
 .agent-reasoning-section { margin-top: 16px; border: 1px solid #cfd5da; background: #fff; box-shadow: 0 8px 28px rgba(20,31,42,.04); }
 .agent-reasoning-heading { padding: 20px 22px 16px; display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; border-bottom: 1px solid var(--agent-line); }
 .agent-reasoning-heading span { display: block; margin-bottom: 7px; color: #8b5d0e; font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
@@ -269,6 +308,8 @@
     .agent-runtime-meta { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .agent-runtime-meta > div:nth-child(2) { border-right: 0; }
     .agent-runtime-meta > div:nth-child(-n+2) { border-bottom: 1px solid var(--agent-line); }
+    .agent-tools-grid { grid-template-columns: 1fr; }
+    .agent-tool-card:first-child { border-right: 0; border-bottom: 1px solid var(--agent-line); }
 }
 
 @media (max-width: 700px) {
@@ -303,4 +344,11 @@
     .agent-runtime-timeline > li:not(:last-child)::after { left: 13px; }
     .agent-runtime-index { width: 28px; height: 28px; }
     .agent-runtime-action > header, .agent-runtime-action footer { align-items: flex-start; flex-direction: column; }
+    .agent-tools-heading, .agent-tool-result-heading { flex-direction: column; }
+    .agent-tool-card { padding: 16px; }
+    .agent-tool-card > header { min-height: 0; padding-bottom: 12px; }
+    .agent-tool-action { align-items: flex-start; flex-direction: column; }
+    .agent-tool-action button { width: 100%; }
+    .agent-tool-result-heading code { max-width: 100%; text-align: left; }
+    .agent-tool-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }

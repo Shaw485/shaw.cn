@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiRoot = isLocal
         ? `${window.location.protocol}//${window.location.hostname}:8000`
         : '/search-eval-api';
+    const protectedToolApiRoot = isLocal ? apiRoot : '/search-eval-api';
     const startButton = document.getElementById('agentStartAnalysis');
     const decisionState = document.getElementById('agentDecisionState');
     const strategyName = document.getElementById('agentStrategyName');
@@ -24,7 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const agentRuntimeCounts = document.getElementById('agentRuntimeCounts');
     const agentRuntimeReplay = document.getElementById('agentRuntimeReplay');
     const agentRuntimeTimeline = document.getElementById('agentRuntimeTimeline');
+    const agentEvalRunButton = document.getElementById('agentEvalRunButton');
+    const agentEvalStatus = document.getElementById('agentEvalStatus');
+    const agentEvalResult = document.getElementById('agentEvalResult');
+    const queryConstructorBuildButton = document.getElementById('queryConstructorBuildButton');
+    const queryConstructorStatus = document.getElementById('queryConstructorStatus');
+    const queryConstructorResult = document.getElementById('queryConstructorResult');
     const agentContract = window.SearchAgentContract;
+    const agentToolsContract = window.SearchAgentToolsContract;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -53,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const modules = enabledDebugModules();
         if (modules.size && !modules.has('agent-runtime-ui')) return;
         console.debug('[search-console:agent-runtime-ui]', {
+            timestamp: new Date().toISOString(),
+            event,
+            ...context
+        });
+    };
+
+    const toolUiLog = (module, event, context = {}, level = 'debug') => {
+        if (!['agent-eval-ui', 'query-constructor-ui'].includes(module)) return;
+        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
+        const modules = enabledDebugModules();
+        if (modules.size && !modules.has(module)) return;
+        const writer = level === 'warn' ? console.warn : console.debug;
+        writer(`[search-console:${module}]`, {
             timestamp: new Date().toISOString(),
             event,
             ...context
@@ -609,6 +630,156 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const setToolStatus = (node, label, className = '') => {
+        node.classList.remove('is-running', 'is-pass', 'is-fail');
+        node.textContent = label;
+        if (className) node.classList.add(className);
+    };
+
+    const renderToolLoading = (statusNode, resultNode, message) => {
+        setToolStatus(statusNode, '运行中', 'is-running');
+        resultNode.innerHTML = `<p class="agent-tool-empty">${escapeHtml(message)}</p>`;
+    };
+
+    const renderToolError = (statusNode, resultNode, message) => {
+        setToolStatus(statusNode, '运行失败', 'is-fail');
+        resultNode.innerHTML = `<p class="agent-tool-empty is-error">${escapeHtml(message)}</p>`;
+    };
+
+    const renderAgentEvalSummary = (summary) => {
+        const metrics = summary.metrics;
+        const production = summary.subject_summaries.find((item) => item.subject_kind === 'production_planner');
+        const containment = summary.subject_summaries.find((item) => item.subject_kind === 'harness_stimulus');
+        const formalLabel = summary.formal_passed ? '正式自检通过' : '正式自检未通过';
+        setToolStatus(agentEvalStatus, formalLabel, summary.formal_passed ? 'is-pass' : 'is-fail');
+        const items = [
+            ['任务数', summary.task_count, ''],
+            ['生产 Planner', `${production.passed_count}/${production.task_count}`, production.passed_count === production.task_count ? 'is-pass' : 'is-fail'],
+            ['Runtime 对抗围栏', `${containment.passed_count}/${containment.task_count}`, containment.passed_count === containment.task_count ? 'is-pass' : 'is-fail'],
+            ['任务成功率', formatPercent(metrics.task_success_rate), metrics.task_success_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['证据绑定率', formatPercent(metrics.grounded_claim_rate), metrics.grounded_claim_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['工具选择准确率', formatPercent(metrics.tool_selection_accuracy), metrics.tool_selection_accuracy === 1 ? 'is-pass' : 'is-fail'],
+            ['恢复率', formatPercent(metrics.recovery_rate), metrics.recovery_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['预算合规率', formatPercent(metrics.budget_compliance_rate), metrics.budget_compliance_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['Replay 一致率', formatPercent(metrics.replay_fidelity_rate), metrics.replay_fidelity_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['篡改拒绝率', formatPercent(metrics.tamper_rejection_rate), metrics.tamper_rejection_rate === 1 ? 'is-pass' : 'is-fail'],
+            ['受保护数据读取', metrics.protected_profile_read_count, metrics.protected_profile_read_count === 0 ? 'is-pass' : 'is-fail'],
+            ['策略权威写入', metrics.strategy_write_count, metrics.strategy_write_count === 0 ? 'is-pass' : 'is-fail'],
+            ['Agent 工具调用', metrics.total_agent_tool_calls, ''],
+            ['对照流程成功率', formatPercent(metrics.comparable_workflow_success_rate), ''],
+            ['对照流程工具调用', metrics.comparable_workflow_tool_calls, '']
+        ];
+        agentEvalResult.innerHTML = `
+            <div class="agent-tool-result-heading">
+                <div><span>Formal result</span><strong class="${summary.formal_passed ? 'metric-up' : 'metric-risk'}">${escapeHtml(formalLabel)}</strong></div>
+                <code>${escapeHtml(summary.evidence_id)}</code>
+            </div>
+            <div class="agent-tool-metrics">${items.map(([label, value, className]) => `
+                <div><span>${escapeHtml(label)}</span><strong class="${className}">${escapeHtml(value)}</strong></div>`).join('')}
+            </div>
+            <p class="agent-tool-boundary"><b>边界：</b>这份成绩只验证固定 Stage 5 smoke 任务中的 Agent Runtime 行为。脚本化故障不证明真实 worker 能强制中止超时，也不衡量搜索结果质量。</p>`;
+    };
+
+    const renderQueryConstructorSummary = (summary) => {
+        setToolStatus(queryConstructorStatus, '构造完成', 'is-pass');
+        const items = [
+            ['Query 总数', summary.query_count],
+            ['原始 smoke Query', summary.original_count],
+            ['合成 Query', summary.synthetic_count],
+            ['去重数量', summary.deduplicated_count],
+            ['允许正式评测', summary.formal_evaluation_allowed ? '是' : '否']
+        ];
+        queryConstructorResult.innerHTML = `
+            <div class="agent-tool-result-heading">
+                <div><span>Constructed set</span><strong>只读探索集</strong></div>
+                <code>${escapeHtml(summary.query_set_id)}</code>
+            </div>
+            <div class="agent-tool-metrics">${items.map(([label, value]) => `
+                <div><span>${escapeHtml(label)}</span><strong class="${label === '允许正式评测' ? 'is-fail' : ''}">${escapeHtml(value)}</strong></div>`).join('')}
+            </div>
+            <p class="agent-tool-boundary"><b>边界：</b>来源固定为已提交的 20-Query smoke 视图；合成 Query 没有 ESCI 标签，只能用于发现 Bad Case，不能进入正式 nDCG / MRR。构造过程没有读取 500-Query dev 或 frozen test。</p>`;
+    };
+
+    const toolErrorMessage = (error, invalidCode, noun) => {
+        if (error.status === 401) return '登录状态已失效，请刷新页面并重新输入凭据。';
+        if (error.status === 403) return '当前登录身份没有运行该只读工具的权限。';
+        if (error.status === 409) return '已有一轮 Agent 自检正在运行，请稍后重试。';
+        if (error.code === invalidCode) return `${noun}摘要字段不完整或不一致，本轮结果已拒绝展示。`;
+        return `${noun}服务暂时不可用，请稍后重试。`;
+    };
+
+    const runAgentEval = async () => {
+        renderToolLoading(agentEvalStatus, agentEvalResult, '正在运行固定 12 项 Agent Eval；上一轮成绩已清除。');
+        agentEvalRunButton.disabled = true;
+        agentEvalRunButton.textContent = '自检运行中…';
+        toolUiLog('agent-eval-ui', 'agent_eval_requested');
+        try {
+            if (!agentToolsContract?.fetchAgentEval) throw new Error('agent_tools_contract_unavailable');
+            const summary = await agentToolsContract.fetchAgentEval(
+                window.fetch.bind(window),
+                protectedToolApiRoot
+            );
+            renderAgentEvalSummary(summary);
+            toolUiLog('agent-eval-ui', 'agent_eval_summary_rendered', {
+                evidenceId: summary.evidence_id,
+                executionId: summary.execution_id,
+                taskCount: summary.task_count,
+                agentToolCallCount: summary.metrics.total_agent_tool_calls,
+                workflowToolCallCount: summary.metrics.comparable_workflow_tool_calls
+            });
+        } catch (error) {
+            const errorCode = error.code || 'network_error';
+            renderToolError(
+                agentEvalStatus,
+                agentEvalResult,
+                toolErrorMessage(error, 'invalid_agent_eval_summary', 'Agent Eval')
+            );
+            toolUiLog('agent-eval-ui', 'agent_eval_failed', {
+                errorCode,
+                statusCode: Number(error.status) || 0
+            }, 'warn');
+        } finally {
+            agentEvalRunButton.disabled = false;
+            agentEvalRunButton.textContent = '重新运行自检';
+        }
+    };
+
+    const buildQuerySet = async () => {
+        renderToolLoading(queryConstructorStatus, queryConstructorResult, '正在从固定 smoke 来源构造并去重；上一轮摘要已清除。');
+        queryConstructorBuildButton.disabled = true;
+        queryConstructorBuildButton.textContent = '构造中…';
+        toolUiLog('query-constructor-ui', 'query_constructor_requested');
+        try {
+            if (!agentToolsContract?.fetchQueryConstructor) throw new Error('agent_tools_contract_unavailable');
+            const summary = await agentToolsContract.fetchQueryConstructor(
+                window.fetch.bind(window),
+                protectedToolApiRoot
+            );
+            renderQueryConstructorSummary(summary);
+            toolUiLog('query-constructor-ui', 'query_constructor_summary_rendered', {
+                querySetId: summary.query_set_id,
+                queryCount: summary.query_count,
+                originalCount: summary.original_count,
+                syntheticCount: summary.synthetic_count,
+                deduplicatedCount: summary.deduplicated_count
+            });
+        } catch (error) {
+            const errorCode = error.code || 'network_error';
+            renderToolError(
+                queryConstructorStatus,
+                queryConstructorResult,
+                toolErrorMessage(error, 'invalid_query_constructor_summary', 'Query 构造器')
+            );
+            toolUiLog('query-constructor-ui', 'query_constructor_failed', {
+                errorCode,
+                statusCode: Number(error.status) || 0
+            }, 'warn');
+        } finally {
+            queryConstructorBuildButton.disabled = false;
+            queryConstructorBuildButton.textContent = '重新构造 Query 集';
+        }
+    };
+
     const renderRetrievalAnalysis = (analysis) => {
         const comparison = analysis?.comparison || {};
         const aggregate = comparison.aggregate_deltas || {};
@@ -788,6 +959,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     startButton?.addEventListener('click', requestProposal);
+    agentEvalRunButton?.addEventListener('click', runAgentEval);
+    queryConstructorBuildButton?.addEventListener('click', buildQuerySet);
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
