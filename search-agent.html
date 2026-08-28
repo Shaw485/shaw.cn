@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="搜索质量诊断 Agent 的受保护工作台。">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Agent 工作台 · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260828-agent-split">
+</head>
+<body class="search-agent-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">Shaw's Space</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link">AI 学习记录</a></li>
+                <li><a href="blog.html" class="nav-link">博客记录</a></li>
+                <li><a href="contact.html" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="agent-page">
+        <header class="agent-toolbar">
+            <div>
+                <span class="agent-toolbar-kicker">Search Evaluation Agent</span>
+                <h1>Agent 工作台</h1>
+                <p>自动发现 Bad Case、提出候选策略，并用同一批评测样本比较收益与风险。</p>
+            </div>
+            <nav class="agent-toolbar-actions" aria-label="搜索项目页面">
+                <a href="search-eval.html">开始搜索</a>
+                <a href="search-strategy.html">策略平台</a>
+                <a href="index.html">返回作品集</a>
+            </nav>
+        </header>
+
+        <section class="agent-workbench" aria-labelledby="agentWorkbenchTitle">
+            <header class="workbench-header">
+                <div>
+                    <span class="workbench-kicker">受控分析流程</span>
+                    <h2 id="agentWorkbenchTitle">一次运行，一个可解释提案</h2>
+                </div>
+                <button class="workbench-start" type="button" id="agentStartAnalysis">开始 Agent 分析</button>
+            </header>
+
+            <div class="workbench-layout">
+                <article class="agent-panel agent-loop-panel" aria-label="Agent 自动优化流程">
+                    <ol class="agent-loop">
+                        <li>
+                            <span>01</span>
+                            <div><strong>发现 Bad Case</strong><p>读取评测 Run，从当前排序中找到最值得诊断的失败样本。</p></div>
+                        </li>
+                        <li>
+                            <span>02</span>
+                            <div><strong>提出候选策略</strong><p>只在受控策略空间内尝试字段权重、精确匹配等可解释改动。</p></div>
+                        </li>
+                        <li>
+                            <span>03</span>
+                            <div><strong>Harness 比较</strong><p>用同一批数据比较优化前后指标，同时检查改善和退化 Query。</p></div>
+                        </li>
+                        <li>
+                            <span>04</span>
+                            <div><strong>等待站长审批</strong><p>工作台只生成提案与证据，不会自动修改线上搜索策略。</p></div>
+                        </li>
+                    </ol>
+                </article>
+
+                <article class="agent-panel proposal-panel" aria-label="策略提案面板">
+                    <div class="proposal-topline">
+                        <div>
+                            <span>候选策略</span>
+                            <h3 id="agentStrategyName">等待 Agent 开始分析</h3>
+                        </div>
+                        <small id="agentDecisionState" aria-live="polite">Idle</small>
+                    </div>
+
+                    <div class="proposal-grid" id="agentProposalGrid" aria-live="polite">
+                        <div><span>Bad Case 样本</span><strong>尚未运行</strong><p>运行后会展示本轮最差样本及优化前后 Top 结果。</p></div>
+                        <div><span>候选策略</span><strong>等待分析</strong><p>Agent 每轮只返回一个可解释、可回滚的候选改动。</p></div>
+                        <div><span>指标变化</span><strong>—</strong><p>真实数值来自 baseline 与 candidate 的同集 Harness 比较。</p></div>
+                        <div><span>局部风险</span><strong>—</strong><p>除平均指标外，也会显示退化 Query 数量与代表样本。</p></div>
+                    </div>
+
+                    <div class="evidence-strip" id="agentEvidenceStrip" aria-label="证据对象标识">
+                        <span>Baseline Run</span><span>Candidate Run</span><span>Comparison</span><span>Proposal</span>
+                    </div>
+
+                    <p class="proposal-note">该页面与提案接口仅对登录用户开放；策略变更仍需站长在服务器后台审批。</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/search-agent.js?v=20260828-agent-split"></script>
+</body>
+</html>

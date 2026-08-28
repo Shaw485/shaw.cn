@@ -8,11 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = document.getElementById('baselineState');
     const results = document.getElementById('baselineResults');
     const logStore = window.SearchConsoleStore;
-    const agentStartAnalysis = document.getElementById('agentStartAnalysis');
-    const agentDecisionState = document.getElementById('agentDecisionState');
-    const agentStrategyName = document.getElementById('agentStrategyName');
-    const agentProposalGrid = document.getElementById('agentProposalGrid');
-    const agentEvidenceStrip = document.getElementById('agentEvidenceStrip');
     let activeRequest = null;
     let activeLogId = null;
 
@@ -38,17 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const modules = enabledDebugModules();
         if (modules.size && !modules.has('search-ui')) return;
         console.debug('[search-console:search-ui]', {
-            timestamp: new Date().toISOString(),
-            event,
-            ...context
-        });
-    };
-
-    const agentDebug = (event, context = {}) => {
-        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
-        const modules = enabledDebugModules();
-        if (modules.size && !modules.has('agent-ui')) return;
-        console.debug('[search-console:agent-ui]', {
             timestamp: new Date().toISOString(),
             event,
             ...context
@@ -239,133 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         runSearch(input.value);
     });
-
-    const setAgentState = (label, className = '') => {
-        if (!agentDecisionState) return;
-        agentDecisionState.classList.remove('is-approved', 'is-rejected', 'is-running', 'is-error', 'is-pending');
-        agentDecisionState.textContent = label;
-        if (className) agentDecisionState.classList.add(className);
-    };
-
-    const formatDelta = (value) => {
-        const number = Number(value);
-        if (!Number.isFinite(number)) return '—';
-        const prefix = number > 0 ? '+' : '';
-        return `${prefix}${number.toFixed(4)}`;
-    };
-
-    const formatMetric = (value) => {
-        const number = Number(value);
-        return Number.isFinite(number) ? number.toFixed(4) : '—';
-    };
-
-    const summarizeTopProducts = (products) => {
-        const rows = Array.isArray(products) ? products.slice(0, 3) : [];
-        if (!rows.length) return '暂无 Top 商品证据。';
-        return rows
-            .map((item) => `#${item.rank || '—'} ${item.product_id || '—'} / ${item.label || '—'}`)
-            .join('；');
-    };
-
-    const renderAgentProposal = (proposal) => {
-        const metrics = proposal?.evidence?.aggregate_metrics || {};
-        const ndcg = metrics['ndcg@10'] || {};
-        const outcome = proposal?.evidence?.outcome_counts?.['ndcg@10'] || {};
-        const badCase = proposal?.evidence?.bad_cases?.[0] || null;
-        const improvement = proposal?.evidence?.improvements?.[0] || null;
-        const regressionCount = Number(outcome.regressed) || 0;
-        const strategyName = proposal?.strategy?.catalog_entry?.name || '候选策略';
-        const recommendation = proposal?.agent_summary?.recommendation || 'continue_experiment';
-
-        if (agentStrategyName) agentStrategyName.textContent = strategyName;
-        setAgentState('Pending', 'is-pending');
-
-        if (agentProposalGrid) {
-            agentProposalGrid.innerHTML = `
-                <div>
-                    <span>Bad Case 样本</span>
-                    <strong>${escapeHtml(badCase?.query_text || '未返回样本')}</strong>
-                    <p>优化前：${escapeHtml(summarizeTopProducts(badCase?.top_baseline))}<br>候选后：${escapeHtml(summarizeTopProducts(badCase?.top_candidate))}</p>
-                </div>
-                <div>
-                    <span>希望增加的策略</span>
-                    <strong>${escapeHtml(strategyName)}</strong>
-                    <p>${escapeHtml(proposal?.strategy?.catalog_entry?.description || '等待 Agent 返回策略说明。')}</p>
-                </div>
-                <div>
-                    <span>效果变化</span>
-                    <strong class="${Number(ndcg.delta) >= 0 ? 'metric-up' : 'metric-risk'}">nDCG@10 ${escapeHtml(formatDelta(ndcg.delta))}</strong>
-                    <p>Baseline ${escapeHtml(formatMetric(ndcg.baseline))} → Candidate ${escapeHtml(formatMetric(ndcg.candidate))}；建议：${escapeHtml(recommendation)}</p>
-                </div>
-                <div>
-                    <span>退化与风险</span>
-                    <strong class="${regressionCount ? 'metric-risk' : 'metric-up'}">${regressionCount} 个 Query 退化</strong>
-                    <p>${escapeHtml(improvement ? `最大改善样本：${improvement.query_text}，Δ ${formatDelta(improvement['ndcg@10_delta'])}` : '本轮没有明显改善样本，建议拒绝或继续实验。')}</p>
-                </div>`;
-        }
-
-        if (agentEvidenceStrip) {
-            agentEvidenceStrip.innerHTML = `
-                <span>${escapeHtml(proposal?.baseline_run_id || 'Baseline Run')}</span>
-                <span>${escapeHtml(proposal?.candidate_run_id || 'Candidate Run')}</span>
-                <span>${escapeHtml(proposal?.comparison_id || 'Comparison')}</span>
-                <span>${escapeHtml(proposal?.proposal_id || 'Proposal')}</span>`;
-        }
-        agentDebug('strategy_proposal_rendered', {
-            proposalId: proposal?.proposal_id,
-            recommendation,
-            regressionCount
-        });
-    };
-
-    const renderAgentLoading = () => {
-        if (agentStrategyName) agentStrategyName.textContent = 'Agent 正在找 Bad Case';
-        setAgentState('Running', 'is-running');
-        if (agentProposalGrid) {
-            agentProposalGrid.innerHTML = `
-                <div><span>Bad Case 样本</span><strong>分析中…</strong><p>正在跑 baseline 与候选策略。</p></div>
-                <div><span>候选策略</span><strong>分析中…</strong><p>正在用受控策略空间生成一个可解释候选。</p></div>
-                <div><span>指标变化</span><strong>计算中…</strong><p>Harness 会比较同一批 Query 的两个 Run。</p></div>
-                <div><span>局部风险</span><strong>扫描中…</strong><p>会列出退化 Query，避免只看平均分。</p></div>`;
-        }
-    };
-
-    const renderAgentError = (message) => {
-        if (agentStrategyName) agentStrategyName.textContent = 'Agent 分析失败';
-        setAgentState('Error', 'is-error');
-        if (agentProposalGrid) {
-            agentProposalGrid.innerHTML = `<div class="proposal-full"><span>错误</span><strong>${escapeHtml(message)}</strong><p>后端暂时没有返回可审批 proposal，请稍后重试。</p></div>`;
-        }
-    };
-
-    const requestAgentProposal = async () => {
-        if (!agentStartAnalysis) return;
-        renderAgentLoading();
-        agentStartAnalysis.disabled = true;
-        agentStartAnalysis.textContent = '分析中…';
-        agentDebug('strategy_proposal_requested');
-        try {
-            const response = await fetch(`${apiRoot}/agent/strategy/propose`, {
-                method: 'POST',
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ profile: 'smoke' })
-            });
-            if (!response.ok) throw new Error(`http_${response.status}`);
-            renderAgentProposal(await response.json());
-        } catch (error) {
-            console.warn('[search-console:agent-ui]', {
-                timestamp: new Date().toISOString(),
-                event: 'strategy_proposal_failed',
-                errorCode: error.message || 'network_error'
-            });
-            renderAgentError('策略分析服务暂时不可用');
-        } finally {
-            agentStartAnalysis.disabled = false;
-            agentStartAnalysis.textContent = '重新分析';
-        }
-    };
-
-    agentStartAnalysis?.addEventListener('click', requestAgentProposal);
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');

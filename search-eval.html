@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
-    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-live">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-split">
 </head>
 <body class="search-eval-page">
     <nav class="navbar">
@@ -38,7 +38,7 @@
             </a>
             <span class="store-bar-title">Amazon ESCI 全量商品 · 两套搜索结果</span>
             <div class="store-links">
-                <a class="store-strategy" href="#agentWorkbench">Agent 工作台</a>
+                <a class="store-strategy" href="search-agent.html">Agent 工作台</a>
                 <a class="store-strategy" href="search-strategy.html">策略平台</a>
                 <a class="store-back" href="index.html">返回作品集</a>
             </div>
@@ -103,97 +103,9 @@
             </article>
         </section>
 
-        <section class="agent-workbench" id="agentWorkbench" aria-labelledby="agentWorkbenchTitle">
-            <div class="workbench-shell">
-                <header class="workbench-header">
-                    <div>
-                        <span class="workbench-kicker">Search Evaluation Agent · Workbench</span>
-                        <h2 id="agentWorkbenchTitle">Agent 工作台</h2>
-                    </div>
-                    <button class="workbench-badge workbench-start" type="button" id="agentStartAnalysis">开始 Agent 分析</button>
-                </header>
-
-                <div class="workbench-layout">
-                    <article class="agent-panel agent-loop-panel" aria-label="Agent 自动优化流程">
-                        <ol class="agent-loop">
-                            <li>
-                                <span>01</span>
-                                <div>
-                                    <strong>自己找 Bad Case</strong>
-                                    <p>读取搜索体验、评测 Run 或抽样 Query，发现当前排序不好的地方。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>02</span>
-                                <div>
-                                    <strong>提出候选策略</strong>
-                                    <p>只在受控空间内尝试，比如字段权重、型号精确匹配、同义词扩展。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>03</span>
-                                <div>
-                                    <strong>Harness 比较</strong>
-                                    <p>同一批数据上跑优化前和候选策略，比较指标、样本和退化 Query。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span>04</span>
-                                <div>
-                                    <strong>等待人工审批</strong>
-                                    <p>公开页面只展示证据；更新或拒绝由站长在服务器后台完成。</p>
-                                </div>
-                            </li>
-                        </ol>
-                    </article>
-
-                    <article class="agent-panel approval-panel" aria-label="策略提案面板">
-                        <div class="approval-topline">
-                            <div>
-                                <span>候选策略</span>
-                                <h3 id="agentStrategyName">等待 Agent 开始分析</h3>
-                            </div>
-                            <small id="agentDecisionState">Idle</small>
-                        </div>
-
-                        <div class="proposal-grid" id="agentProposalGrid">
-                            <div>
-                                <span>Bad Case 样本</span>
-                                <strong>尚未运行</strong>
-                                <p>点“开始 Agent 分析”后，后台会跑 smoke harness 并挑出最差样本。</p>
-                            </div>
-                            <div>
-                                <span>希望改善</span>
-                                <strong>等待候选策略</strong>
-                                <p>Agent 只会在受控策略空间内提出一个可解释改动。</p>
-                            </div>
-                            <div>
-                                <span>指标变化</span>
-                                <strong>—</strong>
-                                <p>真实数值将来自 baseline Run 与 candidate Run 的 Harness 比较。</p>
-                            </div>
-                            <div>
-                                <span>局部风险</span>
-                                <strong>—</strong>
-                                <p>如果候选策略伤害某些 Query，会在这里展示退化数量和样本。</p>
-                            </div>
-                        </div>
-
-                        <div class="evidence-strip" id="agentEvidenceStrip">
-                            <span>Baseline Run</span>
-                            <span>Candidate Run</span>
-                            <span>Comparison</span>
-                            <span>Proposal</span>
-                        </div>
-
-                        <p class="approval-owner-note">提案与评测证据可公开查看；策略变更仅由站长在受保护的服务器后台审批。</p>
-                    </article>
-                </div>
-            </div>
-        </section>
     </main>
 
     <script src="js/search-console-store.js?v=20260828-console"></script>
-    <script src="js/search-eval.js?v=20260828-agent-live"></script>
+    <script src="js/search-eval.js?v=20260828-agent-split"></script>
 </body>
 </html>
