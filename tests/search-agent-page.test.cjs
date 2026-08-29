@@ -110,7 +110,7 @@ test('Agent workbench renders a read-only, accessible runtime trace', () => {
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
-test('Agent self-check, Query constructor and Bad Case runner are isolated diagnostic tools', () => {
+test('Agent self-check, Query constructor, Bad Case runner and experiment planner are isolated diagnostic tools', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
     const contract = read('js/search-agent-tools-contract.js');
@@ -126,26 +126,44 @@ test('Agent self-check, Query constructor and Bad Case runner are isolated diagn
         'queryConstructorResult',
         'badCaseRunButton',
         'badCaseStatus',
-        'badCaseResult'
+        'badCaseResult',
+        'diagnosticPlanButton',
+        'diagnosticPlanStatus',
+        'diagnosticPlanResult',
+        'humanOracleStartButton',
+        'humanOracleStatus',
+        'humanOracleProgress',
+        'humanOracleIntentProgress',
+        'humanOracleBehaviorProgress',
+        'humanOracleClusterProgress',
+        'humanOracleResult'
     ]) {
         assert.match(page, new RegExp(`id="${id}"`));
     }
     assert.match(page, /Agent 自检与工具/);
-    assert.match(page, /三项操作都不会审批、激活或修改搜索策略/);
+    assert.match(page, /五项操作都不会审批、激活或修改搜索策略/);
     assert.match(page, /id="agentEvalStatus" aria-live="polite"/);
     assert.match(page, /id="queryConstructorStatus" aria-live="polite"/);
     assert.match(page, /id="badCaseStatus" aria-live="polite"/);
+    assert.match(page, /id="diagnosticPlanStatus" aria-live="polite"/);
+    assert.match(page, /id="humanOracleStatus" aria-live="polite"/);
     assert.match(page, /id="agentEvalRunButton" aria-controls="agentEvalResult"/);
     assert.match(page, /id="queryConstructorBuildButton" aria-controls="queryConstructorResult"/);
     assert.match(page, /id="badCaseRunButton" aria-controls="badCaseResult"/);
-    assert.doesNotMatch(page, /id="(?:agentEvalResult|queryConstructorResult|badCaseResult)"[^>]*aria-live=/);
+    assert.match(page, /id="diagnosticPlanButton" aria-controls="diagnosticPlanResult" disabled/);
+    assert.match(page, /id="humanOracleStartButton" aria-controls="humanOracleResult" disabled/);
+    assert.doesNotMatch(page, /id="(?:agentEvalResult|queryConstructorResult|badCaseResult|diagnosticPlanResult|humanOracleResult)"[^>]*aria-live=/);
     assert.match(page, /js\/search-agent-tools-contract\.js/);
     assert.match(contract, /agent-eval-api-summary-v1/);
     assert.match(contract, /query-constructor-api-summary-v1/);
-    assert.match(contract, /bad-case-api-summary-v1/);
+    assert.match(contract, /bad-case-api-summary-v2/);
+    assert.match(contract, /diagnostic-experiment-plan-v1/);
+    assert.match(contract, /human-oracle-batch-api-summary-v1/);
     assert.match(contract, /\/agent\/eval\/run/);
     assert.match(contract, /\/agent\/query-constructor\/build/);
     assert.match(contract, /\/agent\/bad-cases\/run/);
+    assert.match(contract, /\/agent\/diagnostic-experiments\/plan/);
+    assert.match(contract, /\/agent\/human-oracle\/batches\/create/);
     assert.match(contract, /credentials:\s*'same-origin'/);
     assert.match(script, /protectedToolApiRoot = isLocal \? apiRoot : '\/search-eval-api'/);
     assert.match(script, /renderAgentEvalSummary/);
@@ -155,6 +173,8 @@ test('Agent self-check, Query constructor and Bad Case runner are isolated diagn
     assert.match(contract, /harness_stimulus/);
     assert.match(script, /renderQueryConstructorSummary/);
     assert.match(script, /renderBadCaseSummary/);
+    assert.match(script, /renderDiagnosticExperimentPlan/);
+    assert.match(script, /startHumanOracle/);
     assert.match(script, /上一轮成绩已清除/);
     assert.match(script, /上一轮摘要已清除/);
     assert.match(script, /上一轮诊断摘要已清除/);
@@ -166,6 +186,8 @@ test('Agent self-check, Query constructor and Bad Case runner are isolated diagn
     assert.match(docs, /agent-eval-ui/);
     assert.match(docs, /query-constructor-ui/);
     assert.match(docs, /bad-case-ui/);
+    assert.match(script, /diagnostic-experiment-ui/);
+    assert.match(script, /human-oracle-ui/);
     assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
 });
 
@@ -180,6 +202,68 @@ test('strategy scope and approval authority are described accurately', () => {
     assert.doesNotMatch(strategyPage, /Agent 批准策略/);
     assert.match(strategyScript, /采用与生效必须由站长在服务器后台批准/);
     assert.doesNotMatch(strategyScript, /后端批准策略/);
+});
+
+test('Human Diagnostic Oracle is a two-stage manual workbench with locked evidence boundaries', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const contract = read('js/search-agent-tools-contract.js');
+    const styles = read('css/search-agent.css');
+    const docs = read('docs/SEARCH_STRATEGY_DEBUG.md');
+    assert.match(page, /40 个诊断候选按 20 个来源簇逐项/);
+    assert.match(page, /先完成 30 项 Query 意图判断，再查看结果完成 40 项行为判断/);
+    assert.match(page, /不是 ESCI 商品相关性标签，也不是正式搜索质量结论/);
+    assert.match(page, /封印只冻结 70 项人工判断，不会更新或激活策略/);
+    assert.match(script, /if \(projection\.active_intent_annotation_count < 30\)/);
+    assert.match(script, /fetchHumanOracleIntentView/);
+    assert.match(script, /fetchHumanOracleBehaviorView/);
+    assert.ok(script.indexOf('if (projection.active_intent_annotation_count < 30)')
+        < script.indexOf('fetchHumanOracleBehaviorView'));
+    assert.match(script, /projection\.active_intent_annotation_count === 30/);
+    assert.match(script, /projection\.active_behavior_annotation_count === 40/);
+    assert.match(script, /projection\.invalidated_behavior_annotation_count === 0/);
+    assert.match(script, /window\.crypto\.randomUUID/);
+    assert.match(script, /expected_previous_intent_annotation_id/);
+    assert.match(script, /expected_previous_behavior_annotation_id/);
+    assert.match(script, /intentReasonForConstruction/);
+    assert.match(script, /behaviorReasonForIntent/);
+    assert.match(script, /active_intent_judgment === 'uncertain'\) return value === 'uncertain'/);
+    assert.match(script, /active_intent_judgment === 'not_equivalent'\) return value !== 'confirmed_issue'/);
+    assert.match(script, /escapeHtml\(view\.source_query_text\)/);
+    assert.match(script, /escapeHtml\(hit\.title\)/);
+    assert.match(script, /human-oracle-ui/);
+    assert.doesNotMatch(script, /localStorage\.setItem\([^)]*oracle/i);
+    assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
+    assert.match(styles, /\.human-oracle-choice-grid label \{ min-height: 48px/);
+    assert.match(styles, /\.human-oracle-choice-grid label \{[^}]*border: 1px solid #87939c/);
+    assert.match(styles, /\.human-oracle-reason \{[^}]*border: 1px solid #87939c/);
+    assert.match(styles, /\.human-oracle-form-actions button \{ min-height: 44px/);
+    assert.match(page, /id="humanOracleResult" tabindex="-1"/);
+    assert.match(docs, /human-oracle-ui/);
+});
+
+test('Human Oracle diagnostics are independently filtered and never log raw evidence or decisions', () => {
+    const script = read('js/search-agent.js');
+    assert.match(script, /modules\.has\(module\)/);
+    const logs = [...script.matchAll(/toolUiLog\('human-oracle-ui', '[^']+', \{([\s\S]*?)\n\s*\}(?:, 'warn')?\);/g)];
+    assert.ok(logs.length >= 8);
+    const contexts = logs.map((match) => match[1]).join('\n');
+    for (const key of [
+        'oracleBatchId',
+        'unitId',
+        'caseId',
+        'intentAnnotationId',
+        'behaviorAnnotationId',
+        'intentCount',
+        'behaviorCount',
+        'errorCode',
+        'statusCode'
+    ]) assert.match(contexts, new RegExp(`${key}:`));
+    assert.doesNotMatch(
+        contexts,
+        /queryText|sourceQuery|variantQuery|productId|title|topHits|judgment|reasonCode|clientAction|presentationContext|response|payload|credential|authorization|principal/i
+    );
+    assert.doesNotMatch(script, /localStorage\.setItem\([^)]*human[_-]?oracle/i);
 });
 
 test('strategy history center joins adopted versions, lifecycle logs and local query logs', () => {
@@ -253,6 +337,7 @@ test('large dynamic panels are not duplicated as live announcements', () => {
         'agentGateChecks',
         'agentRuntimeTimeline',
         'badCaseResult',
+        'humanOracleResult',
         'queryComparisonList'
     ]) {
         assert.doesNotMatch(page, new RegExp(`id="${id}"[^>]*aria-live=`));
@@ -382,11 +467,12 @@ test('Bad Case diagnostics render understandable samples but log only IDs and co
     assert.match(contract, /stage_drop_diagnostics_computed/);
     assert.match(contract, /protected_profile_dispatch_count/);
     assert.match(contract, /single_stage_catalog_cannot_diagnose_stage_drop/);
-    assert.match(contract, /no_hard_worker_deadline_enforcement/);
+    assert.match(contract, /worker_hard_deadline_enforced/);
+    assert.match(contract, /worker_deadline_enforcement_is_execution_scope/);
     assert.match(docs, /四类诊断信号可重叠，不能相加/);
     assert.match(docs, /不会把样本写入 URL 或 `localStorage`/);
 
-    const runner = script.match(/const runBadCaseDiagnostics = async \(\) => \{([\s\S]*?)\n\s*\};\n\n\s*const renderRetrievalAnalysis/);
+    const runner = script.match(/const runBadCaseDiagnostics = async \(\) => \{([\s\S]*?)\n\s*\};\n\n\s*const runDiagnosticExperimentPlan/);
     assert.ok(runner);
     assert.doesNotMatch(runner[1], /localStorage|URLSearchParams|location\./);
 
@@ -395,6 +481,7 @@ test('Bad Case diagnostics render understandable samples but log only IDs and co
     for (const key of [
         'diagnosticId',
         'executionId',
+        'supervisorReceiptId',
         'querySetId',
         'indexId',
         'queryCount',

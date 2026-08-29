@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260829-bad-case-v1">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260829-human-oracle-v1">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -149,9 +149,9 @@
                 <div>
                     <span>Read-only diagnostics</span>
                     <h2 id="agentToolsTitle">Agent 自检与工具</h2>
-                    <p>先验证 Agent 工具能力，再构造并运行只用于开发诊断的 smoke Query 集；三项操作都不会审批、激活或修改搜索策略。</p>
+                    <p>先验证工具能力，再运行开发诊断、规划实验，并由人逐项完成诊断 Oracle；五项操作都不会审批、激活或修改搜索策略。</p>
                 </div>
-                <strong>3 个受控工具</strong>
+                <strong>5 个受控工具</strong>
             </header>
             <div class="agent-tools-grid">
                 <article class="agent-tool-card" aria-labelledby="agentEvalTitle">
@@ -194,6 +194,40 @@
                     <div class="agent-tool-result" id="badCaseResult">
                         <p class="agent-tool-empty">运行后展示执行 ID、Query 集、分类计数以及最多 12 个可理解样本；开发诊断不等于正式搜索质量评测。</p>
                     </div>
+                </article>
+
+                <article class="agent-tool-card agent-tool-card-wide" aria-labelledby="diagnosticPlanTitle">
+                    <header>
+                        <div><span>Tool 04</span><h3 id="diagnosticPlanTitle">诊断驱动实验规划器</h3></div>
+                        <p>读取刚生成的不可变 Bad Case 证据，自主选择一个受控、可证伪的候选策略，并明确行为证据与质量证据的边界。</p>
+                    </header>
+                    <div class="agent-tool-action">
+                        <button type="button" id="diagnosticPlanButton" aria-controls="diagnosticPlanResult" disabled>先运行 Bad Case 诊断</button>
+                        <span id="diagnosticPlanStatus" aria-live="polite">等待诊断证据</span>
+                    </div>
+                    <div class="agent-tool-result" id="diagnosticPlanResult">
+                        <p class="agent-tool-empty">诊断完成后，Agent 会展示选中的策略、触发证据、实验双轨和失败条件；本工具不会修改线上策略。</p>
+                    </div>
+                </article>
+
+                <article class="agent-tool-card agent-tool-card-wide human-oracle-card" aria-labelledby="humanOracleTitle">
+                    <header>
+                        <div><span>Tool 05</span><h3 id="humanOracleTitle">Human Diagnostic Oracle</h3></div>
+                        <p>把 40 个诊断候选按 20 个来源簇逐项交给站长判断。先完成 30 项 Query 意图判断，再查看结果完成 40 项行为判断。</p>
+                    </header>
+                    <div class="agent-tool-action">
+                        <button type="button" id="humanOracleStartButton" aria-controls="humanOracleResult" disabled>先运行 Bad Case 诊断</button>
+                        <span id="humanOracleStatus" aria-live="polite">等待诊断证据</span>
+                    </div>
+                    <div class="human-oracle-progress" id="humanOracleProgress" aria-label="Human Diagnostic Oracle 进度">
+                        <div><span>阶段 1 · Intent</span><strong id="humanOracleIntentProgress">0 / 30</strong></div>
+                        <div><span>阶段 2 · Behavior</span><strong id="humanOracleBehaviorProgress">0 / 40</strong></div>
+                        <div><span>来源簇</span><strong id="humanOracleClusterProgress">0 / 20</strong></div>
+                    </div>
+                    <div class="agent-tool-result human-oracle-result" id="humanOracleResult" tabindex="-1">
+                        <p class="agent-tool-empty">Bad Case 成功后可创建固定 40-case / 20-cluster 批次。这里没有批量默认，也不会让模型替你判断。</p>
+                    </div>
+                    <p class="agent-tool-boundary"><b>证据边界：</b>这是 Human Diagnostic Oracle，只记录 Query 意图与搜索行为是否值得诊断；不是 ESCI 商品相关性标签，也不是正式搜索质量结论。封印只冻结 70 项人工判断，不会更新或激活策略。</p>
                 </article>
             </div>
         </section>
@@ -247,7 +281,7 @@
     </main>
 
     <script src="js/search-agent-contract.js?v=20260829-bad-case-v1"></script>
-    <script src="js/search-agent-tools-contract.js?v=20260829-bad-case-v1"></script>
-    <script src="js/search-agent.js?v=20260829-bad-case-v1"></script>
+    <script src="js/search-agent-tools-contract.js?v=20260829-human-oracle-v1"></script>
+    <script src="js/search-agent.js?v=20260829-human-oracle-v1"></script>
 </body>
 </html>

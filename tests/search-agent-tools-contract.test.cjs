@@ -6,9 +6,11 @@ const {
     ToolSummaryHttpError,
     fetchAgentEval,
     fetchBadCaseDiagnostics,
+    fetchDiagnosticExperimentPlan,
     fetchQueryConstructor,
     validateAgentEvalSummary,
     validateBadCaseSummary,
+    validateDiagnosticExperimentPlan,
     validateQueryConstructorSummary
 } = require('../js/search-agent-tools-contract.js');
 
@@ -67,7 +69,7 @@ const validQuerySummary = () => ({
 });
 
 const validBadCaseSummary = () => ({
-    schema_version: 'bad-case-api-summary-v1',
+    schema_version: 'bad-case-api-summary-v2',
     execution_id: 'bad-case-execution-0123456789abcdef0123456789abcdef',
     diagnostic_id: 'bad-case-aaaaaaaaaaaa',
     query_set_id: 'query-set-bbbbbbbbbbbb',
@@ -135,13 +137,80 @@ const validBadCaseSummary = () => ({
     locked_profiles_not_read: ['dev', 'test'],
     protected_profile_dispatch_count: 0,
     strategy_write_count: 0,
+    worker_policy_id: 'posix-process-group-deadline-v1',
+    worker_deadline_ms: 125000,
+    worker_hard_deadline_enforced: true,
+    supervisor_receipt_id: 'bad-case-supervisor-execution-dddddddddddd',
+    term_grace_ms: 1000,
+    kill_grace_ms: 1000,
+    completion_observation: 'worker_result',
     limitations: [
         'synthetic_queries_are_unjudged',
         'diagnostics_do_not_claim_relevance_improvement',
         'development_smoke_is_not_final_evaluation',
         'single_stage_catalog_cannot_diagnose_stage_drop',
-        'no_hard_worker_deadline_enforcement'
+        'worker_deadline_enforcement_is_execution_scope'
     ]
+});
+
+const validDiagnosticExperimentPlan = () => ({
+    schema_version: 'diagnostic-experiment-plan-v1',
+    experiment_plan_id: 'diagnostic-experiment-plan-dddddddddddd',
+    router_id: 'diagnostic-evidence-router-v1',
+    status: 'experiment_planned',
+    reason_code: 'identity_zero_result_backoff_prioritized',
+    recommended_next_action: 'run_bounded_two_lane_experiment',
+    diagnostic_id: 'bad-case-aaaaaaaaaaaa',
+    query_set_id: 'query-set-bbbbbbbbbbbb',
+    index_id: 'catalog-baseline-v1-cccccccccccc',
+    hypothesis: 'Strict AND may be over-constrained for identity zero-result cases.',
+    target_case_ids: ['query-case-111111111111', 'query-case-222222222222'],
+    strategy: {
+        schema_version: 'diagnostic-strategy-spec-v1',
+        strategy_spec_id: 'strategy-spec-eeeeeeeeeeee',
+        strategy_id: 'zero-result-drop-one-token-backoff-v1',
+        family: 'zero_result_backoff',
+        primary_operator: 'strict_and',
+        fallback_trigger: 'primary_zero_result',
+        fallback_operator: 'drop_one_non_protected_token',
+        protected_token_policy: 'numeric_model_and_explicit_product_id_required',
+        fusion: 'rrf',
+        top_k: 10,
+        max_fallback_routes: 16
+    },
+    behavioral_lane: {
+        schema_version: 'behavioral-experiment-lane-v1',
+        lane_id: 'full-catalog-59-case-behavioral-v1',
+        query_count: 59,
+        relevance_labels_used: false,
+        quality_metrics_allowed: false,
+        observables: [
+            'zero_result_recovery_count',
+            'ordered_top_k_change_count',
+            'operational_failure_count',
+            'nonzero_baseline_preservation_count'
+        ]
+    },
+    quality_lane: {
+        schema_version: 'quality-experiment-lane-v1',
+        evidence_status: 'behavior_only',
+        query_scope: 'not_scheduled',
+        label_source_ref: null,
+        labels_may_be_used_by_harness: false,
+        synthetic_labels_may_be_inherited: false,
+        quality_conclusion_allowed: false,
+        reason_code: 'no_eligible_quality_labels_resolved'
+    },
+    falsifiers: [
+        'no_zero_result_recovery',
+        'no_independently_judged_relevant_gain',
+        'quality_or_safety_gate_regression',
+        'nonzero_baseline_results_changed',
+        'execution_budget_exceeded'
+    ],
+    quality_conclusion_allowed: false,
+    activation_eligible: false,
+    strategy_write_count: 0
 });
 
 const jsonResponse = (status, body, onJson = () => {}) => ({
@@ -444,6 +513,66 @@ test('Bad Case summary enforces diagnostic, privacy and arithmetic boundaries', 
         summary.limitations.pop();
         assert.throws(() => validateBadCaseSummary(summary), ToolSummaryContractError);
     });
+
+    await t.test('durable supervisor receipt and completion policy are required', () => {
+        const invalidReceipt = validBadCaseSummary();
+        invalidReceipt.supervisor_receipt_id = 'bad-case-execution-aaaaaaaaaaaa';
+        assert.throws(() => validateBadCaseSummary(invalidReceipt), ToolSummaryContractError);
+
+        const invalidObservation = validBadCaseSummary();
+        invalidObservation.completion_observation = 'unknown';
+        assert.throws(() => validateBadCaseSummary(invalidObservation), ToolSummaryContractError);
+
+        const validRecovery = validBadCaseSummary();
+        validRecovery.completion_observation = 'deadline_boundary_recovery';
+        assert.equal(validateBadCaseSummary(validRecovery), validRecovery);
+    });
+});
+
+test('validates and fetches the exact diagnostic experiment plan', async () => {
+    const expected = validDiagnosticExperimentPlan();
+    assert.equal(validateDiagnosticExperimentPlan(expected), expected);
+    const calls = [];
+    const fetchImpl = async (url, options) => {
+        calls.push({ url, options });
+        return jsonResponse(200, expected);
+    };
+
+    const actual = await fetchDiagnosticExperimentPlan(
+        fetchImpl,
+        '/search-eval-api',
+        expected.diagnostic_id,
+        expected.query_set_id
+    );
+
+    assert.equal(actual, expected);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].url, '/search-eval-api/agent/diagnostic-experiments/plan');
+    assert.equal(calls[0].options.method, 'POST');
+    assert.equal(calls[0].options.credentials, 'same-origin');
+    assert.deepEqual(JSON.parse(calls[0].options.body), {
+        diagnostic_id: expected.diagnostic_id,
+        query_set_id: expected.query_set_id
+    });
+});
+
+test('diagnostic experiment contract keeps quality and activation gates locked', () => {
+    for (const [path, unsafeValue] of [
+        ['quality_conclusion_allowed', true],
+        ['activation_eligible', true],
+        ['strategy_write_count', 1]
+    ]) {
+        const plan = validDiagnosticExperimentPlan();
+        plan[path] = unsafeValue;
+        assert.throws(() => validateDiagnosticExperimentPlan(plan), ToolSummaryContractError);
+    }
+    const inherited = validDiagnosticExperimentPlan();
+    inherited.quality_lane.synthetic_labels_may_be_inherited = true;
+    assert.throws(() => validateDiagnosticExperimentPlan(inherited), ToolSummaryContractError);
+
+    const arbitrary = validDiagnosticExperimentPlan();
+    arbitrary.strategy.shell_command = 'private';
+    assert.throws(() => validateDiagnosticExperimentPlan(arbitrary), ToolSummaryContractError);
 });
 
 test('tool HTTP failures never read or expose error response bodies', async () => {

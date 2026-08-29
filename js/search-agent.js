@@ -34,8 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const badCaseRunButton = document.getElementById('badCaseRunButton');
     const badCaseStatus = document.getElementById('badCaseStatus');
     const badCaseResult = document.getElementById('badCaseResult');
+    const diagnosticPlanButton = document.getElementById('diagnosticPlanButton');
+    const diagnosticPlanStatus = document.getElementById('diagnosticPlanStatus');
+    const diagnosticPlanResult = document.getElementById('diagnosticPlanResult');
+    const humanOracleStartButton = document.getElementById('humanOracleStartButton');
+    const humanOracleStatus = document.getElementById('humanOracleStatus');
+    const humanOracleResult = document.getElementById('humanOracleResult');
+    const humanOracleIntentProgress = document.getElementById('humanOracleIntentProgress');
+    const humanOracleBehaviorProgress = document.getElementById('humanOracleBehaviorProgress');
+    const humanOracleClusterProgress = document.getElementById('humanOracleClusterProgress');
     const agentContract = window.SearchAgentContract;
     const agentToolsContract = window.SearchAgentToolsContract;
+    let latestBadCaseSummary = null;
+    let humanOracleState = null;
+    let humanOracleView = null;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -71,7 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const toolUiLog = (module, event, context = {}, level = 'debug') => {
-        if (!['agent-eval-ui', 'query-constructor-ui', 'bad-case-ui'].includes(module)) return;
+        if (![
+            'agent-eval-ui',
+            'query-constructor-ui',
+            'bad-case-ui',
+            'diagnostic-experiment-ui',
+            'human-oracle-ui'
+        ].includes(module)) return;
         if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
         const modules = enabledDebugModules();
         if (modules.size && !modules.has(module)) return;
@@ -776,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="bad-case-summary">
                 <div class="agent-tool-result-heading">
                     <div><span>Development diagnostics</span><strong>${summary.diagnostic_candidate_count} 个候选需要判断</strong></div>
-                    <div class="bad-case-run-ids"><code>${escapeHtml(summary.execution_id)}</code><code>${escapeHtml(summary.diagnostic_id)}</code><code>${escapeHtml(summary.query_set_id)}</code><code>${escapeHtml(summary.index_id)}</code></div>
+                    <div class="bad-case-run-ids"><code>${escapeHtml(summary.execution_id)}</code><code>${escapeHtml(summary.supervisor_receipt_id)}</code><code>${escapeHtml(summary.diagnostic_id)}</code><code>${escapeHtml(summary.query_set_id)}</code><code>${escapeHtml(summary.index_id)}</code></div>
                 </div>
                 <div class="agent-tool-metrics">
                     <div><span>运行 Query</span><strong>${summary.query_count}</strong></div>
@@ -789,6 +807,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div><span>相关性标签</span><strong class="is-boundary">未使用</strong></div>
                     <div><span>相关性指标</span><strong class="is-boundary">未计算</strong></div>
                     <div><span>阶段丢失归因</span><strong class="is-boundary">未计算</strong></div>
+                    <div><span>Worker 硬截止</span><strong class="is-pass">${summary.worker_deadline_ms / 1000} 秒</strong></div>
+                    <div><span>进程组强制终止</span><strong class="is-pass">已启用</strong></div>
+                    <div><span>Worker Policy</span><strong>${escapeHtml(summary.worker_policy_id)}</strong></div>
+                    <div><span>TERM / KILL 宽限</span><strong>${summary.term_grace_ms} / ${summary.kill_grace_ms} ms</strong></div>
+                    <div><span>完成观测</span><strong>${escapeHtml(summary.completion_observation)}</strong></div>
                     <div><span>受保护评测档案调度</span><strong class="is-pass">${summary.protected_profile_dispatch_count}</strong></div>
                     <div><span>策略写入</span><strong class="is-pass">${summary.strategy_write_count}</strong></div>
                 </div>
@@ -804,7 +827,58 @@ document.addEventListener('DOMContentLoaded', () => {
                     : `<p class="agent-tool-empty">${summary.diagnostic_candidate_count === 0
                         ? '本轮没有发现符合固定规则的诊断候选。'
                         : `本轮发现 ${summary.diagnostic_candidate_count} 个诊断候选，但没有返回可展示的代表样本。`}</p>`}
-                <p class="agent-tool-boundary"><b>边界：</b>这些是无标签开发诊断候选，不是已经确认的搜索 Bad Case，也不证明相关性提升。当前只观察单阶段全量商品 BM25 的零结果和稳定性，不能据此判断多路召回、融合、粗排或精排在哪一层丢失；正式结论仍需独立标签与 Search Harness。</p>
+                <p class="agent-tool-boundary"><b>边界：</b>这些是无标签开发诊断候选，不是已经确认的搜索 Bad Case，也不证明相关性提升。当前只观察单阶段全量商品 BM25 的零结果和稳定性，不能据此判断多路召回、融合、粗排或精排在哪一层丢失；正式结论仍需独立标签与 Search Harness。125 秒硬截止由父进程 supervisor 执行，不改变诊断证据本身的内容 ID。</p>
+            </div>`;
+    };
+
+    const experimentFalsifierLabels = {
+        no_zero_result_recovery: '没有恢复任何原始零结果 Query',
+        no_independently_judged_relevant_gain: '独立标注后没有新增相关商品',
+        quality_or_safety_gate_regression: '质量或保护门禁出现退化',
+        nonzero_baseline_results_changed: '原本非零的 Query 结果被改变',
+        execution_budget_exceeded: '查询路数、延迟或执行预算超限'
+    };
+
+    const renderDiagnosticExperimentPlan = (plan) => {
+        diagnosticPlanResult.removeAttribute('aria-busy');
+        setToolStatus(diagnosticPlanStatus, '实验计划已生成', 'is-complete');
+        const strategy = plan.strategy;
+        const strategyName = strategy
+            ? '零结果保护式 AND 回退'
+            : '当前没有可直接运行的策略';
+        const nextStep = plan.status === 'experiment_planned'
+            ? '先运行行为实验并补独立 Oracle；证据齐全前不能更新策略。'
+            : '先补独立 Oracle 或工程能力，再重新规划。';
+        diagnosticPlanResult.innerHTML = `
+            <div class="diagnostic-plan-summary">
+                <div class="agent-tool-result-heading">
+                    <div><span>Evidence-driven plan</span><strong>${escapeHtml(strategyName)}</strong></div>
+                    <div class="bad-case-run-ids"><code>${escapeHtml(plan.experiment_plan_id)}</code>${strategy
+                        ? `<code>${escapeHtml(strategy.strategy_spec_id)}</code>`
+                        : ''}</div>
+                </div>
+                <div class="agent-tool-metrics">
+                    <div><span>目标候选</span><strong>${plan.target_case_ids.length}</strong></div>
+                    <div><span>主路</span><strong>${strategy ? '全部词严格 AND' : '—'}</strong></div>
+                    <div><span>回退触发</span><strong>${strategy ? '仅主路 0 结果' : '—'}</strong></div>
+                    <div><span>最多回退路数</span><strong>${strategy?.max_fallback_routes ?? '—'}</strong></div>
+                    <div><span>数字 / 型号词</span><strong class="is-pass">不可删除</strong></div>
+                    <div><span>融合</span><strong>${strategy ? 'RRF' : '—'}</strong></div>
+                    <div><span>行为实验</span><strong class="is-pass">可运行</strong></div>
+                    <div><span>质量结论</span><strong class="is-boundary">已锁定</strong></div>
+                    <div><span>策略更新</span><strong class="is-boundary">不可执行</strong></div>
+                </div>
+                <section class="diagnostic-plan-copy">
+                    <h4>Agent 的判断</h4>
+                    <p>当前严格 AND 对 ${plan.target_case_ids.length} 个原始 Query 返回零结果。Agent 优先验证保守回退：每次只省略一个非数字、非型号词；原本已有结果的 Query 保持不变。</p>
+                    <h4>什么情况下这个方案算失败</h4>
+                    <ul>${plan.falsifiers.map((item) => `<li>${escapeHtml(experimentFalsifierLabels[item])}</li>`).join('')}</ul>
+                </section>
+                <div class="diagnostic-evidence-lanes" aria-label="实验的两条证据轨">
+                    <article><span>Behavior lane</span><strong>全量商品 · 59 Query</strong><p>只记录零结果恢复、Top 10 变化、失败和预算；不计算相关性指标。</p></article>
+                    <article><span>Quality lane</span><strong>等待独立 Oracle</strong><p>新增商品经过独立标注后，才允许 Harness 计算 nDCG / MRR 并形成质量结论。</p></article>
+                </div>
+                <p class="agent-tool-boundary"><b>下一步：</b>${escapeHtml(nextStep)} 当前计划的策略写入次数为 ${plan.strategy_write_count}。</p>
             </div>`;
     };
 
@@ -890,6 +964,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const runBadCaseDiagnostics = async () => {
         renderToolLoading(badCaseStatus, badCaseResult, '正在全量商品基线中运行固定 59 条开发 Query；上一轮诊断摘要已清除。');
+        latestBadCaseSummary = null;
+        humanOracleState = null;
+        humanOracleView = null;
+        humanOracleStartButton.disabled = true;
+        humanOracleStartButton.textContent = '等待 Bad Case 证据';
+        setToolStatus(humanOracleStatus, '等待诊断证据');
+        humanOracleIntentProgress.textContent = '0 / 30';
+        humanOracleBehaviorProgress.textContent = '0 / 40';
+        humanOracleClusterProgress.textContent = '0 / 20';
+        humanOracleResult.innerHTML = '<p class="agent-tool-empty">本轮诊断完成后才能开始新的人工诊断批次。</p>';
+        diagnosticPlanButton.disabled = true;
+        diagnosticPlanButton.textContent = '等待 Bad Case 证据';
+        setToolStatus(diagnosticPlanStatus, '等待诊断证据');
+        diagnosticPlanResult.innerHTML = '<p class="agent-tool-empty">本轮诊断完成后，Agent 会自动生成新的实验计划。</p>';
         badCaseRunButton.disabled = true;
         badCaseRunButton.textContent = '59 条诊断运行中…';
         toolUiLog('bad-case-ui', 'bad_case_diagnostics_requested');
@@ -900,9 +988,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 protectedToolApiRoot
             );
             renderBadCaseSummary(summary);
+            latestBadCaseSummary = summary;
+            diagnosticPlanButton.disabled = false;
+            diagnosticPlanButton.textContent = '重新生成实验计划';
+            humanOracleStartButton.disabled = false;
+            humanOracleStartButton.textContent = '开始人工诊断';
             toolUiLog('bad-case-ui', 'bad_case_diagnostics_summary_rendered', {
                 diagnosticId: summary.diagnostic_id,
                 executionId: summary.execution_id,
+                supervisorReceiptId: summary.supervisor_receipt_id,
                 querySetId: summary.query_set_id,
                 indexId: summary.index_id,
                 queryCount: summary.query_count,
@@ -915,6 +1009,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 orderSensitiveCount: summary.category_counts.order_sensitive,
                 rankingInstabilityCount: summary.category_counts.ranking_instability_needs_judgment
             });
+            await runDiagnosticExperimentPlan();
         } catch (error) {
             const errorCode = error.code || 'network_error';
             renderToolError(
@@ -931,6 +1026,527 @@ document.addEventListener('DOMContentLoaded', () => {
             badCaseRunButton.textContent = '重新运行 59 条诊断 Query';
         }
     };
+
+    const runDiagnosticExperimentPlan = async () => {
+        if (!latestBadCaseSummary) return;
+        renderToolLoading(
+            diagnosticPlanStatus,
+            diagnosticPlanResult,
+            'Agent 正在校验完整诊断证据并选择第一条可证伪实验；不会写入搜索策略。'
+        );
+        diagnosticPlanButton.disabled = true;
+        diagnosticPlanButton.textContent = '规划中…';
+        toolUiLog('diagnostic-experiment-ui', 'diagnostic_experiment_plan_requested', {
+            diagnosticId: latestBadCaseSummary.diagnostic_id,
+            querySetId: latestBadCaseSummary.query_set_id
+        });
+        try {
+            if (!agentToolsContract?.fetchDiagnosticExperimentPlan) {
+                throw new Error('agent_tools_contract_unavailable');
+            }
+            const plan = await agentToolsContract.fetchDiagnosticExperimentPlan(
+                window.fetch.bind(window),
+                protectedToolApiRoot,
+                latestBadCaseSummary.diagnostic_id,
+                latestBadCaseSummary.query_set_id
+            );
+            renderDiagnosticExperimentPlan(plan);
+            toolUiLog('diagnostic-experiment-ui', 'diagnostic_experiment_plan_rendered', {
+                diagnosticId: plan.diagnostic_id,
+                experimentPlanId: plan.experiment_plan_id,
+                status: plan.status,
+                strategySpecId: plan.strategy?.strategy_spec_id || null,
+                targetCaseCount: plan.target_case_ids.length,
+                qualityConclusionAllowed: plan.quality_conclusion_allowed,
+                activationEligible: plan.activation_eligible,
+                strategyWriteCount: plan.strategy_write_count
+            });
+        } catch (error) {
+            const errorCode = error.code || 'network_error';
+            renderToolError(
+                diagnosticPlanStatus,
+                diagnosticPlanResult,
+                toolErrorMessage(
+                    error,
+                    'invalid_diagnostic_experiment_plan',
+                    '实验规划'
+                )
+            );
+            toolUiLog('diagnostic-experiment-ui', 'diagnostic_experiment_plan_failed', {
+                errorCode,
+                statusCode: Number(error.status) || 0
+            }, 'warn');
+        } finally {
+            diagnosticPlanButton.disabled = false;
+            diagnosticPlanButton.textContent = '重新生成实验计划';
+        }
+    };
+
+    const oracleConstructionLabels = {
+        identity: '原始 Query',
+        adjacent_transposition: '相邻字母交换',
+        token_order_reversal: '词序反转'
+    };
+
+    const oracleIntentLabels = {
+        equivalent: '同意图',
+        not_equivalent: '不同意图',
+        uncertain: '不确定'
+    };
+
+    const oracleBehaviorLabels = {
+        confirmed_issue: '确认问题',
+        acceptable: '可接受',
+        uncertain: '不确定'
+    };
+
+    const oracleReasonLabels = {
+        same_product_intent: '词序变化后仍表达同一商品意图',
+        obvious_typo_same_intent: '明显拼写错误，意图不变',
+        meaning_changed: '词序变化改变了含义',
+        query_became_uninterpretable: '拼写变化后已无法理解',
+        ambiguous_intent: '意图含义存在歧义',
+        insufficient_context: '上下文不足，不能确认意图',
+        owner_catalog_expectation: '按站长对商品库的理解，这是问题',
+        equivalent_intent_should_preserve_behavior: '同意图 Query 应保持可接受的搜索行为',
+        intent_not_equivalent: '不同意图，因此行为差异可接受',
+        behavior_is_expected: '当前搜索行为符合预期',
+        catalog_coverage_unknown: '不确定商品库是否覆盖该意图',
+        insufficient_result_evidence: '当前 Top 3 证据不足',
+        insufficient_domain_knowledge: '领域知识不足，无法确认'
+    };
+
+    const humanOracleFailure = (code) => {
+        const error = new Error(code);
+        error.code = code;
+        throw error;
+    };
+
+    const safeClientActionId = () => {
+        if (!window.crypto || typeof window.crypto.randomUUID !== 'function') {
+            return humanOracleFailure('secure_client_action_id_unavailable');
+        }
+        return window.crypto.randomUUID();
+    };
+
+    const setHumanOracleProgress = (review) => {
+        const projection = review?.projection || {};
+        const intents = Number(projection.active_intent_annotation_count) || 0;
+        const behaviors = Number(projection.active_behavior_annotation_count) || 0;
+        humanOracleIntentProgress.textContent = `${intents} / 30`;
+        humanOracleBehaviorProgress.textContent = `${behaviors} / 40`;
+        const units = humanOracleState?.batch?.units || [];
+        const states = review?.cases || [];
+        const completedClusters = units.filter((unit) => {
+            const unitCases = states.filter((item) => item.unit_id === unit.unit_id);
+            return unitCases.length === unit.candidate_count
+                && unitCases.every((item) => item.active_behavior_annotation_id !== null);
+        }).length;
+        humanOracleClusterProgress.textContent = `${completedClusters} / 20`;
+    };
+
+    const validateOracleUiAssociation = (batch, review) => {
+        if (batch.oracle_batch_id !== review.oracle_batch_id) humanOracleFailure('oracle_batch_state_mismatch');
+        const unitCounts = new Map(batch.units.map((unit) => [unit.unit_id, unit.candidate_count]));
+        const observed = new Map();
+        review.cases.forEach((item) => {
+            if (!unitCounts.has(item.unit_id)) humanOracleFailure('oracle_unknown_unit');
+            observed.set(item.unit_id, (observed.get(item.unit_id) || 0) + 1);
+        });
+        batch.units.forEach((unit) => {
+            if (observed.get(unit.unit_id) !== unit.candidate_count) humanOracleFailure('oracle_unit_count_mismatch');
+        });
+    };
+
+    const focusHumanOracle = () => window.requestAnimationFrame(() => humanOracleResult.focus());
+
+    const renderHumanOracleHits = (hits) => hits.length
+        ? `<ol class="human-oracle-result-list">${hits.map((hit) => `<li>
+            <b>#${hit.rank}</b>
+            <div><strong dir="auto">${escapeHtml(hit.title)}</strong><code>${escapeHtml(hit.locale)} · ${escapeHtml(hit.product_id)}</code></div>
+        </li>`).join('')}</ol>`
+        : '<p class="human-oracle-result-empty">Top 3 没有结果</p>';
+
+    const bindOracleChoiceReason = (form, reasonForJudgment) => {
+        const output = form.querySelector('[data-oracle-reason]');
+        form.querySelectorAll('input[name="oracleJudgment"]').forEach((input) => {
+            input.addEventListener('change', () => {
+                const reason = reasonForJudgment(input.value);
+                output.textContent = `提交依据：${oracleReasonLabels[reason]}`;
+            });
+        });
+    };
+
+    const renderHumanOracleIntent = (view, candidate, caseState) => {
+        humanOracleView = { phase: 'intent', view, candidate, caseState };
+        const step = humanOracleState.review.projection.active_intent_annotation_count + 1;
+        humanOracleResult.removeAttribute('aria-busy');
+        setToolStatus(humanOracleStatus, `Intent ${step} / 30`, 'is-complete');
+        humanOracleResult.innerHTML = `<div class="human-oracle-work">
+            <div class="human-oracle-heading">
+                <div><span>阶段 1 · Intent-only</span><strong>这两个 Query 是不是同一个意图？</strong></div>
+                <code>${escapeHtml(view.unit_id)} · ${escapeHtml(candidate.case_id)}</code>
+            </div>
+            <p class="human-oracle-instruction">这里只显示 Query，不显示任何搜索结果，避免结果反过来影响你的意图判断。每次只提交一项。</p>
+            <div class="human-oracle-query-pair">
+                <div class="human-oracle-query"><span>来源 Query</span><strong dir="auto">${escapeHtml(view.source_query_text)}</strong></div>
+                <div class="human-oracle-query"><span>${escapeHtml(oracleConstructionLabels[candidate.construction])}</span><strong dir="auto">${escapeHtml(candidate.query_text)}</strong></div>
+            </div>
+            <form class="human-oracle-form" id="humanOracleDecisionForm">
+                <fieldset><legend>你的判断</legend><div class="human-oracle-choice-grid">
+                    ${Object.entries(oracleIntentLabels).map(([value, label]) => `<label><input type="radio" name="oracleJudgment" value="${value}" required><span>${label}</span></label>`).join('')}
+                </div></fieldset>
+                <output data-oracle-reason>选择判断后会显示对应的结构化依据。</output>
+                <div class="human-oracle-form-actions"><button type="submit">提交并看下一项</button></div>
+            </form>
+        </div>`;
+        const form = document.getElementById('humanOracleDecisionForm');
+        bindOracleChoiceReason(form, (judgment) => agentToolsContract.intentReasonForConstruction(
+            candidate.construction,
+            judgment
+        ));
+        form.addEventListener('submit', submitHumanOracleIntentDecision);
+        focusHumanOracle();
+        toolUiLog('human-oracle-ui', 'human_oracle_intent_view_rendered', {
+            oracleBatchId: view.oracle_batch_id,
+            unitId: view.unit_id,
+            caseId: candidate.case_id,
+            completedIntentCount: step - 1
+        });
+    };
+
+    const renderHumanOracleBehavior = (view, candidate, caseState) => {
+        humanOracleView = { phase: 'behavior', view, candidate, caseState };
+        const step = humanOracleState.review.projection.active_behavior_annotation_count + 1;
+        const intentLabel = caseState.active_intent_judgment === null
+            ? '原始 Query · 无 Intent 标注'
+            : `Intent：${oracleIntentLabels[caseState.active_intent_judgment]}`;
+        const allowedBehaviorJudgments = Object.entries(oracleBehaviorLabels).filter(([value]) => {
+            if (caseState.active_intent_judgment === 'uncertain') return value === 'uncertain';
+            if (caseState.active_intent_judgment === 'not_equivalent') return value !== 'confirmed_issue';
+            return true;
+        });
+        humanOracleResult.removeAttribute('aria-busy');
+        setToolStatus(humanOracleStatus, `Behavior ${step} / 40`, 'is-complete');
+        humanOracleResult.innerHTML = `<div class="human-oracle-work">
+            <div class="human-oracle-heading">
+                <div><span>阶段 2 · Verified Top 3</span><strong>这组搜索行为是否构成问题？</strong></div>
+                <code>${escapeHtml(view.unit_id)} · ${escapeHtml(candidate.case_id)}</code>
+            </div>
+            <div class="human-oracle-case-meta"><span>${escapeHtml(intentLabel)}</span><span>${escapeHtml(oracleConstructionLabels[candidate.construction])}</span></div>
+            <div class="human-oracle-query-pair">
+                <div class="human-oracle-query"><span>来源 Query</span><strong dir="auto">${escapeHtml(candidate.source_query_text)}</strong></div>
+                <div class="human-oracle-query"><span>当前 Query</span><strong dir="auto">${escapeHtml(candidate.query_text)}</strong></div>
+            </div>
+            <div class="human-oracle-results">
+                <section class="human-oracle-result-column"><span>来源结果</span><strong>Top 10 返回 ${candidate.source_returned_at_k}</strong>${renderHumanOracleHits(candidate.source_top_hits)}</section>
+                <section class="human-oracle-result-column"><span>当前结果</span><strong>Top 10 返回 ${candidate.variant_returned_at_k}</strong>${renderHumanOracleHits(candidate.variant_top_hits)}</section>
+            </div>
+            <form class="human-oracle-form" id="humanOracleDecisionForm">
+                <fieldset><legend>你的判断</legend><div class="human-oracle-choice-grid">
+                    ${allowedBehaviorJudgments.map(([value, label]) => `<label><input type="radio" name="oracleJudgment" value="${value}" required><span>${label}</span></label>`).join('')}
+                </div></fieldset>
+                <output data-oracle-reason>选择判断后会显示对应的结构化依据。</output>
+                <div class="human-oracle-form-actions"><button type="submit">提交并看下一项</button></div>
+            </form>
+        </div>`;
+        const form = document.getElementById('humanOracleDecisionForm');
+        bindOracleChoiceReason(form, (judgment) => agentToolsContract.behaviorReasonForIntent(
+            candidate.construction,
+            caseState.active_intent_judgment,
+            judgment
+        ));
+        form.addEventListener('submit', submitHumanOracleBehaviorDecision);
+        focusHumanOracle();
+        toolUiLog('human-oracle-ui', 'human_oracle_behavior_view_rendered', {
+            oracleBatchId: view.oracle_batch_id,
+            unitId: view.unit_id,
+            caseId: candidate.case_id,
+            completedBehaviorCount: step - 1
+        });
+    };
+
+    const renderHumanOracleReadyToSeal = () => {
+        humanOracleView = { phase: 'seal' };
+        humanOracleResult.removeAttribute('aria-busy');
+        setToolStatus(humanOracleStatus, '70 / 70 · 可封印', 'is-pass');
+        humanOracleResult.innerHTML = `<div class="human-oracle-work">
+            <div class="human-oracle-heading"><div><span>Ready to seal</span><strong>70 项人工判断已经完整</strong></div><code>${escapeHtml(humanOracleState.batch.oracle_batch_id)}</code></div>
+            <p class="human-oracle-instruction">封印会把当前 30 项 Intent 与 40 项 Behavior 判断冻结成不可变诊断证据，但不会创建 ESCI 标签、质量结论、策略写入或激活。</p>
+            <form class="human-oracle-form" id="humanOracleSealForm"><div class="human-oracle-form-actions"><button type="submit">封印 70 项诊断判断</button></div></form>
+        </div>`;
+        document.getElementById('humanOracleSealForm').addEventListener('submit', sealHumanOracleDecisions);
+        focusHumanOracle();
+    };
+
+    const renderHumanOracleSealed = (seal) => {
+        humanOracleView = null;
+        humanOracleResult.removeAttribute('aria-busy');
+        setToolStatus(humanOracleStatus, '已封印', 'is-pass');
+        humanOracleStartButton.disabled = true;
+        humanOracleStartButton.textContent = '诊断 Oracle 已封印';
+        humanOracleResult.innerHTML = `<div class="human-oracle-sealed"><strong>Human Diagnostic Oracle 已封印</strong><code>${escapeHtml(seal.oracle_id)}</code><p>30 项 Intent + 40 项 Behavior 已冻结。它仍不是 ESCI 商品标签或正式质量结论，也没有更新策略。</p></div>`;
+        focusHumanOracle();
+    };
+
+    const refreshHumanOracleStatus = async () => {
+        const review = await agentToolsContract.fetchHumanOracleStatus(
+            window.fetch.bind(window),
+            protectedToolApiRoot,
+            humanOracleState.batch.oracle_batch_id
+        );
+        validateOracleUiAssociation(humanOracleState.batch, review);
+        humanOracleState.review = review;
+        setHumanOracleProgress(review);
+        toolUiLog('human-oracle-ui', 'human_oracle_status_rendered', {
+            oracleBatchId: review.oracle_batch_id,
+            status: review.projection.status,
+            intentCount: review.projection.active_intent_annotation_count,
+            behaviorCount: review.projection.active_behavior_annotation_count,
+            invalidatedBehaviorCount: review.projection.invalidated_behavior_annotation_count,
+            sealedOracleId: review.projection.sealed_oracle_id
+        });
+        return review;
+    };
+
+    const advanceHumanOracle = async () => {
+        const { batch, review } = humanOracleState;
+        const projection = review.projection;
+        if (projection.status === 'sealed') {
+            return renderHumanOracleSealed({ oracle_id: projection.sealed_oracle_id });
+        }
+        if (projection.active_intent_annotation_count < 30) {
+            if (projection.active_behavior_annotation_count !== 0) humanOracleFailure('behavior_started_before_intent_complete');
+            const nextCase = review.cases.find((item) => item.construction !== 'identity'
+                && item.active_intent_annotation_id === null);
+            if (!nextCase) return humanOracleFailure('intent_progress_has_no_next_case');
+            const view = await agentToolsContract.fetchHumanOracleIntentView(
+                window.fetch.bind(window), protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
+            );
+            const unit = batch.units.find((item) => item.unit_id === nextCase.unit_id);
+            const unitCaseIds = review.cases.filter((item) => item.unit_id === nextCase.unit_id).map((item) => item.case_id).sort();
+            const viewCaseIds = view.candidates.map((item) => item.case_id).sort();
+            if (!unit
+                || view.source_case_id !== unit.source_case_id
+                || unitCaseIds.join('|') !== viewCaseIds.join('|')) humanOracleFailure('oracle_intent_view_unit_mismatch');
+            const candidate = view.candidates.find((item) => item.case_id === nextCase.case_id);
+            if (!candidate
+                || candidate.construction !== nextCase.construction
+                || !candidate.requires_intent_annotation) humanOracleFailure('oracle_intent_candidate_mismatch');
+            return renderHumanOracleIntent(view, candidate, nextCase);
+        }
+        if (projection.active_behavior_annotation_count < 40
+            || projection.invalidated_behavior_annotation_count > 0) {
+            const nextCase = review.cases.find((item) => item.active_behavior_annotation_id === null);
+            if (!nextCase) return humanOracleFailure('behavior_progress_has_no_next_case');
+            const view = await agentToolsContract.fetchHumanOracleBehaviorView(
+                window.fetch.bind(window), protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
+            );
+            const unit = batch.units.find((item) => item.unit_id === nextCase.unit_id);
+            const unitCaseIds = review.cases.filter((item) => item.unit_id === nextCase.unit_id).map((item) => item.case_id).sort();
+            const viewCaseIds = view.candidates.map((item) => item.case_id).sort();
+            const candidate = view.candidates.find((item) => item.case_id === nextCase.case_id);
+            if (!unit
+                || view.diagnostic_id !== latestBadCaseSummary.diagnostic_id
+                || view.source_case_id !== unit.source_case_id
+                || unitCaseIds.join('|') !== viewCaseIds.join('|')
+                || !candidate
+                || candidate.construction !== nextCase.construction
+                || candidate.intent_annotation_id !== nextCase.active_intent_annotation_id) humanOracleFailure('oracle_behavior_candidate_mismatch');
+            return renderHumanOracleBehavior(view, candidate, nextCase);
+        }
+        if (projection.active_intent_annotation_count === 30
+            && projection.active_behavior_annotation_count === 40
+            && projection.invalidated_behavior_annotation_count === 0
+            && projection.status === 'ready_to_seal') return renderHumanOracleReadyToSeal();
+        return humanOracleFailure('oracle_progress_state_invalid');
+    };
+
+    const humanOracleErrorMessage = (error) => {
+        if (error.status === 401) return '登录状态已失效，请刷新页面并重新输入凭据。';
+        if (error.status === 403) return '当前登录身份不是这个 Oracle 批次的站长。';
+        if (error.status === 409) return '证据或判断版本已变化，请点击“继续人工诊断”获取最新状态。';
+        if (error.status === 422 || String(error.code || '').startsWith('invalid_human_oracle')) return 'Oracle 契约或关联校验失败，本轮内容已拒绝展示。';
+        if (error.code === 'secure_client_action_id_unavailable') return '浏览器无法生成安全操作 ID，不能提交判断。';
+        return 'Human Diagnostic Oracle 暂时不可用，请稍后继续。';
+    };
+
+    const failHumanOracleUi = (error, operation) => {
+        const errorCode = error.code || 'network_error';
+        humanOracleResult.removeAttribute('aria-busy');
+        setToolStatus(humanOracleStatus, '执行失败', 'is-fail');
+        humanOracleResult.innerHTML = `<p class="agent-tool-empty is-error">${escapeHtml(humanOracleErrorMessage(error))}</p>`;
+        humanOracleStartButton.disabled = latestBadCaseSummary === null;
+        humanOracleStartButton.textContent = humanOracleState ? '继续人工诊断' : '重新开始人工诊断';
+        focusHumanOracle();
+        toolUiLog('human-oracle-ui', 'human_oracle_operation_failed', {
+            operation: operation,
+            oracleBatchId: humanOracleState?.batch?.oracle_batch_id || null,
+            errorCode: errorCode,
+            statusCode: Number(error.status) || 0
+        }, 'warn');
+    };
+
+    const startHumanOracle = async () => {
+        if (!latestBadCaseSummary || !agentToolsContract?.fetchHumanOracleBatch) return;
+        renderToolLoading(humanOracleStatus, humanOracleResult, '正在创建固定 40-case / 20-cluster 诊断批次；不会自动填充任何判断。');
+        humanOracleStartButton.disabled = true;
+        humanOracleStartButton.textContent = '创建诊断批次中…';
+        toolUiLog('human-oracle-ui', 'human_oracle_batch_requested', {
+            diagnosticId: latestBadCaseSummary.diagnostic_id,
+            querySetId: latestBadCaseSummary.query_set_id
+        });
+        try {
+            if (!humanOracleState) {
+                const batch = await agentToolsContract.fetchHumanOracleBatch(
+                    window.fetch.bind(window),
+                    protectedToolApiRoot,
+                    latestBadCaseSummary.diagnostic_id,
+                    latestBadCaseSummary.query_set_id
+                );
+                humanOracleState = { batch, review: null };
+                toolUiLog('human-oracle-ui', 'human_oracle_batch_created', {
+                    oracleBatchId: batch.oracle_batch_id,
+                    diagnosticId: batch.diagnostic_id,
+                    clusterCount: batch.selected_cluster_count,
+                    candidateCount: batch.selected_candidate_count,
+                    intentCount: batch.synthetic_intent_candidate_count
+                });
+            }
+            await refreshHumanOracleStatus();
+            await advanceHumanOracle();
+            const sealed = humanOracleState.review.projection.status === 'sealed';
+            humanOracleStartButton.disabled = sealed;
+            humanOracleStartButton.textContent = sealed ? '诊断 Oracle 已封印' : '继续当前人工诊断';
+        } catch (error) {
+            failHumanOracleUi(error, 'batch_or_status');
+        }
+    };
+
+    async function submitHumanOracleIntentDecision(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const selected = form.querySelector('input[name="oracleJudgment"]:checked')?.value || '';
+        if (!selected || humanOracleView?.phase !== 'intent') return;
+        const { view, candidate, caseState } = humanOracleView;
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = '提交中…';
+        humanOracleResult.setAttribute('aria-busy', 'true');
+        const reason = agentToolsContract.intentReasonForConstruction(candidate.construction, selected);
+        try {
+            const annotation = await agentToolsContract.submitHumanOracleIntent(
+                window.fetch.bind(window),
+                protectedToolApiRoot,
+                {
+                    oracle_batch_id: view.oracle_batch_id,
+                    unit_id: view.unit_id,
+                    case_id: candidate.case_id,
+                    presentation_context_sha256: candidate.intent_context_sha256,
+                    judgment: selected,
+                    reason_code: reason,
+                    client_action_id: safeClientActionId(),
+                    expected_previous_annotation_id: caseState.expected_previous_intent_annotation_id
+                },
+                candidate.construction
+            );
+            humanOracleView = null;
+            toolUiLog('human-oracle-ui', 'human_oracle_intent_submitted', {
+                oracleBatchId: annotation.oracle_batch_id,
+                unitId: annotation.unit_id,
+                caseId: annotation.case_id,
+                intentAnnotationId: annotation.intent_annotation_id
+            });
+            await refreshHumanOracleStatus();
+            await advanceHumanOracle();
+        } catch (error) {
+            failHumanOracleUi(error, 'intent_submit');
+        }
+    }
+
+    async function submitHumanOracleBehaviorDecision(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const selected = form.querySelector('input[name="oracleJudgment"]:checked')?.value || '';
+        if (!selected || humanOracleView?.phase !== 'behavior') return;
+        const { view, candidate, caseState } = humanOracleView;
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = '提交中…';
+        humanOracleResult.setAttribute('aria-busy', 'true');
+        const reason = agentToolsContract.behaviorReasonForIntent(
+            candidate.construction,
+            caseState.active_intent_judgment,
+            selected
+        );
+        try {
+            const annotation = await agentToolsContract.submitHumanOracleBehavior(
+                window.fetch.bind(window),
+                protectedToolApiRoot,
+                {
+                    oracle_batch_id: view.oracle_batch_id,
+                    unit_id: view.unit_id,
+                    case_id: candidate.case_id,
+                    presentation_context_sha256: candidate.behavior_context_sha256,
+                    judgment: selected,
+                    reason_code: reason,
+                    intent_annotation_id: caseState.active_intent_annotation_id,
+                    client_action_id: safeClientActionId(),
+                    expected_previous_annotation_id: caseState.expected_previous_behavior_annotation_id
+                },
+                candidate.construction,
+                caseState.active_intent_judgment
+            );
+            humanOracleView = null;
+            toolUiLog('human-oracle-ui', 'human_oracle_behavior_submitted', {
+                oracleBatchId: annotation.oracle_batch_id,
+                unitId: annotation.unit_id,
+                caseId: annotation.case_id,
+                behaviorAnnotationId: annotation.behavior_annotation_id,
+                intentAnnotationId: annotation.intent_annotation_id
+            });
+            await refreshHumanOracleStatus();
+            await advanceHumanOracle();
+        } catch (error) {
+            failHumanOracleUi(error, 'behavior_submit');
+        }
+    }
+
+    async function sealHumanOracleDecisions(event) {
+        event.preventDefault();
+        const projection = humanOracleState?.review?.projection;
+        if (!projection
+            || projection.status !== 'ready_to_seal'
+            || projection.active_intent_annotation_count !== 30
+            || projection.active_behavior_annotation_count !== 40
+            || projection.invalidated_behavior_annotation_count !== 0) return humanOracleFailure('oracle_seal_gate_closed');
+        const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = '封印中…';
+        humanOracleResult.setAttribute('aria-busy', 'true');
+        try {
+            const seal = await agentToolsContract.sealHumanOracleBatch(
+                window.fetch.bind(window),
+                protectedToolApiRoot,
+                humanOracleState.batch.oracle_batch_id,
+                safeClientActionId()
+            );
+            setHumanOracleProgress({ projection: {
+                active_intent_annotation_count: 30,
+                active_behavior_annotation_count: 40
+            }, cases: humanOracleState.review.cases });
+            renderHumanOracleSealed(seal);
+            toolUiLog('human-oracle-ui', 'human_oracle_batch_sealed', {
+                oracleBatchId: seal.oracle_batch_id,
+                oracleId: seal.oracle_id,
+                intentCount: seal.synthetic_intent_annotation_count,
+                behaviorCount: seal.behavior_annotation_count,
+                strategyWriteCount: seal.strategy_write_count
+            });
+        } catch (error) {
+            failHumanOracleUi(error, 'seal');
+        }
+    }
 
     const renderRetrievalAnalysis = (analysis) => {
         const comparison = analysis?.comparison || {};
@@ -1114,6 +1730,8 @@ document.addEventListener('DOMContentLoaded', () => {
     agentEvalRunButton?.addEventListener('click', runAgentEval);
     queryConstructorBuildButton?.addEventListener('click', buildQuerySet);
     badCaseRunButton?.addEventListener('click', runBadCaseDiagnostics);
+    diagnosticPlanButton?.addEventListener('click', runDiagnosticExperimentPlan);
+    humanOracleStartButton?.addEventListener('click', startHumanOracle);
 
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
