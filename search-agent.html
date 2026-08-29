@@ -6,11 +6,8 @@
     <meta name="description" content="搜索质量诊断 Agent 的受保护工作台。">
     <meta name="robots" content="noindex,nofollow">
     <title>Agent 工作台 · Shaw's Space</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260829-human-oracle-v1">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260829-owner-login-v1">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -31,7 +28,25 @@
         </div>
     </nav>
 
-    <main class="agent-page">
+    <section class="owner-login-shell" id="agentOwnerLogin" aria-labelledby="agentOwnerLoginTitle">
+        <div class="owner-login-card">
+            <div class="owner-login-copy">
+                <span>Owner access</span>
+                <h1 id="agentOwnerLoginTitle">登录 Agent 工作台</h1>
+                <p>请输入站长账号。验证成功后，才会加载诊断、实验和人工 Oracle 工作台。</p>
+            </div>
+            <form class="owner-login-form" id="agentOwnerLoginForm" method="post" action="/search-agent.html" autocomplete="on">
+                <label for="agentOwnerUsername">账号</label>
+                <input id="agentOwnerUsername" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="128" required>
+                <label for="agentOwnerPassword">密码</label>
+                <input id="agentOwnerPassword" type="password" autocomplete="current-password" maxlength="512" required>
+                <button type="submit" id="agentOwnerLoginButton">登录工作台</button>
+                <p class="owner-login-status" id="agentOwnerLoginStatus" aria-live="polite">凭据仅用于本次页面会话，不会写入浏览器存储或日志。</p>
+            </form>
+        </div>
+    </section>
+
+    <main class="agent-page" id="agentProtectedWorkbench" hidden>
         <header class="agent-toolbar">
             <div>
                 <span class="agent-toolbar-kicker">Search Evaluation Agent</span>
@@ -42,6 +57,7 @@
                 <a href="search-eval.html">开始搜索</a>
                 <a href="search-strategy.html">策略平台</a>
                 <a href="index.html">返回作品集</a>
+                <button type="button" id="agentOwnerLogoutButton">退出登录</button>
             </nav>
         </header>
 
@@ -280,8 +296,9 @@
         </section>
     </main>
 
+    <script src="js/search-agent-auth.js?v=20260829-owner-login-v1"></script>
     <script src="js/search-agent-contract.js?v=20260829-bad-case-v1"></script>
     <script src="js/search-agent-tools-contract.js?v=20260829-human-oracle-v1"></script>
-    <script src="js/search-agent.js?v=20260829-human-oracle-v1"></script>
+    <script src="js/search-agent.js?v=20260829-owner-login-v1"></script>
 </body>
 </html>

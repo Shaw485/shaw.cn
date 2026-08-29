@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ? `${window.location.protocol}//${window.location.hostname}:8000`
         : '/search-eval-api';
     const protectedToolApiRoot = isLocal ? apiRoot : '/search-eval-api';
+    const ownerLogin = document.getElementById('agentOwnerLogin');
+    const ownerLoginForm = document.getElementById('agentOwnerLoginForm');
+    const ownerUsername = document.getElementById('agentOwnerUsername');
+    const ownerPassword = document.getElementById('agentOwnerPassword');
+    const ownerLoginButton = document.getElementById('agentOwnerLoginButton');
+    const ownerLoginStatus = document.getElementById('agentOwnerLoginStatus');
+    const ownerLogoutButton = document.getElementById('agentOwnerLogoutButton');
+    const protectedWorkbench = document.getElementById('agentProtectedWorkbench');
     const startButton = document.getElementById('agentStartAnalysis');
     const decisionState = document.getElementById('agentDecisionState');
     const strategyName = document.getElementById('agentStrategyName');
@@ -45,9 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const humanOracleClusterProgress = document.getElementById('humanOracleClusterProgress');
     const agentContract = window.SearchAgentContract;
     const agentToolsContract = window.SearchAgentToolsContract;
+    const ownerAuthModule = window.SearchAgentAuth;
     let latestBadCaseSummary = null;
     let humanOracleState = null;
     let humanOracleView = null;
+    let ownerAuthSession = null;
+
+    const authenticatedFetch = (...args) => {
+        if (!ownerAuthSession) {
+            return Promise.reject(new Error('owner_auth_session_unavailable'));
+        }
+        return ownerAuthSession.fetch(...args);
+    };
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -99,6 +116,129 @@ document.addEventListener('DOMContentLoaded', () => {
             event,
             ...context
         });
+    };
+
+    const ownerAuthUiLog = (event, context = {}, level = 'debug') => {
+        if (localStorage.getItem('shaw.debug.search-console') !== '1') return;
+        const modules = enabledDebugModules();
+        if (modules.size && !modules.has('owner-auth-ui')) return;
+        const writer = level === 'warn' ? console.warn : console.debug;
+        writer('[search-console:owner-auth-ui]', {
+            timestamp: new Date().toISOString(),
+            event,
+            ...context
+        });
+    };
+
+    const setOwnerLoginStatus = (message, className = '') => {
+        if (!ownerLoginStatus) return;
+        ownerLoginStatus.classList.remove('is-error', 'is-success');
+        ownerLoginStatus.textContent = message;
+        if (className) ownerLoginStatus.classList.add(className);
+    };
+
+    const lockOwnerWorkbench = (message, focusLogin = false) => {
+        protectedWorkbench.hidden = true;
+        ownerLogin.hidden = false;
+        ownerPassword.value = '';
+        setOwnerLoginStatus(message, message.includes('失效') ? 'is-error' : '');
+        if (focusLogin) ownerUsername.focus();
+    };
+
+    const unlockOwnerWorkbench = () => {
+        ownerLogin.hidden = true;
+        protectedWorkbench.hidden = false;
+        setOwnerLoginStatus('登录成功。', 'is-success');
+        startButton.focus();
+    };
+
+    const initializeOwnerAuth = () => {
+        if (!ownerAuthModule?.createSession) {
+            setOwnerLoginStatus('登录组件未能加载，请刷新页面。', 'is-error');
+            ownerLoginButton.disabled = true;
+            ownerAuthUiLog('initialization_failed', {
+                errorCode: 'auth_module_unavailable'
+            }, 'warn');
+            return;
+        }
+        try {
+            const ownerRouteSuffixes = [
+                'strategy/propose',
+                'retrieval/analyze',
+                'eval/run',
+                'query-constructor/build',
+                'bad-cases/run',
+                'diagnostic-experiments/plan',
+                'human-oracle/batches/create',
+                'human-oracle/batches/status',
+                'human-oracle/intents/view',
+                'human-oracle/intents/submit',
+                'human-oracle/behaviors/view',
+                'human-oracle/behaviors/submit',
+                'human-oracle/batches/seal'
+            ];
+            const allowedRequestPaths = ownerRouteSuffixes.map(
+                (suffix) => `/search-eval-api/agent/${suffix}`
+            );
+            ownerAuthSession = ownerAuthModule.createSession({
+                fetchImpl: window.fetch.bind(window),
+                validationUrl: '/search-agent-auth-check.json',
+                baseUrl: window.location.href,
+                allowedRequestPaths,
+                onEvent: (event, context) => {
+                    ownerAuthUiLog(event, context, event.includes('failed') ? 'warn' : 'debug');
+                    if (event === 'session_expired') {
+                        lockOwnerWorkbench('登录状态已失效，请重新登录。', true);
+                    }
+                }
+            });
+            ownerAuthUiLog('initialized');
+        } catch (error) {
+            setOwnerLoginStatus('登录组件初始化失败，请刷新页面。', 'is-error');
+            ownerLoginButton.disabled = true;
+            ownerAuthUiLog('initialization_failed', {
+                errorCode: error.code || 'auth_runtime_unavailable'
+            }, 'warn');
+        }
+    };
+
+    const submitOwnerLogin = async (event) => {
+        event.preventDefault();
+        if (!ownerAuthSession || ownerLoginButton.disabled) return;
+        const username = ownerUsername.value;
+        let password = ownerPassword.value;
+        ownerPassword.value = '';
+        ownerLoginButton.disabled = true;
+        ownerLoginButton.textContent = '验证中…';
+        setOwnerLoginStatus('正在验证站长身份…');
+        try {
+            await ownerAuthSession.authenticate(username, password);
+            password = '';
+            ownerLoginForm.reset();
+            unlockOwnerWorkbench();
+        } catch (error) {
+            password = '';
+            const rejected = error.code === 'credentials_rejected';
+            setOwnerLoginStatus(
+                rejected ? '账号或密码不正确，请重新输入。' : '登录服务暂时不可用，请稍后重试。',
+                'is-error'
+            );
+            ownerAuthUiLog('login_failed', {
+                errorCode: error.code || 'auth_unknown_error',
+                statusCode: Number(error.status) || 0
+            }, 'warn');
+            (rejected ? ownerPassword : ownerUsername).focus();
+        } finally {
+            password = '';
+            ownerLoginButton.disabled = false;
+            ownerLoginButton.textContent = '登录工作台';
+        }
+    };
+
+    const logoutOwner = () => {
+        ownerAuthSession?.clear('logout');
+        ownerAuthUiLog('logged_out');
+        window.location.reload();
     };
 
     const setState = (label, className = '') => {
@@ -898,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!agentToolsContract?.fetchAgentEval) throw new Error('agent_tools_contract_unavailable');
             const summary = await agentToolsContract.fetchAgentEval(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot
             );
             renderAgentEvalSummary(summary);
@@ -934,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!agentToolsContract?.fetchQueryConstructor) throw new Error('agent_tools_contract_unavailable');
             const summary = await agentToolsContract.fetchQueryConstructor(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot
             );
             renderQueryConstructorSummary(summary);
@@ -984,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!agentToolsContract?.fetchBadCaseDiagnostics) throw new Error('agent_tools_contract_unavailable');
             const summary = await agentToolsContract.fetchBadCaseDiagnostics(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot
             );
             renderBadCaseSummary(summary);
@@ -1045,7 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('agent_tools_contract_unavailable');
             }
             const plan = await agentToolsContract.fetchDiagnosticExperimentPlan(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot,
                 latestBadCaseSummary.diagnostic_id,
                 latestBadCaseSummary.query_set_id
@@ -1291,7 +1431,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const refreshHumanOracleStatus = async () => {
         const review = await agentToolsContract.fetchHumanOracleStatus(
-            window.fetch.bind(window),
+            authenticatedFetch,
             protectedToolApiRoot,
             humanOracleState.batch.oracle_batch_id
         );
@@ -1321,7 +1461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 && item.active_intent_annotation_id === null);
             if (!nextCase) return humanOracleFailure('intent_progress_has_no_next_case');
             const view = await agentToolsContract.fetchHumanOracleIntentView(
-                window.fetch.bind(window), protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
+                authenticatedFetch, protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
             );
             const unit = batch.units.find((item) => item.unit_id === nextCase.unit_id);
             const unitCaseIds = review.cases.filter((item) => item.unit_id === nextCase.unit_id).map((item) => item.case_id).sort();
@@ -1340,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nextCase = review.cases.find((item) => item.active_behavior_annotation_id === null);
             if (!nextCase) return humanOracleFailure('behavior_progress_has_no_next_case');
             const view = await agentToolsContract.fetchHumanOracleBehaviorView(
-                window.fetch.bind(window), protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
+                authenticatedFetch, protectedToolApiRoot, batch.oracle_batch_id, nextCase.unit_id
             );
             const unit = batch.units.find((item) => item.unit_id === nextCase.unit_id);
             const unitCaseIds = review.cases.filter((item) => item.unit_id === nextCase.unit_id).map((item) => item.case_id).sort();
@@ -1399,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!humanOracleState) {
                 const batch = await agentToolsContract.fetchHumanOracleBatch(
-                    window.fetch.bind(window),
+                    authenticatedFetch,
                     protectedToolApiRoot,
                     latestBadCaseSummary.diagnostic_id,
                     latestBadCaseSummary.query_set_id
@@ -1436,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const reason = agentToolsContract.intentReasonForConstruction(candidate.construction, selected);
         try {
             const annotation = await agentToolsContract.submitHumanOracleIntent(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot,
                 {
                     oracle_batch_id: view.oracle_batch_id,
@@ -1481,7 +1621,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
         try {
             const annotation = await agentToolsContract.submitHumanOracleBehavior(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot,
                 {
                     oracle_batch_id: view.oracle_batch_id,
@@ -1526,7 +1666,7 @@ document.addEventListener('DOMContentLoaded', () => {
         humanOracleResult.setAttribute('aria-busy', 'true');
         try {
             const seal = await agentToolsContract.sealHumanOracleBatch(
-                window.fetch.bind(window),
+                authenticatedFetch,
                 protectedToolApiRoot,
                 humanOracleState.batch.oracle_batch_id,
                 safeClientActionId()
@@ -1701,7 +1841,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let errorCode = null;
         try {
             if (!agentContract?.fetchAnalysis) throw new Error('analysis_contract_unavailable');
-            const outcome = await agentContract.fetchAnalysis(window.fetch.bind(window), apiRoot);
+            const outcome = await agentContract.fetchAnalysis(authenticatedFetch, apiRoot);
             if (outcome.kind === 'legacy') {
                 debug('retrieval_stage_analysis_fallback');
                 renderLegacyProposal(outcome.proposal);
@@ -1725,6 +1865,11 @@ document.addEventListener('DOMContentLoaded', () => {
             startButton.textContent = '重新分析';
         }
     };
+
+    initializeOwnerAuth();
+    ownerLoginForm?.addEventListener('submit', submitOwnerLogin);
+    ownerLogoutButton?.addEventListener('click', logoutOwner);
+    window.addEventListener('pagehide', () => ownerAuthSession?.clear('pagehide'));
 
     startButton?.addEventListener('click', requestProposal);
     agentEvalRunButton?.addEventListener('click', runAgentEval);

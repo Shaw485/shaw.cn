@@ -8,6 +8,24 @@
 
 .search-agent-page { min-height: 100vh; color: var(--agent-ink); background: #f1f3f4; }
 .search-agent-page .navbar { position: relative; }
+.search-agent-page [hidden] { display: none !important; }
+.owner-login-shell { width: min(100% - 40px, 760px); min-height: calc(100vh - 150px); margin: 0 auto; padding: 54px 0; display: grid; place-items: center; }
+.owner-login-card { width: 100%; display: grid; grid-template-columns: minmax(0,.86fr) minmax(300px,1.14fr); border: 1px solid #cfd5da; background: #fff; box-shadow: 0 18px 60px rgba(20,31,42,.1); }
+.owner-login-copy { padding: 34px; color: #fff; background: var(--agent-navy); }
+.owner-login-copy > span { display: block; color: #f0b247; font-size: 10px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.owner-login-copy h1 { margin-top: 12px; font-size: 30px; line-height: 1.12; letter-spacing: -.025em; }
+.owner-login-copy p { margin-top: 16px; color: #d6dee5; font-size: 12px; line-height: 1.75; }
+.owner-login-form { padding: 34px; display: grid; align-content: center; }
+.owner-login-form label { margin: 14px 0 7px; color: #34424f; font-size: 12px; font-weight: 800; }
+.owner-login-form label:first-child { margin-top: 0; }
+.owner-login-form input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #87939c; border-radius: 4px; color: #18212a; background: #fff; font: inherit; font-size: 15px; }
+.owner-login-form input:focus-visible, .owner-login-form button:focus-visible, .agent-toolbar-actions button:focus-visible { outline: 3px solid #1c79b8; outline-offset: 3px; }
+.owner-login-form button { min-height: 46px; margin-top: 20px; padding: 10px 14px; border: 1px solid var(--agent-navy); border-radius: 4px; color: #fff; background: var(--agent-navy); font-size: 13px; font-weight: 800; cursor: pointer; }
+.owner-login-form button:hover:not(:disabled) { border-color: #34495b; background: #34495b; }
+.owner-login-form button:disabled { cursor: wait; opacity: .68; }
+.owner-login-status { min-height: 38px; margin-top: 13px; color: #596773; font-size: 11px; line-height: 1.55; }
+.owner-login-status.is-error { color: #91342d; }
+.owner-login-status.is-success { color: #08704f; }
 .agent-page { width: min(100% - 40px, 1320px); margin: 22px auto 48px; }
 
 .agent-toolbar { padding: 20px 22px; display: flex; justify-content: space-between; gap: 30px; align-items: center; border: 1px solid var(--agent-line); background: #fff; }
@@ -15,8 +33,8 @@
 .agent-toolbar h1 { font-size: 28px; line-height: 1.1; letter-spacing: -.02em; }
 .agent-toolbar p { margin-top: 7px; color: var(--agent-muted); font-size: 11px; line-height: 1.6; }
 .agent-toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-.agent-toolbar-actions a { min-height: 44px; padding: 10px 13px; display: inline-flex; align-items: center; border: 1px solid #c7cfd6; border-radius: 4px; color: #34424f; background: #fff; font-size: 12px; font-weight: 700; }
-.agent-toolbar-actions a:hover { border-color: var(--agent-navy); color: #fff; background: var(--agent-navy); }
+.agent-toolbar-actions a, .agent-toolbar-actions button { min-height: 44px; padding: 10px 13px; display: inline-flex; align-items: center; border: 1px solid #c7cfd6; border-radius: 4px; color: #34424f; background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.agent-toolbar-actions a:hover, .agent-toolbar-actions button:hover { border-color: var(--agent-navy); color: #fff; background: var(--agent-navy); }
 .agent-toolbar-actions a:focus-visible, .workbench-start:focus-visible { outline: 3px solid #1c79b8; outline-offset: 3px; }
 
 .agent-workbench { margin-top: 16px; border: 1px solid #cfd5da; background: #fff; box-shadow: 0 8px 28px rgba(20,31,42,.05); }
@@ -413,6 +431,10 @@
 }
 
 @media (max-width: 700px) {
+    .owner-login-shell { width: min(100% - 24px, 760px); min-height: calc(100vh - 100px); padding: 24px 0; }
+    .owner-login-card { grid-template-columns: 1fr; }
+    .owner-login-copy, .owner-login-form { padding: 24px; }
+    .owner-login-copy h1 { font-size: 26px; }
     .agent-page { width: min(100% - 24px, 1320px); margin-top: 12px; }
     .agent-toolbar, .workbench-header { align-items: flex-start; flex-direction: column; }
     .agent-toolbar h1 { font-size: 24px; }

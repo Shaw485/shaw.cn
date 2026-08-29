@@ -29,6 +29,59 @@ test('Agent workbench is a dedicated page with the required dynamic nodes', () =
     assert.match(page, /search-strategy\.html/);
 });
 
+test('Agent workbench opens on an accessible in-page Owner login and stays locked by default', () => {
+    const page = read('search-agent.html');
+    const script = read('js/search-agent.js');
+    const auth = read('js/search-agent-auth.js');
+    const styles = read('css/search-agent.css');
+    const check = JSON.parse(read('search-agent-auth-check.json'));
+
+    for (const id of [
+        'agentOwnerLogin',
+        'agentOwnerLoginForm',
+        'agentOwnerUsername',
+        'agentOwnerPassword',
+        'agentOwnerLoginButton',
+        'agentOwnerLoginStatus',
+        'agentProtectedWorkbench',
+        'agentOwnerLogoutButton'
+    ]) assert.match(page, new RegExp(`id="${id}"`));
+    assert.match(page, /<label for="agentOwnerUsername">账号<\/label>/);
+    assert.match(page, /<label for="agentOwnerPassword">密码<\/label>/);
+    assert.match(page, /id="agentOwnerLoginForm" method="post" action="\/search-agent\.html"/);
+    assert.doesNotMatch(page, /id="agentOwnerUsername"[^>]*\sname=/);
+    assert.doesNotMatch(page, /id="agentOwnerPassword"[^>]*\sname=/);
+    assert.match(page, /id="agentOwnerPassword"[^>]*type="password"[^>]*autocomplete="current-password"/);
+    assert.match(page, /id="agentOwnerLoginStatus" aria-live="polite"/);
+    assert.match(page, /id="agentProtectedWorkbench" hidden/);
+    assert.match(page, /js\/search-agent-auth\.js/);
+    assert.ok(page.indexOf('js/search-agent-auth.js') < page.indexOf('js/search-agent-contract.js'));
+    assert.deepEqual(check, {
+        schema_version: 'search-agent-auth-check-v1',
+        authenticated: true
+    });
+
+    assert.match(script, /initializeOwnerAuth\(\)/);
+    assert.match(script, /ownerLoginForm\?\.addEventListener\('submit', submitOwnerLogin\)/);
+    assert.match(script, /ownerPassword\.value = ''/);
+    assert.match(script, /window\.addEventListener\('pagehide'/);
+    assert.match(script, /const authenticatedFetch/);
+    assert.equal((script.match(/window\.fetch\.bind\(window\)/g) || []).length, 1);
+    assert.ok((script.match(/authenticatedFetch/g) || []).length >= 13);
+    assert.match(auth, /allowedRequests\.has/);
+    assert.match(auth, /url\.origin !== allowedOrigin/);
+    assert.match(auth, /insecure_auth_origin/);
+    assert.match(auth, /credentials: 'omit'/);
+    assert.match(auth, /cache: 'no-store'/);
+    assert.match(auth, /headers\.set\('Authorization', authorization\)/);
+    assert.doesNotMatch(auth, /localStorage|sessionStorage|document\.cookie/);
+    assert.doesNotMatch(auth, /console\.(?:debug|info|warn|error)/);
+    assert.match(styles, /\.owner-login-form input \{[^}]*min-height: 46px/);
+    assert.match(styles, /\.owner-login-form button \{[^}]*min-height: 46px/);
+    assert.match(styles, /\.owner-login-form input:focus-visible/);
+    assert.match(script, /\[search-console:owner-auth-ui\]/);
+});
+
 test('Agent workbench exposes diagnosis, candidate search and release gates', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
@@ -513,6 +566,7 @@ test('risk card uses regression evidence and supports engineering terminal state
 test('portfolio points to the dedicated Agent page without frontend credentials', () => {
     const files = [
         'search-agent.html',
+        'js/search-agent-auth.js',
         'js/search-agent-contract.js',
         'js/search-agent.js',
         'search-eval.html',
@@ -521,5 +575,9 @@ test('portfolio points to the dedicated Agent page without frontend credentials'
     const combined = files.map(read).join('\n');
     assert.match(read('js/main.js'), /url:\s*'search-agent\.html'/);
     assert.doesNotMatch(read('js/main.js'), /search-eval\.html#agentWorkbench/);
-    assert.doesNotMatch(combined, /Authorization|Basic\s+[A-Za-z0-9+/=]+/);
+    assert.doesNotMatch(combined, /Basic\s+[A-Za-z0-9+/=]{12,}/);
+    assert.doesNotMatch(
+        combined,
+        /encodeBasicAuthorization\(\s*['"][^'"]+['"]\s*,\s*['"][^'"]+['"]/
+    );
 });
