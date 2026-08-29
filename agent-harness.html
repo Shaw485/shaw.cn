@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shaw 的 Agent Harness 前端框架：统一查看 Agent、运行任务、评测证据、人工审批与 Trace 日志。">
+    <title>Agent Harness · Shaw's Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260829-harness-shell-v1">
+    <link rel="stylesheet" href="css/agent-harness.css?v=20260829-harness-shell-v1">
+</head>
+<body class="agent-harness-page">
+    <a class="harness-skip-link" href="#harnessContent">跳到主要内容</a>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-mark"></span>
+                <span class="logo-text">Shaw's Space</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">作品集</a></li>
+                <li><a href="ai-growth.html" class="nav-link">AI 学习记录</a></li>
+                <li><a href="blog.html" class="nav-link">博客记录</a></li>
+                <li><a href="contact.html" class="nav-link">联系我</a></li>
+            </ul>
+            <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="harness-shell" id="harnessContent">
+        <header class="harness-header">
+            <div class="harness-heading">
+                <p class="harness-eyebrow">Agent Runtime &amp; Governance</p>
+                <h1>Agent Harness</h1>
+                <p>统一查看 Agent、运行任务、评测证据与人工审批。</p>
+            </div>
+            <div class="harness-header-actions">
+                <span class="harness-runtime-status"><i aria-hidden="true"></i>前端框架 · 运行时待接入</span>
+                <a class="harness-back-link" href="index.html">返回作品集</a>
+            </div>
+        </header>
+
+        <aside class="harness-reality-note" role="note">
+            <strong>当前状态</strong>
+            <span>这里只展示产品与交互框架，尚未接入 Agent 运行时，也没有生成任何运行数据。</span>
+        </aside>
+
+        <div class="harness-workspace">
+            <nav class="harness-sidebar" aria-label="Agent Harness 功能" role="tablist">
+                <button class="harness-nav-item is-active" id="tab-overview" type="button" role="tab" data-harness-tab="overview" aria-controls="panel-overview" aria-selected="true">
+                    <span>01</span>概览
+                </button>
+                <button class="harness-nav-item" id="tab-registry" type="button" role="tab" data-harness-tab="registry" aria-controls="panel-registry" aria-selected="false">
+                    <span>02</span>Agent 目录
+                </button>
+                <button class="harness-nav-item" id="tab-runs" type="button" role="tab" data-harness-tab="runs" aria-controls="panel-runs" aria-selected="false">
+                    <span>03</span>运行记录
+                </button>
+                <button class="harness-nav-item" id="tab-evaluation" type="button" role="tab" data-harness-tab="evaluation" aria-controls="panel-evaluation" aria-selected="false">
+                    <span>04</span>评测与证据
+                </button>
+                <button class="harness-nav-item" id="tab-approvals" type="button" role="tab" data-harness-tab="approvals" aria-controls="panel-approvals" aria-selected="false">
+                    <span>05</span>审批队列
+                </button>
+                <button class="harness-nav-item" id="tab-traces" type="button" role="tab" data-harness-tab="traces" aria-controls="panel-traces" aria-selected="false">
+                    <span>06</span>Trace 与日志
+                </button>
+            </nav>
+
+            <div class="harness-panels">
+                <section class="harness-panel is-active" id="panel-overview" role="tabpanel" data-harness-panel="overview" aria-labelledby="tab-overview">
+                    <div class="harness-panel-heading">
+                        <div>
+                            <p>Overview</p>
+                            <h2 id="overviewTitle" tabindex="-1">运行与治理总览</h2>
+                        </div>
+                        <span class="harness-updated">框架版本 0.1</span>
+                    </div>
+
+                    <dl class="harness-summary" aria-label="Harness 运行摘要">
+                        <div><dt>已接入 Agent</dt><dd>—</dd></div>
+                        <div><dt>运行中</dt><dd>—</dd></div>
+                        <div><dt>今日运行</dt><dd>—</dd></div>
+                        <div><dt>待审批</dt><dd>—</dd></div>
+                    </dl>
+
+                    <section class="harness-section" aria-labelledby="objectChainTitle">
+                        <div class="harness-section-title">
+                            <div><span>核心对象</span><h3 id="objectChainTitle">一条可复核的执行证据链</h3></div>
+                            <p>所有结果都从一次 Run 向前追踪，不只展示最终回答。</p>
+                        </div>
+                        <ol class="harness-object-chain">
+                            <li><span>01</span><strong>Agent</strong><small>能力与所有者</small></li>
+                            <li><span>02</span><strong>Version</strong><small>配置与发布版本</small></li>
+                            <li><span>03</span><strong>Run</strong><small>一次任务执行</small></li>
+                            <li><span>04</span><strong>Step / Tool Call</strong><small>步骤与工具调用</small></li>
+                            <li><span>05</span><strong>Artifact / Eval</strong><small>产物与评测证据</small></li>
+                            <li><span>06</span><strong>Decision</strong><small>审批与发布结论</small></li>
+                        </ol>
+                    </section>
+
+                    <section class="harness-section" aria-labelledby="registryPreviewTitle">
+                        <div class="harness-section-title">
+                            <div><span>Agent Registry</span><h3 id="registryPreviewTitle">计划接入的 Agent</h3></div>
+                            <button class="harness-text-action" type="button" data-open-tab="registry">查看目录</button>
+                        </div>
+                        <div class="agent-registry-grid" id="agentRegistryPreview" aria-live="polite"></div>
+                    </section>
+
+                    <section class="harness-section" id="integration" aria-labelledby="integrationTitle">
+                        <div class="harness-section-title">
+                            <div><span>Integration</span><h3 id="integrationTitle">接入清单</h3></div>
+                            <p>先约定协议与边界，再把现有 Agent 接进来。</p>
+                        </div>
+                        <ol class="integration-checklist">
+                            <li class="is-done"><span>已完成</span><strong>前端信息架构</strong><p>目录、Run、评测、审批和 Trace 的页面骨架。</p></li>
+                            <li><span>待定义</span><strong>统一数据协议</strong><p>Agent、Version、Run、Step、Artifact 与 Evaluation Schema。</p></li>
+                            <li><span>待接入</span><strong>PRD Agent Adapter</strong><p>映射知识检索、证据引用与版本判断。</p></li>
+                            <li><span>待接入</span><strong>搜索 Agent Adapter</strong><p>映射 Bad Case、候选策略、离线评测与审批。</p></li>
+                            <li><span>待接入</span><strong>权限与审批</strong><p>写入、发布和策略变更默认要求人工确认。</p></li>
+                            <li><span>待接入</span><strong>可观测性</strong><p>接入 Trace、结构化日志、成本、重试与失败原因。</p></li>
+                        </ol>
+                    </section>
+                </section>
+
+                <section class="harness-panel" id="panel-registry" role="tabpanel" data-harness-panel="registry" aria-labelledby="tab-registry" hidden>
+                    <div class="harness-panel-heading">
+                        <div><p>Agent Registry</p><h2 id="registryTitle" tabindex="-1">Agent 目录</h2></div>
+                        <button class="harness-primary-action" type="button" disabled title="统一接入协议尚未完成">添加 Agent</button>
+                    </div>
+                    <p class="harness-panel-intro">目录负责记录 Agent 的能力、版本、负责人和 Adapter 状态。首版只预留两个明确的接入位。</p>
+                    <div class="agent-registry-grid is-full" id="agentRegistryFull" aria-live="polite"></div>
+                </section>
+
+                <section class="harness-panel" id="panel-runs" role="tabpanel" data-harness-panel="runs" aria-labelledby="tab-runs" hidden>
+                    <div class="harness-panel-heading">
+                        <div><p>Runs</p><h2 id="runsTitle" tabindex="-1">运行记录</h2></div>
+                        <button class="harness-primary-action" type="button" disabled title="运行时尚未接入">新建 Run</button>
+                    </div>
+                    <div class="harness-empty-state">
+                        <span class="harness-empty-icon" aria-hidden="true">▶</span>
+                        <h3>暂无运行记录</h3>
+                        <p>接入 Agent 运行时后，这里将显示任务状态、耗时、模型与工具调用成本，以及可操作的失败原因。</p>
+                    </div>
+                </section>
+
+                <section class="harness-panel" id="panel-evaluation" role="tabpanel" data-harness-panel="evaluation" aria-labelledby="tab-evaluation" hidden>
+                    <div class="harness-panel-heading">
+                        <div><p>Evaluation &amp; Evidence</p><h2 id="evaluationTitle" tabindex="-1">评测与证据</h2></div>
+                    </div>
+                    <div class="harness-empty-state">
+                        <span class="harness-empty-icon" aria-hidden="true">◇</span>
+                        <h3>暂无评测结果</h3>
+                        <p>后续在同一批样本上展示基线与候选版本指标、改善与退化样本，以及可以复核的证据对象。</p>
+                    </div>
+                </section>
+
+                <section class="harness-panel" id="panel-approvals" role="tabpanel" data-harness-panel="approvals" aria-labelledby="tab-approvals" hidden>
+                    <div class="harness-panel-heading">
+                        <div><p>Human Approval</p><h2 id="approvalsTitle" tabindex="-1">审批队列</h2></div>
+                    </div>
+                    <div class="harness-empty-state">
+                        <span class="harness-empty-icon" aria-hidden="true">✓</span>
+                        <h3>暂无待审批项</h3>
+                        <p>涉及写入、发布或策略变更的动作，需要人工确认后执行；只读检索和离线评测可按策略自动运行。</p>
+                    </div>
+                </section>
+
+                <section class="harness-panel" id="panel-traces" role="tabpanel" data-harness-panel="traces" aria-labelledby="tab-traces" hidden>
+                    <div class="harness-panel-heading">
+                        <div><p>Trace &amp; Logs</p><h2 id="tracesTitle" tabindex="-1">Trace 与日志</h2></div>
+                        <span class="harness-log-mode" id="harnessLogMode">生产调试：关闭</span>
+                    </div>
+                    <div class="harness-empty-state harness-trace-empty">
+                        <span class="harness-empty-icon" aria-hidden="true">⌁</span>
+                        <h3>暂无 Trace</h3>
+                        <p>接入后按 Run 记录步骤、工具调用、重试和错误。Prompt、Token、Authorization 与敏感业务数据默认不写入前端日志。</p>
+                    </div>
+                    <aside class="harness-debug-help" aria-labelledby="debugHelpTitle">
+                        <div>
+                            <span>Frontend diagnostics</span>
+                            <h3 id="debugHelpTitle">模块化前端诊断</h3>
+                            <p>可分别调试 registry-ui、run-ui、evaluation-ui、approval-ui、trace-ui 与 navigation，不需要打开全局噪声日志。</p>
+                        </div>
+                        <a href="https://github.com/Shaw485/shaw.cn/blob/main/docs/AGENT_HARNESS_DEBUG.md" target="_blank" rel="noopener">查看诊断说明</a>
+                    </aside>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="harness-footer">
+        <span>Shaw's Space</span>
+        <p>Agent Harness 前端框架 · 2026</p>
+    </footer>
+
+    <script src="js/agent-harness.js?v=20260829-harness-shell-v1"></script>
+</body>
+</html>

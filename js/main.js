@@ -353,6 +353,60 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ]
             }
+        },
+        {
+            id: 6,
+            title: 'Agent Harness',
+            shortName: 'Agent Harness',
+            category: 'AI Platform · Agent Runtime',
+            date: '2026',
+            rating: '前端框架搭建中',
+            gradient: 'linear-gradient(135deg, #151a22 0%, #27374b 58%, #4f6f8f 100%)',
+            iconStroke: '#FFFFFF',
+            iconSVG: '<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 9h8M8 13h5M8 17h3"></path><circle cx="17" cy="13" r="1.4" fill="#FFFFFF" stroke="none"></circle>',
+            desc: '一个面向多个 Agent 的统一运行与治理前端，用来承载 Agent 目录、Run、Step / Tool Call、评测证据、人工审批以及 Trace 与日志。当前只完成前端框架，PRD Agent 与搜索 Agent 均尚未接入，不会产生真实运行数据。',
+            features: [
+                '🗂️ Agent 目录：统一管理 Agent、版本、能力与接入状态',
+                '▶️ 运行记录：按 Run 展示状态、耗时、模型和工具调用边界',
+                '🧪 评测证据：关联基线、候选版本、失败样本和验收结论',
+                '✅ 人工审批：对写入、发布和策略变更保留人工确认',
+                '🔍 Trace 与日志：追踪步骤、工具调用、重试和可操作错误',
+                '🔌 Adapter 预留：后续接入 PRD Agent 与搜索 Agent'
+            ],
+            tags: ['Agent Harness', 'Runtime', 'Evaluation', 'Observability', 'Human-in-the-loop'],
+            screenshots: [],
+            primaryAction: {
+                url: 'agent-harness.html',
+                label: '查看 Harness'
+            },
+            platformStatus: '前端框架 · 运行时待接入',
+            resources: {
+                first: {
+                    heading: '01 · 前端框架',
+                    title: '打开 Agent Harness',
+                    href: '/agent-harness.html',
+                    intro: '查看 Agent 目录、运行记录、评测证据、人工审批与 Trace 日志的统一前端框架。'
+                },
+                second: {
+                    heading: '02 · 接入说明',
+                    title: '查看接入清单',
+                    href: '/agent-harness.html#integration',
+                    intro: '查看统一数据协议、PRD Agent Adapter、搜索 Agent Adapter、权限审批和可观测性的待办。'
+                },
+                codeHeading: '03 · 源码与诊断',
+                code: [
+                    {
+                        title: '前端源码',
+                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html',
+                        intro: '查看 Harness 页面结构、Agent Registry 占位与无数据状态的实现。'
+                    },
+                    {
+                        title: '诊断说明',
+                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/docs/AGENT_HARNESS_DEBUG.md',
+                        intro: '查看模块化日志的启用、过滤、导出与故障排查方法。'
+                    }
+                ]
+            }
         }
     ];
 
@@ -368,6 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
       ,{ links:[] }
       ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md']] }
       ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','https://github.com/Shaw485/pick-memory#readme']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html'],['README','https://github.com/Shaw485/shaw.cn/blob/main/docs/AGENT_HARNESS_DEBUG.md']] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 
@@ -380,7 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
-        { status: '已开源', statusType: 'opensource', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 }
+        { status: '已开源', statusType: 'opensource', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
+        { status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 

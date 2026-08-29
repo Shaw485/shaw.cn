@@ -1,0 +1,129 @@
+# Agent Harness 前端诊断说明
+
+Agent Harness 的前端调试日志默认关闭。日志只用于诊断页面结构、Agent Registry 渲染和页面导航；当前版本尚未接入 Agent 运行时，因此不会生成 Run、Tool Call 或模型调用日志。
+
+## 日志模块
+
+| 模块 | 负责范围 | 可独立复现的主要问题 |
+| --- | --- | --- |
+| `registry-ui` | Agent 目录与接入状态渲染 | Agent 卡片缺失、目录数量异常 |
+| `run-ui` | Run 列表和运行状态 | 后续接入后的新建、加载、失败状态 |
+| `evaluation-ui` | 评测与证据展示 | 后续接入后的指标、样本和证据加载 |
+| `approval-ui` | 人工审批队列 | 后续接入后的审批状态和动作反馈 |
+| `trace-ui` | Trace 与结构化日志展示 | 后续接入后的步骤、工具调用与重试 |
+| `navigation` | 侧栏标签、URL Hash 与移动菜单 | 页面切换、深链和移动菜单问题 |
+
+每个模块都可以单独启用或排除，不需要打开全局日志。模块过滤同时作用于 debug、warn 和 error。
+
+## 启用与过滤
+
+在浏览器开发者工具 Console 中执行：
+
+```js
+localStorage.setItem('shaw.debug.agent-harness', '1');
+localStorage.setItem('shaw.debug.agent-harness.modules', 'registry-ui,navigation');
+location.reload();
+```
+
+第二项留空代表启用所有模块：
+
+```js
+localStorage.setItem('shaw.debug.agent-harness.modules', '');
+location.reload();
+```
+
+只调试某一个区域时，请只填写对应模块。例如只排查目录：
+
+```js
+localStorage.setItem('shaw.debug.agent-harness.modules', 'registry-ui');
+location.reload();
+```
+
+关闭调试：
+
+```js
+localStorage.removeItem('shaw.debug.agent-harness');
+localStorage.removeItem('shaw.debug.agent-harness.modules');
+location.reload();
+```
+
+warn / error 默认保留，以便暴露页面结构或接入失败；它们同样服从 `shaw.debug.agent-harness.modules` 的模块过滤。临时关闭前端错误输出：
+
+```js
+localStorage.setItem('shaw.debug.agent-harness.errors', '0');
+location.reload();
+```
+
+恢复错误输出：
+
+```js
+localStorage.removeItem('shaw.debug.agent-harness.errors');
+location.reload();
+```
+
+生产环境不默认开启 verbose 日志，所有调试开关只保存在当前浏览器的本地存储中。
+
+## 查看与导出
+
+Console 日志统一使用以下前缀：
+
+```text
+[agent-harness:<module>] <event>
+```
+
+按模块过滤示例：
+
+```text
+[agent-harness:registry-ui]
+```
+
+当前页面会在内存中保留最多 200 条本次会话日志，不写入持久化存储。复制以下命令的返回值即可导出：
+
+```js
+copy(ShawHarnessDiagnostics.exportLogs());
+```
+
+关闭或刷新页面后，内存日志自动清理。
+
+## 安全与脱敏
+
+日志只记录时间、模块、事件名和必要的非敏感状态，例如 Agent 数量、页面标签和容器是否存在。
+
+以下字段会按字段名自动替换成 `[redacted]`，不得在新增日志时绕过：
+
+- password / passwd
+- token / secret
+- Authorization / Cookie
+- prompt / query
+- document / content
+
+即使后续接入运行时，也不要在浏览器日志中写入原始 Prompt、查询正文、文档内容、完整模型响应、用户身份信息或密钥。后端日志应使用 Run ID、Trace ID、错误类型和脱敏后的结构化上下文关联问题。
+
+## 独立排查流程
+
+### Agent 目录
+
+1. 只启用 `registry-ui`。
+2. 刷新 `agent-harness.html`。
+3. 检查 `registry-rendered` 的 `agentCount` 和 `connectedCount`。
+4. 若出现 `registry-container-missing`，检查 HTML 中 `agentRegistryPreview` 与 `agentRegistryFull` 是否存在。
+
+### 标签与深链
+
+1. 只启用 `navigation`。
+2. 依次打开六个侧栏标签，确认出现 `tab-opened`。
+3. 直接访问 `agent-harness.html#runs`，确认加载后显示“运行记录”。
+4. 直接访问 `agent-harness.html#integration`，确认仍在概览并定位到接入清单。
+
+### 后续运行时接入
+
+接入 PRD Agent 或搜索 Agent 时，应分别验证：
+
+- 成功路径：目录加载、Run 创建、状态推进、产物和评测证据关联。
+- 失败路径：网络超时、Schema 不兼容、工具失败、审批拒绝和 Replay 失败。
+- 关联能力：每条错误至少包含非敏感的 Run ID / Trace ID 与模块名。
+- 生产设置：verbose 仍默认关闭，错误上下文不包含敏感字段。
+
+## 当前版本限制
+
+当前版本是前端框架，`endpoint` 与 `contractVersion` 均为空；所有运行、评测、审批与 Trace 区域都显示真实空状态。因为没有后端和真实 Run，本版本不会测试或声称运行时日志已经可用。
