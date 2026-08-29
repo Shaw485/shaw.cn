@@ -451,11 +451,6 @@
 
     const fetchAnalysis = async (fetchImpl, apiRoot) => {
         const response = await postJson(fetchImpl, `${apiRoot}/agent/retrieval/analyze`);
-        if (response.status === 404) {
-            const fallback = await postJson(fetchImpl, `${apiRoot}/agent/strategy/propose`);
-            if (!fallback.ok) throw new AnalysisHttpError(fallback.status);
-            return { kind: 'legacy', proposal: await fallback.json() };
-        }
         if (!response.ok) throw new AnalysisHttpError(response.status);
         return { kind: 'stage', analysis: validateAnalysis(await response.json()) };
     };

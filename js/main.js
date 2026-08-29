@@ -228,12 +228,12 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #101820 0%, #182f43 58%, #ff9900 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path><path d="M7.5 11.5 10 9l2 2 2.5-3"></path>',
-            desc: '一个证据驱动的电商搜索质量评测与优化 Agent。公开搜索页已接入全量 ESCI 商品 BM25 基线；独立、受保护的 Agent 工作台可生成 Bad Case、策略提案和 Harness 对比证据，策略变更仍由站长在服务器后台审批。',
+            desc: '一个证据驱动的电商搜索质量评测与优化 Agent。公开搜索页已接入全量 ESCI 商品 BM25 基线；Agent 工作台可直接查看 Bad Case、候选策略和 Harness 对比证据，策略变更仍由站长在服务器后台审批。',
             features: [
                 '🔎 实时基线：输入英文 Query，在线搜索 1,814,924 个 ESCI 商品',
                 '↔️ 双栏对照：优化前可用，优化后保持明确的未开放状态',
                 '🧪 评测边界：明确区分体验原型、正式评测与 ESCI 标签范围',
-                '🧭 Agent 工作台：独立受保护页面，生成 Bad Case、候选策略与 Harness 比较证据',
+                '🧭 Agent 工作台：独立公开页面，生成 Bad Case、候选策略与 Harness 比较证据',
                 '🧾 证据链：路线图、ADR、验收报告与 GitHub 均可追溯',
                 '🛡️ Harness：规划 Trace、Replay、超时、重试、预算与人工审批边界'
             ],

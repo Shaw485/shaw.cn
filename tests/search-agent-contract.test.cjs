@@ -391,26 +391,24 @@ test('rejects changed Query examples with tied outcomes or mismatched provenance
     });
 });
 
-test('a 404 stage endpoint falls back once to the legacy proposal endpoint', async () => {
-    const legacyProposal = { schema_version: 'agent-proposal-response-v1', proposal_id: 'proposal-1' };
+test('a 404 stage endpoint fails closed without calling another Agent route', async () => {
     const calls = [];
     const fetchImpl = async (url, options) => {
         calls.push({ url, options });
-        if (calls.length === 1) return jsonResponse(404, { error: 'not_found' });
-        return jsonResponse(200, legacyProposal);
+        return jsonResponse(404, { error: 'not_found' });
     };
 
-    const response = await fetchAnalysis(fetchImpl, '/search-eval-api');
-
-    assert.deepEqual(response, { kind: 'legacy', proposal: legacyProposal });
+    await assert.rejects(
+        fetchAnalysis(fetchImpl, '/search-eval-api'),
+        (error) => error instanceof AnalysisHttpError
+            && error.status === 404
+            && error.code === 'http_404'
+    );
     assert.deepEqual(calls.map(({ url }) => url), [
-        '/search-eval-api/agent/retrieval/analyze',
-        '/search-eval-api/agent/strategy/propose'
+        '/search-eval-api/agent/retrieval/analyze'
     ]);
-    for (const { options } of calls) {
-        assert.equal(options.method, 'POST');
-        assert.equal(options.credentials, 'same-origin');
-    }
+    assert.equal(calls[0].options.method, 'POST');
+    assert.equal(calls[0].options.credentials, 'same-origin');
 });
 
 test('a 401 is a safe HTTP error and never falls back or reads the error body', async () => {

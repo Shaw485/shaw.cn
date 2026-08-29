@@ -25,61 +25,25 @@ test('Agent workbench is a dedicated page with the required dynamic nodes', () =
     }
     assert.match(page, /js\/search-agent-contract\.js/);
     assert.match(page, /js\/search-agent\.js/);
+    assert.match(page, /js\/search-agent-contract\.js\?v=20260829-public-workbench-v1/);
     assert.match(page, /search-eval\.html/);
     assert.match(page, /search-strategy\.html/);
 });
 
-test('Agent workbench opens on an accessible in-page Owner login and stays locked by default', () => {
+test('Agent workbench opens directly without login, password or auth-check interaction', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
-    const auth = read('js/search-agent-auth.js');
-    const styles = read('css/search-agent.css');
-    const check = JSON.parse(read('search-agent-auth-check.json'));
+    const contract = read('js/search-agent-contract.js');
 
-    for (const id of [
-        'agentOwnerLogin',
-        'agentOwnerLoginForm',
-        'agentOwnerUsername',
-        'agentOwnerPassword',
-        'agentOwnerLoginButton',
-        'agentOwnerLoginStatus',
-        'agentProtectedWorkbench',
-        'agentOwnerLogoutButton'
-    ]) assert.match(page, new RegExp(`id="${id}"`));
-    assert.match(page, /<label for="agentOwnerUsername">账号<\/label>/);
-    assert.match(page, /<label for="agentOwnerPassword">密码<\/label>/);
-    assert.match(page, /id="agentOwnerLoginForm" method="post" action="\/search-agent\.html"/);
-    assert.doesNotMatch(page, /id="agentOwnerUsername"[^>]*\sname=/);
-    assert.doesNotMatch(page, /id="agentOwnerPassword"[^>]*\sname=/);
-    assert.match(page, /id="agentOwnerPassword"[^>]*type="password"[^>]*autocomplete="current-password"/);
-    assert.match(page, /id="agentOwnerLoginStatus" aria-live="polite"/);
-    assert.match(page, /id="agentProtectedWorkbench" hidden/);
-    assert.match(page, /js\/search-agent-auth\.js/);
-    assert.ok(page.indexOf('js/search-agent-auth.js') < page.indexOf('js/search-agent-contract.js'));
-    assert.deepEqual(check, {
-        schema_version: 'search-agent-auth-check-v1',
-        authenticated: true
-    });
-
-    assert.match(script, /initializeOwnerAuth\(\)/);
-    assert.match(script, /ownerLoginForm\?\.addEventListener\('submit', submitOwnerLogin\)/);
-    assert.match(script, /ownerPassword\.value = ''/);
-    assert.match(script, /window\.addEventListener\('pagehide'/);
-    assert.match(script, /const authenticatedFetch/);
+    assert.match(page, /<main class="agent-page" id="agentWorkbenchPage">/);
+    assert.doesNotMatch(page, /agentOwner|owner-login|type="password"|\u767b\u5f55\u5de5\u4f5c\u53f0|\u9000\u51fa\u767b\u5f55/);
+    assert.doesNotMatch(page, /js\/search-agent-auth\.js|search-agent-auth-check\.json/);
+    assert.doesNotMatch(script, /SearchAgentAuth|ownerAuth|ownerLogin|ownerPassword|authenticatedFetch|search-agent-auth-check/);
+    assert.match(script, /const publicAnalysisFetch = window\.fetch\.bind\(window\)/);
+    assert.match(script, /agentContract\.fetchAnalysis\(publicAnalysisFetch, apiRoot\)/);
     assert.equal((script.match(/window\.fetch\.bind\(window\)/g) || []).length, 1);
-    assert.ok((script.match(/authenticatedFetch/g) || []).length >= 13);
-    assert.match(auth, /allowedRequests\.has/);
-    assert.match(auth, /url\.origin !== allowedOrigin/);
-    assert.match(auth, /insecure_auth_origin/);
-    assert.match(auth, /credentials: 'omit'/);
-    assert.match(auth, /cache: 'no-store'/);
-    assert.match(auth, /headers\.set\('Authorization', authorization\)/);
-    assert.doesNotMatch(auth, /localStorage|sessionStorage|document\.cookie/);
-    assert.doesNotMatch(auth, /console\.(?:debug|info|warn|error)/);
-    assert.match(styles, /\.owner-login-form input \{[^}]*min-height: 46px/);
-    assert.match(styles, /\.owner-login-form button \{[^}]*min-height: 46px/);
-    assert.match(styles, /\.owner-login-form input:focus-visible/);
-    assert.match(script, /\[search-console:owner-auth-ui\]/);
+    assert.match(contract, /`\$\{apiRoot\}\/agent\/retrieval\/analyze`/);
+    assert.doesNotMatch(contract, /agent\/strategy\/propose/);
 });
 
 test('Agent workbench exposes diagnosis, candidate search and release gates', () => {
@@ -121,10 +85,11 @@ test('Agent button runs stage diagnosis before choosing a strategy experiment', 
     assert.match(script, /coarse_mrr_at_10_floor/);
     assert.match(contract, /proposal\.next_action/);
     assert.match(script, /保守 RRF 通过 12 项 smoke 工程门禁/);
-    assert.match(script, /服务器尚未提供阶段诊断接口/);
     assert.match(script, /本轮没有生成证据/);
     assert.match(script, /本轮无 Retrieval Run/);
     assert.match(styles, /\.pipeline-stage-grid/);
+    assert.doesNotMatch(contract, /agent\/strategy\/propose/);
+    assert.doesNotMatch(script, /retrieval_stage_analysis_fallback|renderLegacyProposal/);
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
@@ -155,7 +120,7 @@ test('Agent workbench renders a read-only, accessible runtime trace', () => {
     assert.match(script, /renderAgentRuntimeTrace/);
     assert.match(script, /runtime_trace_rendered/);
     assert.match(script, /上一轮轨迹已清除/);
-    assert.match(script, /兼容接口没有 Agent Runtime Trace/);
+    assert.doesNotMatch(script, /retrieval_stage_analysis_fallback|renderLegacyProposal/);
     assert.match(styles, /\.agent-runtime-timeline/);
     assert.match(styles, /\.agent-replay-badge\.is-ready/);
     assert.match(docs, /agent-runtime-ui/);
@@ -163,7 +128,7 @@ test('Agent workbench renders a read-only, accessible runtime trace', () => {
     assert.doesNotMatch(script, /\/agent\/strategy\/decision/);
 });
 
-test('Agent self-check, Query constructor, Bad Case runner and experiment planner are isolated diagnostic tools', () => {
+test('Owner tools stay in one hidden inert section and cannot trigger from the public page', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
     const contract = read('js/search-agent-tools-contract.js');
@@ -193,8 +158,9 @@ test('Agent self-check, Query constructor, Bad Case runner and experiment planne
     ]) {
         assert.match(page, new RegExp(`id="${id}"`));
     }
-    assert.match(page, /Agent 自检与工具/);
-    assert.match(page, /五项操作都不会审批、激活或修改搜索策略/);
+    assert.match(page, /<section class="agent-tools-section" aria-labelledby="agentToolsTitle" hidden inert>/);
+    assert.match(page, /保持受保护且不在公共工作台触发/);
+    assert.match(page, /5 个受控工具/);
     assert.match(page, /id="agentEvalStatus" aria-live="polite"/);
     assert.match(page, /id="queryConstructorStatus" aria-live="polite"/);
     assert.match(page, /id="badCaseStatus" aria-live="polite"/);
@@ -241,6 +207,17 @@ test('Agent self-check, Query constructor, Bad Case runner and experiment planne
     assert.match(docs, /bad-case-ui/);
     assert.match(script, /diagnostic-experiment-ui/);
     assert.match(script, /human-oracle-ui/);
+    assert.match(script, /const ownerOnlyFetch = \(\) => Promise\.reject/);
+    for (const handler of [
+        'runAgentEval',
+        'buildQuerySet',
+        'runBadCaseDiagnostics',
+        'runDiagnosticExperimentPlan',
+        'startHumanOracle'
+    ]) {
+        assert.doesNotMatch(script, new RegExp(`addEventListener\\('click', ${handler}\\)`));
+    }
+    assert.doesNotMatch(script, /agentToolsContract\.[A-Za-z]+\(\s*publicAnalysisFetch/);
     assert.doesNotMatch(`${script}\n${contract}`, /\/agent\/strategy\/(?:decision|activate)/);
 });
 
@@ -422,10 +399,11 @@ test('public search page no longer embeds the Agent workbench', () => {
     assert.match(page, /href="search-agent\.html"/);
 });
 
-test('Agent script can request proposals but cannot approve decisions', () => {
+test('public Agent script requests only retrieval analysis and cannot approve decisions', () => {
     const script = read('js/search-agent.js');
     const contract = read('js/search-agent-contract.js');
-    assert.match(contract, /agent\/strategy\/propose/);
+    assert.match(contract, /agent\/retrieval\/analyze/);
+    assert.doesNotMatch(contract, /agent\/strategy\/propose/);
     assert.match(contract, /credentials:\s*'same-origin'/);
     assert.doesNotMatch(`${script}\n${contract}`, /agent\/strategy\/decision/);
     assert.doesNotMatch(script, /decision:\s*['"](?:approve|reject)['"]/);

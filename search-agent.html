@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="搜索质量诊断 Agent 的受保护工作台。">
+    <meta name="description" content="搜索质量诊断 Agent 工作台。">
     <meta name="robots" content="noindex,nofollow">
     <title>Agent 工作台 · Shaw's Space</title>
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260829-owner-login-v1">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260829-public-workbench-v1">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -28,25 +28,7 @@
         </div>
     </nav>
 
-    <section class="owner-login-shell" id="agentOwnerLogin" aria-labelledby="agentOwnerLoginTitle">
-        <div class="owner-login-card">
-            <div class="owner-login-copy">
-                <span>Owner access</span>
-                <h1 id="agentOwnerLoginTitle">登录 Agent 工作台</h1>
-                <p>请输入站长账号。验证成功后，才会加载诊断、实验和人工 Oracle 工作台。</p>
-            </div>
-            <form class="owner-login-form" id="agentOwnerLoginForm" method="post" action="/search-agent.html" autocomplete="on">
-                <label for="agentOwnerUsername">账号</label>
-                <input id="agentOwnerUsername" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="128" required>
-                <label for="agentOwnerPassword">密码</label>
-                <input id="agentOwnerPassword" type="password" autocomplete="current-password" maxlength="512" required>
-                <button type="submit" id="agentOwnerLoginButton">登录工作台</button>
-                <p class="owner-login-status" id="agentOwnerLoginStatus" aria-live="polite">凭据仅用于本次页面会话，不会写入浏览器存储或日志。</p>
-            </form>
-        </div>
-    </section>
-
-    <main class="agent-page" id="agentProtectedWorkbench" hidden>
+    <main class="agent-page" id="agentWorkbenchPage">
         <header class="agent-toolbar">
             <div>
                 <span class="agent-toolbar-kicker">Search Evaluation Agent</span>
@@ -57,7 +39,6 @@
                 <a href="search-eval.html">开始搜索</a>
                 <a href="search-strategy.html">策略平台</a>
                 <a href="index.html">返回作品集</a>
-                <button type="button" id="agentOwnerLogoutButton">退出登录</button>
             </nav>
         </header>
 
@@ -112,7 +93,7 @@
                         <span>Baseline Run</span><span>Candidate Run</span><span>Comparison</span><span>Proposal</span>
                     </div>
 
-                    <p class="proposal-note">该页面与提案接口仅对登录用户开放；策略变更仍需站长在服务器后台审批。</p>
+                    <p class="proposal-note">分析过程可直接查看；策略变更仍需站长在服务器后台审批。</p>
                 </article>
             </div>
         </section>
@@ -160,12 +141,12 @@
             </ol>
         </section>
 
-        <section class="agent-tools-section" aria-labelledby="agentToolsTitle">
+        <section class="agent-tools-section" aria-labelledby="agentToolsTitle" hidden inert>
             <header class="agent-tools-heading">
                 <div>
                     <span>Read-only diagnostics</span>
                     <h2 id="agentToolsTitle">Agent 自检与工具</h2>
-                    <p>先验证工具能力，再运行开发诊断、规划实验，并由人逐项完成诊断 Oracle；五项操作都不会审批、激活或修改搜索策略。</p>
+                    <p>这些站长工具不会审批、激活或修改搜索策略，但仍保持受保护且不在公共工作台触发。</p>
                 </div>
                 <strong>5 个受控工具</strong>
             </header>
@@ -226,7 +207,7 @@
                     </div>
                 </article>
 
-                <article class="agent-tool-card agent-tool-card-wide human-oracle-card" aria-labelledby="humanOracleTitle">
+                <article class="agent-tool-card agent-tool-card-wide human-oracle-card" aria-labelledby="humanOracleTitle" hidden>
                     <header>
                         <div><span>Tool 05</span><h3 id="humanOracleTitle">Human Diagnostic Oracle</h3></div>
                         <p>把 40 个诊断候选按 20 个来源簇逐项交给站长判断。先完成 30 项 Query 意图判断，再查看结果完成 40 项行为判断。</p>
@@ -296,9 +277,8 @@
         </section>
     </main>
 
-    <script src="js/search-agent-auth.js?v=20260829-owner-login-v1"></script>
-    <script src="js/search-agent-contract.js?v=20260829-changed-query-examples-v1"></script>
+    <script src="js/search-agent-contract.js?v=20260829-public-workbench-v1"></script>
     <script src="js/search-agent-tools-contract.js?v=20260829-human-oracle-v1"></script>
-    <script src="js/search-agent.js?v=20260829-changed-query-examples-v1"></script>
+    <script src="js/search-agent.js?v=20260829-public-workbench-v1"></script>
 </body>
 </html>
