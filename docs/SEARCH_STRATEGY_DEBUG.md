@@ -25,7 +25,7 @@ location.reload();
 - `log-store`：本地日志写入与状态完成。
 - `strategy-ui`：策略版本、变更日志、本机查询日志的筛选、后端目录读取与展示。调试事件只记录数量、视图和是否存在筛选词。
 - `owner-auth-ui`：Agent 网页登录壳的初始化、验证成功/失败、会话失效和退出。只记录事件、稳定错误码与 HTTP 状态；禁止记录账号、密码、Basic 值、Authorization、请求对象或响应正文。凭据只存在当前页面内存，刷新、关闭或退出即清除。
-- `agent-ui`：受保护的 Agent 工作台阶段诊断、retrieval candidate、根因/候选/门禁展示和 10 组 Query 对比渲染状态。页面不发送审批请求。
+- `agent-ui`：受保护的 Agent 工作台阶段诊断、retrieval candidate、根因/候选/门禁展示，以及最多 10 个非持平 Query 样本的渲染状态。样本会区分改善/退化，并标明来自最终候选还是已淘汰候选；调试事件只记录来源数、展示数和方向计数，不记录 Query 或结果内容。页面不发送审批请求。
 - `agent-runtime-ui`：只读 Agent Runtime Trace 渲染状态。只记录 Trace/Runtime/Planner ID、动作数、工具调用数和失败动作数；不记录 Query、商品、完整响应、凭据或 Authorization。
 - `agent-eval-ui`：Agent Eval 只读成绩单请求与渲染。页面把生产 Planner 任务和 Harness stimulus 围栏任务分开展示，并显示受保护数据读取/策略写入计数；成功日志只记录 Evidence/Execution ID、任务数和工具调用数，失败日志只记录稳定错误码与 HTTP 状态。
 - `query-constructor-ui`：Query 构造器只读摘要请求与渲染。成功事件只记录 Query Set ID 和数量；不记录或渲染任何原始 Query。

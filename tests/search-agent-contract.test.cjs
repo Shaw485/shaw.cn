@@ -48,6 +48,50 @@ const validAnalysis = () => {
         comparison_id: comparisonId,
         diagnosis_id: diagnosisId,
         candidate_diagnosis_id: candidateDiagnosisId,
+        changed_query_examples: [
+            {
+                query_id: 1,
+                locale: 'us',
+                query_text: 'wireless mouse',
+                'coarse_ndcg@10_delta': 0.01,
+                'fusion_ndcg@10_delta': 0.005,
+                union_coverage_delta: 0.1,
+                baseline_top_results: [
+                    result(1, 'B000BASELINE', 'Baseline Wireless Mouse', 'E')
+                ],
+                candidate_top_results: [
+                    result(1, 'B000CANDIDATE', 'Candidate Wireless Mouse', 'E')
+                ],
+                recovered_relevant: [],
+                candidate_run_id: candidateRunId,
+                comparison_id: comparisonId,
+                gate_passed: true,
+                is_selected_comparison: true,
+                outcome: 'improvement',
+                pipeline_variant: 'title-exact-multifield-weighted-v1'
+            },
+            {
+                query_id: 2,
+                locale: 'us',
+                query_text: 'gaming keyboard',
+                'coarse_ndcg@10_delta': -0.02,
+                'fusion_ndcg@10_delta': -0.01,
+                union_coverage_delta: 0,
+                baseline_top_results: [
+                    result(1, 'B000KEYBASE', 'Baseline Gaming Keyboard', 'E')
+                ],
+                candidate_top_results: [
+                    result(1, 'B000KEYCAND', 'Candidate Gaming Keyboard', 'S')
+                ],
+                recovered_relevant: [],
+                candidate_run_id: 'retrieval-ffffffffffff',
+                comparison_id: 'retrieval-comparison-111111111111',
+                gate_passed: false,
+                is_selected_comparison: false,
+                outcome: 'regression',
+                pipeline_variant: 'title-exact-multifield-v1'
+            }
+        ],
         diagnosis: {
             diagnosis_id: diagnosisId,
             findings: [{
@@ -326,11 +370,25 @@ test('rejects 200 responses with missing, NaN, or arithmetically inconsistent ev
     });
 });
 
-test('accepts an explicitly empty Top 5 result set', () => {
+test('accepts an explicitly empty Top 10 result set', () => {
     const analysis = validAnalysis();
     analysis.comparison.per_query[0].baseline_top_results = [];
     analysis.comparison.per_query[0].candidate_top_results = [];
     assert.equal(validateAnalysis(analysis), analysis);
+});
+
+test('rejects changed Query examples with tied outcomes or mismatched provenance', async (t) => {
+    await t.test('tied outcome', async () => {
+        const analysis = validAnalysis();
+        analysis.changed_query_examples[0]['coarse_ndcg@10_delta'] = 0;
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('mismatched experiment source', async () => {
+        const analysis = validAnalysis();
+        analysis.changed_query_examples[1].candidate_run_id = analysis.candidate_run_id;
+        await expectContractFailure(analysis);
+    });
 });
 
 test('a 404 stage endpoint falls back once to the legacy proposal endpoint', async () => {

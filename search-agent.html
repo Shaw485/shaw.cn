@@ -283,22 +283,22 @@
         <section class="query-comparison-section" aria-labelledby="queryComparisonTitle">
             <header class="query-comparison-heading">
                 <div>
-                    <span>10 Query Comparisons</span>
-                    <h2 id="queryComparisonTitle">搜索结果对比</h2>
-                    <p>按 |ΔnDCG@10| 从高到低展示。每组使用同一 Query、同一批已判断商品，并展示优化前后 Top 5 与新增召回商品。</p>
+                    <span>Changed Query Comparisons</span>
+                    <h2 id="queryComparisonTitle">有变化的搜索结果对比</h2>
+                    <p>只展示本轮消融实验中粗排 nDCG@10 发生变化的 Query；有对应证据时，同时保留改善与退化。每组展示优化前后 Top 10。</p>
                 </div>
-                <strong id="queryComparisonCount" aria-live="polite">0 / 10</strong>
+                <strong id="queryComparisonCount" aria-live="polite">0 个变化样本</strong>
             </header>
-            <p class="query-comparison-scope">当前证据来自固定 smoke 评测集的候选重排，不代表全量商品召回效果。</p>
+            <p class="query-comparison-scope">右栏会标明样本来自最终候选还是已淘汰候选；已淘汰策略的退化不代表最终候选发生退化。证据来自固定 smoke 评测集，不代表全量商品召回效果。</p>
             <div class="query-comparison-list" id="queryComparisonList">
-                <div class="query-comparison-empty">运行 Agent 后，在这里查看 10 个 Query 的优化前后 Top 5。</div>
+                <div class="query-comparison-empty">运行 Agent 后，在这里查看有排序变化的 Query。</div>
             </div>
         </section>
     </main>
 
     <script src="js/search-agent-auth.js?v=20260829-owner-login-v1"></script>
-    <script src="js/search-agent-contract.js?v=20260829-bad-case-v1"></script>
+    <script src="js/search-agent-contract.js?v=20260829-changed-query-examples-v1"></script>
     <script src="js/search-agent-tools-contract.js?v=20260829-human-oracle-v1"></script>
-    <script src="js/search-agent.js?v=20260829-owner-login-v1"></script>
+    <script src="js/search-agent.js?v=20260829-changed-query-examples-v1"></script>
 </body>
 </html>

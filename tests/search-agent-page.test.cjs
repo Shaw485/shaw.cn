@@ -438,29 +438,42 @@ test('local Agent QA keeps the page hostname when selecting the API origin', () 
     assert.doesNotMatch(script, /isLocal \? 'http:\/\/127\.0\.0\.1:8000'/);
 });
 
-test('Agent workbench renders ten side-by-side query result comparisons', () => {
+test('Agent workbench renders changed query comparisons and keeps both outcome directions', () => {
     const page = read('search-agent.html');
     const script = read('js/search-agent.js');
     const styles = read('css/search-agent.css');
-    assert.match(page, /10 Query Comparisons/);
-    assert.match(page, /优化前后 Top 5 与新增召回商品/);
-    assert.match(page, /候选重排，不代表全量商品召回效果/);
+    assert.match(page, /Changed Query Comparisons/);
+    assert.match(page, /有变化的搜索结果对比/);
+    assert.match(page, /同时保留改善与退化/);
+    assert.match(page, /优化前后 Top 10/);
+    assert.match(page, /已淘汰策略的退化不代表最终候选发生退化/);
+    assert.match(page, /不代表全量商品召回效果/);
     assert.match(script, /query_comparisons/);
     assert.match(script, /renderRetrievalQueryComparisons/);
     assert.match(script, /baseline_top_results/);
     assert.match(script, /candidate_top_results/);
     assert.match(script, /recovered_relevant/);
+    assert.match(script, /\['improvement', 'regression'\]\.includes\(item\.outcome\)/);
+    assert.match(script, /availableOutcomes/);
+    assert.match(script, /requiredOutcome/);
+    assert.match(script, /analysis\.changed_query_examples/);
+    assert.match(script, /本轮最佳候选（未通过门禁）/);
+    assert.match(script, /已被门禁淘汰/);
+    assert.match(script, /候选后 ·/);
     assert.match(script, /comparisons\.slice\(0, 10\)/);
     assert.match(script, /results\.slice\(0, 10\)/);
+    assert.match(script, /个变化样本 · 改善/);
     assert.match(styles, /grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
 });
 
 test('comparison diagnostics log counts but not query or result content', () => {
     const script = read('js/search-agent.js');
     assert.match(script, /query_comparisons_rendered/);
+    assert.match(script, /retrieval_query_comparisons_rendered/);
     assert.match(script, /comparisonCount:\s*rows\.length/);
     assert.match(script, /outcomeCounts/);
     assert.doesNotMatch(script, /debug\('query_comparisons_rendered',[\s\S]{0,180}query_text/);
+    assert.doesNotMatch(script, /debug\('retrieval_query_comparisons_rendered',[\s\S]{0,220}(?:query_text|product_id|product_title)/);
 });
 
 test('runtime diagnostics are independently filtered and log IDs and counts only', () => {

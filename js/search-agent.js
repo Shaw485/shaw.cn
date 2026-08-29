@@ -505,24 +505,44 @@ document.addEventListener('DOMContentLoaded', () => {
             </li>`).join('')}</ol>`;
     };
 
-    const renderQueryComparisons = (comparisons) => {
-        const rows = Array.isArray(comparisons) ? comparisons.slice(0, 10) : [];
-        queryComparisonCount.textContent = `${rows.length} / 10`;
+    const renderQueryComparisons = (comparisonPayload) => {
+        const sourceComparisonCount = Array.isArray(comparisonPayload) ? comparisonPayload.length : 0;
+        const comparisonOrder = (left, right) => (
+            Math.abs(Number(right['ndcg@10_delta']) || 0) - Math.abs(Number(left['ndcg@10_delta']) || 0)
+            || (Number(left['baseline_ndcg@10']) || 0) - (Number(right['baseline_ndcg@10']) || 0)
+            || (Number(left.query_id) || 0) - (Number(right.query_id) || 0)
+        );
+        const comparisons = (Array.isArray(comparisonPayload) ? comparisonPayload : [])
+            .filter((item) => ['improvement', 'regression'].includes(item.outcome))
+            .sort(comparisonOrder);
+        const availableOutcomes = new Set(comparisons.map((item) => item.outcome));
+        const initiallySelected = comparisons.slice(0, 10);
+        const selectedOutcomes = new Set(initiallySelected.map((item) => item.outcome));
+        if (initiallySelected.length && initiallySelected.length >= 2) {
+            for (const requiredOutcome of ['improvement', 'regression']) {
+                if (availableOutcomes.has(requiredOutcome) && !selectedOutcomes.has(requiredOutcome)) {
+                    initiallySelected[initiallySelected.length - 1] = comparisons.find((item) => item.outcome === requiredOutcome);
+                    selectedOutcomes.add(requiredOutcome);
+                }
+            }
+        }
+        const comparisonsForDisplay = initiallySelected.sort(comparisonOrder);
+        const rows = comparisonsForDisplay.slice(0, 10);
+        const outcomeCounts = rows.reduce((counts, item) => {
+            counts[item.outcome] = (counts[item.outcome] || 0) + 1;
+            return counts;
+        }, {});
+        queryComparisonCount.textContent = `${rows.length} 个变化样本 · 改善 ${outcomeCounts.improvement || 0} / 退化 ${outcomeCounts.regression || 0}`;
         if (!rows.length) {
-            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮未返回可对比的 Query 结果。</div>';
-            debug('query_comparisons_rendered', { comparisonCount: 0, outcomeCounts: {} });
+            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮没有排序发生变化的 Query；持平样本已省略。</div>';
+            debug('query_comparisons_rendered', { sourceComparisonCount, comparisonCount: 0, outcomeCounts: {} });
             return;
         }
 
-        const outcomeCounts = rows.reduce((counts, item) => {
-            const outcome = ['improvement', 'regression', 'unchanged'].includes(item.outcome) ? item.outcome : 'unknown';
-            counts[outcome] = (counts[outcome] || 0) + 1;
-            return counts;
-        }, {});
         queryComparisonList.innerHTML = rows.map((item, index) => {
-            const outcome = ['improvement', 'regression', 'unchanged'].includes(item.outcome) ? item.outcome : 'unknown';
+            const outcome = ['improvement', 'regression'].includes(item.outcome) ? item.outcome : 'unknown';
             const outcomeLabel = {
-                improvement: '改善', regression: '退化', unchanged: '持平', unknown: '未判定'
+                improvement: '改善', regression: '退化', unknown: '未判定'
             }[outcome];
             const itemMetrics = item.metrics || {
                 'ndcg@10': {
@@ -554,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </article>`;
         }).join('');
-        debug('query_comparisons_rendered', { comparisonCount: rows.length, outcomeCounts });
+        debug('query_comparisons_rendered', { sourceComparisonCount, comparisonCount: rows.length, outcomeCounts });
     };
 
     const renderProposal = (proposal) => {
@@ -652,9 +672,15 @@ document.addEventListener('DOMContentLoaded', () => {
         retained: '已保留到最终 Top 10'
     };
 
+    const retrievalVariantLabels = {
+        'title-exact-multifield-v1': '均匀 RRF · 1 / 1 / 1',
+        'title-exact-multifield-weighted-v1': '保守 RRF · 1 / 1 / 0.1',
+        'title-exact-multifield-weighted-aggressive-v1': '激进 RRF · 1 / 0.5 / 0.25'
+    };
+
     const renderRetrievalResults = (items) => {
-        const results = Array.isArray(items) ? items : [];
-        if (!results.length) return '<li class="result-list-empty">Top 5 无结果</li>';
+        const results = Array.isArray(items) ? items.slice(0, 10) : [];
+        if (!results.length) return '<li class="result-list-empty">Top 10 无结果</li>';
         return results.map((result) => `<li>
             <span class="result-rank">#${escapeHtml(result.rank)}</span>
             <div class="result-copy"><strong>${escapeHtml(result.product_title)}</strong><p><span class="result-label label-${escapeHtml(String(result.label).toLowerCase())}">${escapeHtml(result.label)}</span>${escapeHtml(result.product_id)}</p></div>
@@ -662,10 +688,41 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderRetrievalQueryComparisons = (items) => {
-        const rows = Array.isArray(items) ? items.slice(0, 10) : [];
-        queryComparisonCount.textContent = `${rows.length} / 10`;
+        const sourceCount = Array.isArray(items) ? items.length : 0;
+        const comparisonOrder = (left, right) => (
+            Math.abs(Number(right['coarse_ndcg@10_delta']) || 0) - Math.abs(Number(left['coarse_ndcg@10_delta']) || 0)
+            || String(left.locale || '').localeCompare(String(right.locale || ''))
+            || (Number(left.query_id) || 0) - (Number(right.query_id) || 0)
+            || String(left.pipeline_variant || '').localeCompare(String(right.pipeline_variant || ''))
+        );
+        const changed = (Array.isArray(items) ? items : [])
+            .filter((item) => Math.abs(Number(item['coarse_ndcg@10_delta']) || 0) > 1e-12)
+            .sort(comparisonOrder);
+        const rows = changed.slice(0, 10);
+        const availableOutcomes = new Set(changed.map((item) => Number(item['coarse_ndcg@10_delta']) > 0 ? 'improvement' : 'regression'));
+        const selectedOutcomes = new Set(rows.map((item) => Number(item['coarse_ndcg@10_delta']) > 0 ? 'improvement' : 'regression'));
+        if (rows.length >= 2) {
+            for (const requiredOutcome of ['improvement', 'regression']) {
+                if (availableOutcomes.has(requiredOutcome) && !selectedOutcomes.has(requiredOutcome)) {
+                    rows[rows.length - 1] = changed.find((item) => (
+                        requiredOutcome === 'improvement'
+                            ? Number(item['coarse_ndcg@10_delta']) > 1e-12
+                            : Number(item['coarse_ndcg@10_delta']) < -1e-12
+                    ));
+                    selectedOutcomes.add(requiredOutcome);
+                }
+            }
+            rows.sort(comparisonOrder);
+        }
+        const outcomeCounts = rows.reduce((counts, item) => {
+            const outcome = Number(item['coarse_ndcg@10_delta']) > 0 ? 'improvement' : 'regression';
+            counts[outcome] = (counts[outcome] || 0) + 1;
+            return counts;
+        }, {});
+        queryComparisonCount.textContent = `${rows.length} 个变化样本 · 改善 ${outcomeCounts.improvement || 0} / 退化 ${outcomeCounts.regression || 0}`;
         if (!rows.length) {
-            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮没有逐 Query 阶段对比。</div>';
+            queryComparisonList.innerHTML = '<div class="query-comparison-empty">本轮没有排序发生变化的 Query；持平样本已省略。</div>';
+            debug('retrieval_query_comparisons_rendered', { sourceCount, comparisonCount: 0, outcomeCounts: {} });
             return;
         }
         queryComparisonList.innerHTML = rows.map((item, index) => {
@@ -673,6 +730,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const recovered = Array.isArray(item.recovered_relevant) ? item.recovered_relevant : [];
             const outcome = ndcgDelta > 1e-12 ? 'improvement' : ndcgDelta < -1e-12 ? 'regression' : 'unchanged';
             const outcomeLabel = { improvement: '改善', regression: '退化', unchanged: '持平' }[outcome];
+            const candidateLabel = retrievalVariantLabels[item.pipeline_variant] || '当前候选策略';
+            const sourceLabel = item.is_selected_comparison === true
+                ? item.gate_passed === true
+                    ? 'Agent 最终候选'
+                    : '本轮最佳候选（未通过门禁）'
+                : item.gate_passed === false
+                    ? '已被门禁淘汰'
+                    : '通过门禁的消融候选';
             return `<article class="query-comparison-card">
                 <header class="query-card-header">
                     <div><span>Query ${String(index + 1).padStart(2, '0')} · ${escapeHtml(item.locale || '—')}</span><h3>${escapeHtml(item.query_text || '未返回 Query')}</h3></div>
@@ -680,18 +745,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </header>
                 <div class="query-columns-shell"><div class="query-columns">
                     <section class="query-column"><header><div><span>优化前</span><strong>标题 BM25 基线</strong></div></header><ol class="result-list">${renderRetrievalResults(item.baseline_top_results)}</ol></section>
-                    <section class="query-column is-after"><header><div><span>候选</span><strong>多字段召回 + 保守 RRF</strong></div></header><ol class="result-list">${renderRetrievalResults(item.candidate_top_results)}</ol></section>
+                    <section class="query-column is-after"><header><div><span>候选后 · ${escapeHtml(sourceLabel)}</span><strong>${escapeHtml(candidateLabel)}</strong></div></header><ol class="result-list">${renderRetrievalResults(item.candidate_top_results)}</ol></section>
                 </div></div>
                 ${recovered.length ? `<div class="recovered-results"><strong>新增召回的相关 Query-商品项</strong><ul>${recovered.slice(0, 4).map((result) => `<li><span class="result-label label-${escapeHtml(String(result.label).toLowerCase())}">${escapeHtml(result.label)}</span><b>${escapeHtml(result.product_title)}</b><small>${escapeHtml(result.product_id)} · ${escapeHtml(result.candidate_multi_field_rank === null ? '多字段通道名次未知' : `多字段通道 #${result.candidate_multi_field_rank}`)} · ${escapeHtml(recoveredStageLabels[result.candidate_first_loss_stage])}</small></li>`).join('')}</ul></div>` : ''}
-                <div class="query-stage-summary">召回覆盖变化：<b>${escapeHtml(formatPointDelta(item.union_coverage_delta))}</b>；融合 nDCG：<b>${escapeHtml(formatDelta(item['fusion_ndcg@10_delta']))}</b>；粗排 nDCG：<b>${escapeHtml(formatDelta(ndcgDelta))}</b>。</div>
+                <div class="query-stage-summary">召回覆盖变化：<b>${escapeHtml(formatPointDelta(item.union_coverage_delta))}</b>；融合 nDCG：<b>${escapeHtml(formatDelta(item['fusion_ndcg@10_delta']))}</b>；粗排 nDCG：<b>${escapeHtml(formatDelta(ndcgDelta))}</b>。证据来源：${escapeHtml(sourceLabel)}。</div>
             </article>`;
         }).join('');
-    };
-
-    const runtimeVariantLabels = {
-        'title-exact-multifield-v1': '均匀 RRF · 1 / 1 / 1',
-        'title-exact-multifield-weighted-v1': '保守 RRF · 1 / 1 / 0.1',
-        'title-exact-multifield-weighted-aggressive-v1': '激进 RRF · 1 / 0.5 / 0.25'
+        debug('retrieval_query_comparisons_rendered', { sourceCount, comparisonCount: rows.length, outcomeCounts });
     };
 
     const runtimeReasonLabels = {
@@ -770,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     : `${action.failed_gates.length} 项门禁拦截`;
             const actionTitle = isBaseline
                 ? '诊断基线召回链路'
-                : runtimeVariantLabels[action.pipeline_variant];
+                : retrievalVariantLabels[action.pipeline_variant];
             const actionType = isBaseline ? 'Baseline diagnosis' : 'Candidate experiment';
             return `<li class="${action.status === 'succeeded' ? 'is-pass' : 'is-fail'}">
                 <span class="agent-runtime-index" aria-hidden="true">${String(action.sequence).padStart(2, '0')}</span>
@@ -1760,7 +1820,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('')}</div>`;
         gateChecks.innerHTML = `<ul class="gate-list">${checks.map((check) => `<li class="${check.passed ? 'is-pass' : 'is-fail'}"><span>${escapeHtml(retrievalGateLabels[check.name] || check.name)}</span><strong>${check.passed ? '通过' : '未通过'}</strong><small>${escapeHtml(formatDelta(check.observed))} ${escapeHtml(check.comparator || '')} ${escapeHtml(formatDelta(check.threshold))}</small></li>`).join('')}</ul>`;
         modelMode.textContent = '确定性阶段诊断 · 0 次模型调用';
-        renderRetrievalQueryComparisons(comparison.per_query);
+        const changedQueryExamples = Array.isArray(analysis.changed_query_examples)
+            ? analysis.changed_query_examples
+            : comparison.per_query.map((item) => ({
+                ...item,
+                pipeline_variant: comparison.candidate_strategy.pipeline_variant,
+                gate_passed: passed,
+                is_selected_comparison: true
+            }));
+        renderRetrievalQueryComparisons(changedQueryExamples);
         debug('retrieval_stage_analysis_rendered', {
             candidateRunId: analysis.candidate_run_id || null,
             comparisonId: analysis.comparison_id || null,

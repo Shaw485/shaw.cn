@@ -135,7 +135,7 @@
 
     const validateResults = (value) => {
         const results = array(value);
-        if (results.length > 5) fail();
+        if (results.length > 10) fail();
         const keys = new Set();
         results.forEach((resultValue, index) => {
             const result = validateResult(resultValue);
@@ -358,6 +358,7 @@
         const experimentRunIds = new Set();
         const experimentComparisonIds = new Set();
         const experimentVariants = new Set();
+        const experimentByComparisonId = new Map();
         for (const experimentValue of experiments) {
             const experiment = object(experimentValue);
             const experimentRunId = identifier(experiment.candidate_run_id, RUN_ID);
@@ -367,6 +368,7 @@
             experimentRunIds.add(experimentRunId);
             experimentComparisonIds.add(experimentComparisonId);
             experimentVariants.add(experimentVariant);
+            experimentByComparisonId.set(experimentComparisonId, experiment);
             if (typeof experiment.gate_passed !== 'boolean') fail();
             const failedGates = array(experiment.failed_gates);
             const failedNames = new Set();
@@ -389,6 +391,46 @@
         if (Math.abs(selectedExperiment.fusion_ndcg_at_10_delta - aggregate.fusion['ndcg@10'].delta) > 1e-10) fail();
         const worstFusion = Math.min(...queries.map((query) => query['fusion_ndcg@10_delta']));
         if (Math.abs(selectedExperiment.worst_fusion_query_ndcg_at_10_delta - worstFusion) > 1e-10) fail();
+
+        const changedExamples = array(analysis.changed_query_examples);
+        if (changedExamples.length > 10) fail();
+        const changedExampleKeys = new Set();
+        for (const exampleValue of changedExamples) {
+            const example = object(exampleValue);
+            const exampleRunId = identifier(example.candidate_run_id, RUN_ID);
+            const exampleComparisonId = identifier(example.comparison_id, COMPARISON_ID);
+            const exampleVariant = text(example.pipeline_variant);
+            const sourceExperiment = experimentByComparisonId.get(exampleComparisonId);
+            if (!sourceExperiment
+                || sourceExperiment.candidate_run_id !== exampleRunId
+                || sourceExperiment.pipeline_variant !== exampleVariant
+                || sourceExperiment.gate_passed !== example.gate_passed) fail();
+            if (typeof example.gate_passed !== 'boolean' || typeof example.is_selected_comparison !== 'boolean') fail();
+            if (example.is_selected_comparison !== (exampleComparisonId === comparisonId)) fail();
+            const outcome = text(example.outcome);
+            const coarseDelta = finite(example['coarse_ndcg@10_delta']);
+            if (!['improvement', 'regression'].includes(outcome)) fail();
+            if (outcome === 'improvement' ? coarseDelta <= 1e-12 : coarseDelta >= -1e-12) fail();
+            finite(example['fusion_ndcg@10_delta']);
+            finite(example.union_coverage_delta);
+            const exampleLocale = text(example.locale);
+            if (!Number.isInteger(example.query_id) || example.query_id < 1) fail();
+            text(example.query_text);
+            const exampleKey = `${exampleLocale}\u0000${example.query_id}\u0000${outcome}`;
+            if (changedExampleKeys.has(exampleKey)) fail();
+            changedExampleKeys.add(exampleKey);
+            validateResults(example.baseline_top_results);
+            validateResults(example.candidate_top_results);
+            for (const recoveredValue of array(example.recovered_relevant)) {
+                const recovered = object(recoveredValue);
+                text(recovered.product_id);
+                text(recovered.product_title);
+                text(recovered.locale);
+                if (!['E', 'S', 'C'].includes(recovered.label)) fail();
+                if (!['fusion', 'coarse_rank', 'retained'].includes(recovered.candidate_first_loss_stage)) fail();
+                if (recovered.candidate_multi_field_rank !== null && (!Number.isInteger(recovered.candidate_multi_field_rank) || recovered.candidate_multi_field_rank < 1)) fail();
+            }
+        }
         const expectedStatus = gateResult.passed ? 'proposal_ready' : 'no_safe_improvement';
         if (analysis.status !== expectedStatus) fail();
         const proposal = object(analysis.proposal);
