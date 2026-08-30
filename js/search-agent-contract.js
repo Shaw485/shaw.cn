@@ -9,6 +9,8 @@
     const COMPARISON_ID = /^retrieval-comparison-[0-9a-f]{12}$/;
     const DIAGNOSIS_ID = /^stage-diagnosis-[0-9a-f]{12}$/;
     const TRACE_ID = /^[0-9a-f]{32}$/;
+    const PROPOSAL_ID = /^retrieval-proposal-[0-9a-f]{12}$/;
+    const REVISION = /^[0-9a-f]{64}$/;
     const SAFE_REASON_CODE = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/;
     const AGENT_RUN_KEYS = [
         'actions',
@@ -435,6 +437,12 @@
         if (analysis.status !== expectedStatus) fail();
         const proposal = object(analysis.proposal);
         if (proposal.decision !== (gateResult.passed ? 'request_owner_review' : 'reject_candidate')) fail();
+        identifier(proposal.proposal_id, PROPOSAL_ID);
+        identifier(proposal.proposal_revision, REVISION);
+        if (typeof proposal.approval_eligible !== 'boolean') fail();
+        if (gateResult.passed) {
+            if (proposal.lifecycle !== 'pending_owner_review' || proposal.approval_eligible !== true) fail();
+        } else if (proposal.lifecycle !== 'rejected_by_gate' || proposal.approval_eligible !== false) fail();
         text(proposal.candidate_strategy_id);
         text(proposal.next_action);
         text(proposal.reason);

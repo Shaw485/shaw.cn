@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="搜索候选策略 Owner 安全审批与回滚控制台。">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Owner 安全审批 · Shaw's Space</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260830-owner-release-v1">
+    <link rel="stylesheet" href="css/search-owner.css?v=20260830-owner-release-v1">
+</head>
+<body class="search-owner-page">
+    <a class="owner-skip-link" href="#ownerMain">跳到审批内容</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><span class="logo-mark"></span><span class="logo-text">Shaw's Space</span></a>
+            <ul class="nav-links">
+                <li><a href="search-agent.html" class="nav-link">公开 Agent 工作台</a></li>
+                <li><a href="search-strategy.html" class="nav-link">策略平台</a></li>
+                <li><a href="search-eval.html" class="nav-link">搜索对照</a></li>
+            </ul>
+            <button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <main class="owner-shell" id="ownerMain">
+        <header class="owner-hero">
+            <div>
+                <span>Owner-only release control</span>
+                <h1>安全审批区</h1>
+                <p>公开工作台保持无需登录；只有本页可以创建短期审批会话并提交策略决策或回滚。</p>
+            </div>
+            <a href="search-agent.html">返回公开分析</a>
+        </header>
+
+        <section class="owner-security-note" aria-label="安全边界">
+            <strong>写操作保护</strong>
+            <p>账号和密码只在内存中用于同源 Basic Auth；审批 token 不显示、不持久化、不写日志。每次动作绑定 proposal revision、CSRF token 与新的幂等 action ID。</p>
+        </section>
+
+        <div class="owner-grid">
+            <section class="owner-card owner-login-card" id="ownerLoginPanel" aria-labelledby="ownerLoginTitle">
+                <header>
+                    <span>Step 01</span>
+                    <h2 id="ownerLoginTitle">验证 Owner 身份</h2>
+                    <p>输入凭据与不可变候选引用。验证成功后才会创建一次短期审批会话。</p>
+                </header>
+                <form id="ownerLoginForm" autocomplete="off">
+                    <label for="ownerProposalInput">Proposal ID</label>
+                    <input id="ownerProposalInput" name="proposal_id" type="text" spellcheck="false" autocomplete="off" placeholder="retrieval-proposal-xxxxxxxxxxxx" required>
+                    <label for="ownerRevisionInput">Proposal revision</label>
+                    <input id="ownerRevisionInput" name="proposal_revision" type="text" spellcheck="false" autocomplete="off" minlength="64" maxlength="64" placeholder="64 位小写 SHA-256" required>
+                    <div class="owner-rollback-fields" id="ownerRollbackFields" hidden>
+                        <label for="ownerExpectedActiveRevision">Expected active revision</label>
+                        <input id="ownerExpectedActiveRevision" type="text" spellcheck="false" autocomplete="off" minlength="64" maxlength="64" placeholder="当前 active revision">
+                        <label for="ownerTargetRevision">Target revision</label>
+                        <input id="ownerTargetRevision" type="text" spellcheck="false" autocomplete="off" minlength="64" maxlength="64" placeholder="要恢复到的 previous revision">
+                    </div>
+                    <label for="ownerUsername">Owner 账号</label>
+                    <input id="ownerUsername" name="username" type="text" maxlength="128" autocomplete="username" required>
+                    <label for="ownerPassword">Owner 密码</label>
+                    <input id="ownerPassword" name="password" type="password" maxlength="512" autocomplete="current-password" required>
+                    <button type="submit" id="ownerLoginButton">验证身份并加载审批会话</button>
+                    <p class="owner-inline-status" id="ownerLoginStatus" aria-live="polite">尚未验证</p>
+                </form>
+            </section>
+
+            <section class="owner-card owner-decision-card" id="ownerDecisionPanel" aria-labelledby="ownerDecisionTitle" hidden>
+                <header>
+                    <span>Step 02</span>
+                    <h2 id="ownerDecisionTitle">复核并执行</h2>
+                    <p id="ownerDecisionHint">候选 revision 已锁定。若服务器状态在审批前发生变化，本次动作会失败关闭。</p>
+                </header>
+
+                <dl class="owner-reference">
+                    <div><dt>操作</dt><dd id="ownerActionMode">候选审批</dd></div>
+                    <div><dt>Proposal</dt><dd><code id="ownerProposalId">—</code></dd></div>
+                    <div><dt>Revision</dt><dd><code id="ownerProposalRevision">—</code></dd></div>
+                    <div><dt>会话有效期</dt><dd id="ownerSessionExpiry">—</dd></div>
+                </dl>
+
+                <ol class="owner-lifecycle" id="ownerLifecycle" aria-label="发布生命周期">
+                    <li data-lifecycle="rejected_by_gate">门禁拒绝</li>
+                    <li data-lifecycle="pending_owner_review">等待审批</li>
+                    <li data-lifecycle="rejected">Owner 拒绝</li>
+                    <li data-lifecycle="approved_for_validation">批准验证</li>
+                    <li data-lifecycle="validating">验证中</li>
+                    <li data-lifecycle="validation_failed">验证失败</li>
+                    <li data-lifecycle="staged">已暂存</li>
+                    <li data-lifecycle="canary">灰度中</li>
+                    <li data-lifecycle="active">当前生效</li>
+                    <li data-lifecycle="rolled_back">已回滚</li>
+                </ol>
+
+                <div class="owner-decision-actions" id="ownerDecisionActions">
+                    <button class="owner-approve" id="ownerApproveButton" type="button">同意并自动发布</button>
+                    <button class="owner-reject" id="ownerRejectButton" type="button">拒绝</button>
+                </div>
+                <div class="owner-decision-actions" id="ownerRollbackActions" hidden>
+                    <button class="owner-rollback" id="ownerRollbackButton" type="button">确认一键回滚</button>
+                </div>
+                <div class="owner-operation-result" id="ownerOperationResult" aria-live="polite">
+                    <strong>等待 Owner 决策</strong>
+                    <p>提交后会显示服务器返回的真实 lifecycle、strategy revision、index、health 与 rollout；不会把“已批准”误写成“已上线”。</p>
+                </div>
+            </section>
+        </div>
+
+        <aside class="owner-debug-note">
+            <strong>独立调试</strong>
+            <p>可分别启用 <code>owner-auth-ui</code>、<code>owner-decision-ui</code>、<code>owner-rollback-ui</code>；默认关闭 verbose，日志永不包含密码、Authorization 或审批 token。</p>
+        </aside>
+    </main>
+
+    <script src="js/search-ui-debug.js?v=20260830-release-v1"></script>
+    <script src="js/search-agent-auth.js?v=20260830-owner-release-v1"></script>
+    <script src="js/search-release-contract.js?v=20260830-release-v1"></script>
+    <script src="js/search-owner.js?v=20260830-owner-release-v1"></script>
+</body>
+</html>

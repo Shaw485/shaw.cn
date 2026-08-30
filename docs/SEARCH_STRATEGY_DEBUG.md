@@ -27,6 +27,8 @@ location.reload();
 - `agent-ui`：公开 Agent 工作台的阶段诊断、retrieval candidate、根因/候选/门禁展示，以及最多 10 个非持平 Query 样本的渲染状态。主按钮只会同源 POST `/search-eval-api/agent/retrieval/analyze`，不会回退到 proposal 或调用任何 Owner 工具。样本会区分改善/退化，并标明来自最终候选还是已淘汰候选；调试事件只记录来源数、展示数、方向计数、稳定错误码与 HTTP 状态，不记录 Query、商品或完整响应。页面不发送审批请求。
 - `agent-runtime-ui`：只读 Agent Runtime Trace 渲染状态。只记录 Trace/Runtime/Planner ID、动作数、工具调用数和失败动作数；不记录 Query、商品、完整响应、凭据或 Authorization。
 
+Release、Owner 审批、active readiness 与 Baseline/Active 对照使用独立日志模块，详见 [`SEARCH_RELEASE_UI_DEBUG.md`](SEARCH_RELEASE_UI_DEBUG.md)。公开 Agent 工作台仍不会发送 release session、decision 或 rollback 请求。
+
 `agent-eval-ui`、`query-constructor-ui`、`bad-case-ui`、`diagnostic-experiment-ui` 和 `human-oracle-ui` 仍是可独立调试的 Owner 模块，但整个工具区在公共页面中使用 `hidden` + `inert`，且不绑定任何按钮事件。公共页面不会向这些 Owner API 发起请求，也不会把样本写入 URL 或 `localStorage`；其调试日志边界仍要求只记录安全 ID、数量、稳定错误码和 HTTP 状态，不记录 Query、商品、完整响应、凭据或 Authorization。
 
 关闭调试：
@@ -59,6 +61,6 @@ localStorage.removeItem('shaw.debug.search-console.modules');
 10. Human Diagnostic Oracle：单独开启 `human-oracle-ui`，成功运行 Bad Case 后点击“开始人工诊断”。确认批次固定为 40 case / 20 cluster；阶段 1 只显示来源/变体 Query，完成 30 项 Intent 前不得请求 Behavior view；阶段 2 才并排显示服务器重新验证的 Top 3。Behavior 选项受前序 Intent 约束：`not_equivalent` 只能选“可接受/不确定”，`uncertain` 只能选“不确定”，页面不展示后端必定拒绝的组合。每次提交都应出现新的 UUIDv4 Client Action ID（不会打印）并携带状态接口返回的 CAS head。40 项 Behavior 完成且无失效项后才可封印。封印只生成诊断 Oracle，不创建 ESCI 标签、正式质量结论、根因结论或策略写入。
    当前 Tool 05 按缺失项顺序推进，尚无返回修改历史判断的 UI；核心 API 已支持 CAS/supersession。若误提交，先停止封印并通过 owner-only API 修正，不要继续把错误判断固化。
 11. Oracle 失败复现：`401/403` 表示该站长工具仍在受保护的本地测试边界内；`409` 重新拉取最新 CAS 状态；契约错误只查看 `human_oracle_operation_failed` 的 `operation`、稳定 `errorCode`、HTTP 状态与安全 ID。不要在控制台粘贴或导出页面上的 Query、Top 3 或人工判断。
-12. 策略平台：开启 `strategy-ui`，检查 `/agent/strategy/catalog` 的 `strategy_history` 与 `strategy_activity_logs` 数量；控制台不会打印配置正文、Query 或完整响应。
+12. 策略平台：开启 `strategy-ui` 与独立的 `release-lifecycle-ui`，检查 `/agent/strategy/catalog` 的 `retrieval_releases`、`active_retrieval_release`、`strategy_history` 与 `strategy_activity_logs` 数量；确认“已批准未上线”“当前生效”“已回滚”没有混用。控制台不会打印配置正文、Query 或完整响应。
 13. 服务端：使用响应头 `X-Request-ID` 查询服务端 journald 日志；服务端不记录原始 Query。
 14. 失败复现：在查询日志中找到请求 ID、时间、耗时与链路事件，再到服务端按相同 ID 关联排查。

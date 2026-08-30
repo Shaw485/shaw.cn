@@ -27,6 +27,7 @@
 .search-lane { min-width: 0; min-height: 0; display: flex; flex-direction: column; border: 1px solid #cfd5da; background: #fff; box-shadow: 0 8px 28px rgba(20,31,42,.05); overflow: hidden; }
 .baseline-lane { border-top: 4px solid var(--bench-orange); }
 .optimized-lane { border-top: 4px solid #9da7b1; }
+.optimized-lane.is-ready { border-top-color: #287455; }
 .lane-header { min-height: 94px; padding: 20px 24px; display: flex; flex-shrink: 0; justify-content: space-between; gap: 24px; align-items: center; border-bottom: 1px solid var(--bench-line); }
 .lane-header > div { display: flex; gap: 15px; align-items: baseline; }
 .lane-number { color: #9b670f; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
@@ -50,11 +51,15 @@
 .results-heading { min-height: 42px; padding: 0 24px 12px; display: flex; flex-shrink: 0; justify-content: space-between; gap: 20px; align-items: end; border-bottom: 1px solid var(--bench-line); }
 .results-heading strong { font-size: 13px; }
 .results-heading span { color: var(--bench-muted); font-size: 10px; text-align: right; }
+.lane-execution { min-height:33px; padding:9px 24px; flex:0 0 auto; border-bottom:1px solid var(--bench-line); color:#71808b; background:#f7f9fa; font-size:8px; line-height:1.45; overflow-wrap:anywhere; }
+.lane-execution code { color:#334451; font-size:8px; }
 .result-state { flex: 1; min-height: 280px; display: grid; place-content: center; justify-items: center; gap: 13px; color: #77838e; font-size: 11px; text-align: center; }
 .result-state[hidden] { display: none; }
 .result-state.error { margin: 18px 24px 24px; min-height: 180px; padding: 24px; color: #8c342c; background: #fff3f1; }
 .result-state.error .state-spinner { display: none; }
 .result-state button { margin-top: 5px; padding: 8px 13px; border-radius: 4px; color: #fff; background: var(--bench-navy); font-size: 10px; }
+.active-result-state strong { color:#485967; font-size:14px; }
+.active-result-state p { max-width:360px; line-height:1.65; }
 .state-spinner { width: 25px; height: 25px; border: 3px solid #d9dee2; border-top-color: var(--bench-orange); border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(1turn); } }
 
@@ -98,6 +103,7 @@
     .lane-header h1, .lane-header h2 { font-size: 25px; }
     .lane-search { margin: 16px 16px 13px; }
     .results-heading { padding: 0 16px 11px; }
+    .lane-execution { padding-right:16px; padding-left:16px; }
     .product-list { padding: 0 16px 18px; }
     .result-card { grid-template-columns: 24px 68px minmax(0,1fr); gap: 10px; }
     .result-visual { font-size: 28px; }

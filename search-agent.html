@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow">
     <title>Agent 工作台 · Shaw's Space</title>
     <link rel="stylesheet" href="css/styles.css?v=20260828-agent-split">
-    <link rel="stylesheet" href="css/search-agent.css?v=20260829-public-workbench-v1">
+    <link rel="stylesheet" href="css/search-agent.css?v=20260830-release-lifecycle-v1">
 </head>
 <body class="search-agent-page">
     <nav class="navbar">
@@ -38,6 +38,7 @@
             <nav class="agent-toolbar-actions" aria-label="搜索项目页面">
                 <a href="search-eval.html">开始搜索</a>
                 <a href="search-strategy.html">策略平台</a>
+                <a href="search-owner.html">Owner 安全审批</a>
                 <a href="index.html">返回作品集</a>
             </nav>
         </header>
@@ -96,6 +97,34 @@
                     <p class="proposal-note">分析过程可直接查看；策略变更仍需站长在服务器后台审批。</p>
                 </article>
             </div>
+
+            <section class="release-lifecycle-card" id="agentReleaseLifecycle" aria-labelledby="agentReleaseLifecycleTitle">
+                <header>
+                    <div>
+                        <span>Release lifecycle</span>
+                        <h3 id="agentReleaseLifecycleTitle">候选发布状态</h3>
+                        <p id="agentReleaseLifecycleDescription">分析完成后，这里显示候选的真实状态；公开页面没有任何审批或写入按钮。</p>
+                    </div>
+                    <strong id="agentReleaseLifecycleState" aria-live="polite">等待候选</strong>
+                </header>
+                <ol class="release-lifecycle-track" id="agentReleaseLifecycleTrack" aria-label="候选发布生命周期">
+                    <li data-lifecycle="rejected_by_gate">门禁拒绝</li>
+                    <li data-lifecycle="pending_owner_review">等待审批</li>
+                    <li data-lifecycle="rejected">Owner 拒绝</li>
+                    <li data-lifecycle="approved_for_validation">批准验证</li>
+                    <li data-lifecycle="validating">验证中</li>
+                    <li data-lifecycle="validation_failed">验证失败</li>
+                    <li data-lifecycle="staged">已暂存</li>
+                    <li data-lifecycle="canary">灰度中</li>
+                    <li data-lifecycle="active">当前生效</li>
+                    <li data-lifecycle="rolled_back">已回滚</li>
+                </ol>
+                <div class="release-lifecycle-meta">
+                    <span>Proposal <code id="agentReleaseProposalId">—</code></span>
+                    <span>Revision <code id="agentReleaseProposalRevision">—</code></span>
+                    <a id="releaseReviewLink" href="search-owner.html" hidden>前往受保护 Owner 审批区</a>
+                </div>
+            </section>
         </section>
 
         <section class="pipeline-diagnosis-section" aria-labelledby="pipelineDiagnosisTitle">
@@ -277,8 +306,9 @@
         </section>
     </main>
 
-    <script src="js/search-agent-contract.js?v=20260829-public-workbench-v1"></script>
+    <script src="js/search-ui-debug.js?v=20260830-release-v1"></script>
+    <script src="js/search-agent-contract.js?v=20260830-release-lifecycle-v1"></script>
     <script src="js/search-agent-tools-contract.js?v=20260829-human-oracle-v1"></script>
-    <script src="js/search-agent.js?v=20260829-public-workbench-v1"></script>
+    <script src="js/search-agent.js?v=20260830-release-lifecycle-v1"></script>
 </body>
 </html>

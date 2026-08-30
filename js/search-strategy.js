@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLocal = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
     const apiRoot = isLocal ? 'http://127.0.0.1:8000' : '/search-eval-api';
     const store = window.SearchConsoleStore;
+    const releaseApi = window.SearchReleaseContract;
+    const releaseDiagnostics = window.SearchUiDiagnostics;
     const logList = document.getElementById('logList');
     const logSearch = document.getElementById('logSearch');
     const logStatus = document.getElementById('logStatus');
@@ -10,10 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const approvedStrategyCount = document.getElementById('approvedStrategyCount');
     const historyStrategyCount = document.getElementById('historyStrategyCount');
     const historyActivityCount = document.getElementById('historyActivityCount');
+    const historyReleaseCount = document.getElementById('historyReleaseCount');
+    const historyApprovedNotActiveCount = document.getElementById('historyApprovedNotActiveCount');
+    const historyRolledBackCount = document.getElementById('historyRolledBackCount');
     const historySearch = document.getElementById('historySearch');
     const strategyCatalogState = document.getElementById('strategyCatalogState');
     const approvedStrategyList = document.getElementById('approvedStrategyList');
     const strategyActivityList = document.getElementById('strategyActivityList');
+    const retrievalReleaseList = document.getElementById('retrievalReleaseList');
+    const activeServingState = document.getElementById('activeServingState');
+    const activeServingStrategy = document.getElementById('activeServingStrategy');
+    const activeServingRevision = document.getElementById('activeServingRevision');
+    const activeServingIndex = document.getElementById('activeServingIndex');
+    const activeServingHealth = document.getElementById('activeServingHealth');
+    const activeServingRollout = document.getElementById('activeServingRollout');
+    const activeServingNote = document.getElementById('activeServingNote');
     let catalogPayload = null;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
@@ -65,17 +78,131 @@ document.addEventListener('DOMContentLoaded', () => {
         return (Array.isArray(catalogPayload?.strategies) ? catalogPayload.strategies : []).map((item) => ({ ...item, adopted_at: null }));
     };
     const getActivities = () => Array.isArray(catalogPayload?.strategy_activity_logs) ? catalogPayload.strategy_activity_logs : [];
+    const getReleases = () => Array.isArray(catalogPayload?.retrieval_releases) ? catalogPayload.retrieval_releases : [];
+    const getActiveRelease = () => (
+        catalogPayload?.active_retrieval_release && typeof catalogPayload.active_retrieval_release === 'object'
+            ? catalogPayload.active_retrieval_release
+            : null
+    );
     const matchesHistorySearch = (item) => {
         const keyword = historySearch?.value.trim().toLowerCase() || '';
         if (!keyword) return true;
-        return [item.name, item.strategy_name, item.strategy_id, item.proposal_id, item.decision_id, item.comparison_id, item.stage]
+        return [item.name, item.strategy_name, item.strategy_id, item.strategy_revision, item.proposal_id, item.proposal_revision, item.decision_id, item.comparison_id, item.stage, item.lifecycle, item.index_id]
             .filter(Boolean).join(' ').toLowerCase().includes(keyword);
+    };
+
+    const releaseRevision = (item) => item?.strategy_revision
+        || item?.active_strategy_revision
+        || item?.config_sha256
+        || item?.config_sha
+        || item?.revision
+        || null;
+    const isCurrentRelease = (item) => {
+        const active = getActiveRelease();
+        if (!active || item?.lifecycle !== 'active') return false;
+        const itemRevision = releaseRevision(item);
+        const activeRevision = releaseRevision(active);
+        if (itemRevision && activeRevision) return itemRevision === activeRevision;
+        return Boolean(item?.proposal_id && item.proposal_id === active.proposal_id);
+    };
+    const approvedNotActiveStates = new Set(['approved_for_validation', 'validating', 'staged', 'canary']);
+    const releaseStatus = (item) => {
+        if (isCurrentRelease(item)) return { label: '当前生效', className: 'is-active' };
+        if (item?.lifecycle === 'rolled_back') return { label: '已回滚', className: 'is-rolled-back' };
+        if (approvedNotActiveStates.has(item?.lifecycle)) return { label: '已批准未上线', className: 'is-approved' };
+        if (['rejected', 'rejected_by_gate', 'validation_failed'].includes(item?.lifecycle)) return { label: releaseApi?.lifecycleLabel(item.lifecycle) || item.lifecycle, className: 'is-rejected' };
+        return { label: releaseApi?.lifecycleLabel(item?.lifecycle) || '等待状态', className: '' };
+    };
+
+    const renderActiveServing = () => {
+        const active = getActiveRelease();
+        activeServingState.classList.remove('is-active', 'is-error');
+        if (!active) {
+            activeServingState.classList.add('is-error');
+            activeServingState.textContent = '尚无 active release';
+            activeServingStrategy.textContent = 'Baseline only';
+            activeServingRevision.textContent = '—';
+            activeServingIndex.textContent = '—';
+            activeServingHealth.textContent = 'not_ready';
+            activeServingRollout.textContent = '—';
+            activeServingNote.textContent = '当前仅提供 baseline。已批准但尚未 active 的候选不会被搜索对照页调用。';
+            return;
+        }
+        const state = active.lifecycle || 'active';
+        const healthValue = typeof active.health === 'object'
+            ? active.health?.status || active.health?.state || null
+            : active.health;
+        const ready = state === 'active' && (
+            active.ready === true
+            || ['ready', 'healthy', 'ok'].includes(String(healthValue || '').toLowerCase())
+        );
+        activeServingState.classList.add(ready ? 'is-active' : 'is-error');
+        activeServingState.textContent = ready ? 'Active serving ready' : 'Active serving 未就绪';
+        activeServingStrategy.textContent = active.strategy_name || active.strategy_id || '—';
+        activeServingRevision.textContent = releaseRevision(active) || '—';
+        activeServingIndex.textContent = active.index_id || '—';
+        activeServingHealth.textContent = formatValue(active.health || (ready ? 'ready' : 'not_ready'));
+        activeServingRollout.textContent = formatValue(active.rollout);
+        activeServingNote.textContent = ready
+            ? 'active pointer、策略 revision 与索引已对齐；搜索对照页可请求 active endpoint。'
+            : 'active release 的健康或兼容性证据不完整，搜索对照页会保持优化后搜索禁用。';
+    };
+
+    const rollbackHref = (item) => {
+        const strategyRevision = releaseRevision(item);
+        const targetRevision = item?.previous_revision;
+        if (!isCurrentRelease(item)
+            || !releaseApi?.PROPOSAL_ID.test(item?.proposal_id || '')
+            || !releaseApi?.REVISION.test(item?.proposal_revision || '')
+            || !releaseApi?.REVISION.test(strategyRevision || '')
+            || !releaseApi?.REVISION.test(targetRevision || '')) return null;
+        return `search-owner.html?${new URLSearchParams({
+            action: 'rollback',
+            proposal_id: item.proposal_id,
+            proposal_revision: item.proposal_revision,
+            expected_active_revision: strategyRevision,
+            target_revision: targetRevision
+        }).toString()}`;
+    };
+
+    const renderReleaseHistory = () => {
+        const releases = getReleases();
+        const filtered = releases.filter(matchesHistorySearch);
+        historyReleaseCount.textContent = String(releases.length);
+        historyApprovedNotActiveCount.textContent = String(releases.filter((item) => approvedNotActiveStates.has(item?.lifecycle) && !isCurrentRelease(item)).length);
+        historyRolledBackCount.textContent = String(releases.filter((item) => item?.lifecycle === 'rolled_back').length);
+        if (!filtered.length) {
+            retrievalReleaseList.innerHTML = `<div class="history-empty"><strong>${releases.length ? '没有符合条件的发布记录' : '还没有 retrieval release'}</strong><p>${releases.length ? '清空筛选词后查看全部 lifecycle。' : '候选通过门禁后会先进入 pending_owner_review；批准并不等于已上线。'}</p></div>`;
+            return;
+        }
+        retrievalReleaseList.innerHTML = filtered.map((item) => {
+            const status = releaseStatus(item);
+            const rollback = rollbackHref(item);
+            const rollout = formatValue(item.rollout);
+            return `<article class="release-status-card">
+                <header>
+                    <div><h3>${escapeHtml(item.strategy_name || item.strategy_id || item.proposal_id || 'Retrieval release')}</h3><p>${escapeHtml(releaseApi?.lifecycleLabel(item.lifecycle) || item.lifecycle || '状态未记录')} · ${escapeHtml(formatTime(item.updated_at || item.occurred_at || item.created_at))}</p></div>
+                    <span class="release-badge ${escapeHtml(status.className)}">${escapeHtml(status.label)}</span>
+                </header>
+                <div class="release-status-body">
+                    <dl class="release-state-grid">
+                        <div><dt>Proposal</dt><dd><code>${escapeHtml(item.proposal_id || '—')}</code></dd></div>
+                        <div><dt>Strategy revision</dt><dd><code>${escapeHtml(releaseRevision(item) || '—')}</code></dd></div>
+                        <div><dt>Index</dt><dd><code>${escapeHtml(item.index_id || '—')}</code></dd></div>
+                        <div><dt>Health / Rollout</dt><dd>${escapeHtml(item.health || '—')} · ${escapeHtml(rollout)}</dd></div>
+                    </dl>
+                    <div class="release-card-actions"><p>${isCurrentRelease(item) ? '这是 active pointer 当前指向的版本。' : approvedNotActiveStates.has(item.lifecycle) ? '已获批准，但尚未成为当前 active serving。' : item.lifecycle === 'rolled_back' ? '该版本已退出 active serving，可从活动日志复核回滚事件。' : '状态由服务器 release catalog 返回。'}</p>${rollback ? `<a class="release-rollback-button" role="button" href="${escapeHtml(rollback)}">Owner 一键回滚</a>` : ''}</div>
+                </div>
+            </article>`;
+        }).join('');
     };
 
     const renderStrategyHistory = () => {
         const history = getHistory();
         const filtered = history.filter(matchesHistorySearch);
-        const activeStrategyId = catalogPayload?.active_strategy_id || null;
+        const activeRelease = getActiveRelease();
+        const activeStrategyId = activeRelease?.strategy_id || catalogPayload?.active_strategy_id || null;
+        const activeStrategyRevision = releaseRevision(activeRelease);
         if (approvedStrategyCount) approvedStrategyCount.textContent = String(history.length);
         if (historyStrategyCount) historyStrategyCount.textContent = String(history.length);
         if (!filtered.length) {
@@ -83,7 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         approvedStrategyList.innerHTML = filtered.map((strategy) => {
-            const active = strategy.strategy_id === activeStrategyId && history.findIndex((item) => item.strategy_id === activeStrategyId) === history.indexOf(strategy);
+            const strategyRevision = releaseRevision(strategy);
+            const active = strategy.strategy_id === activeStrategyId
+                && (!activeStrategyRevision || !strategyRevision || strategyRevision === activeStrategyRevision)
+                && history.findIndex((item) => item.strategy_id === activeStrategyId && (!activeStrategyRevision || !releaseRevision(item) || releaseRevision(item) === activeStrategyRevision)) === history.indexOf(strategy);
             const explanation = strategy.explanation && typeof strategy.explanation === 'object' ? strategy.explanation : {};
             const config = strategy.config && typeof strategy.config === 'object' ? strategy.config : {};
             const configRows = Object.entries(config).map(([key, value]) => `<div><span>${escapeHtml(configLabels[key] || key)}</span><code>${escapeHtml(formatValue(value))}</code></div>`).join('');
@@ -107,6 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>Proposal：<code>${escapeHtml(strategy.proposal_id || '—')}</code></span>
                         <span>Decision：<code>${escapeHtml(strategy.decision_id || '—')}</code></span>
                         <span>Comparison：<code>${escapeHtml(strategy.comparison_id || '—')}</code></span>
+                        <span>Revision：<code>${escapeHtml(strategyRevision || '—')}</code></span>
                     </div>
                 </div>
             </details>`;
@@ -121,12 +252,18 @@ document.addEventListener('DOMContentLoaded', () => {
             strategyActivityList.innerHTML = `<div class="history-empty"><strong>${activities.length ? '没有符合条件的变更日志' : '还没有策略变更日志'}</strong><p>策略被站长批准并写入运行目录后，会自动生成不可覆盖的变更记录。</p></div>`;
             return;
         }
-        strategyActivityList.innerHTML = filtered.map((event) => `<article class="activity-item">
-            <time>${escapeHtml(formatTime(event.occurred_at))}</time>
-            <div><strong>${escapeHtml(event.strategy_name || event.strategy_id || '策略版本')}</strong><p>${escapeHtml(event.message || '策略已批准并生效。')}</p></div>
-            <span>已批准并生效</span>
-            <dl><div><dt>策略 ID</dt><dd>${escapeHtml(event.strategy_id || '—')}</dd></div><div><dt>Proposal</dt><dd>${escapeHtml(event.proposal_id || '—')}</dd></div><div><dt>Decision</dt><dd>${escapeHtml(event.decision_id || '—')}</dd></div></dl>
-        </article>`).join('');
+        strategyActivityList.innerHTML = filtered.map((event) => {
+            const state = event.lifecycle || event.to_lifecycle || event.event_type || 'activity_recorded';
+            const stateLabel = releaseApi?.LIFECYCLE_STATES.includes(state)
+                ? releaseApi.lifecycleLabel(state)
+                : (event.stage || '状态已记录');
+            return `<article class="activity-item">
+                <time>${escapeHtml(formatTime(event.occurred_at))}</time>
+                <div><strong>${escapeHtml(event.strategy_name || event.strategy_id || '策略版本')}</strong><p>${escapeHtml(event.message || `发布状态更新为 ${stateLabel}。`)}</p></div>
+                <span>${escapeHtml(stateLabel)}</span>
+                <dl><div><dt>策略 ID</dt><dd>${escapeHtml(event.strategy_id || '—')}</dd></div><div><dt>Strategy revision</dt><dd>${escapeHtml(releaseRevision(event) || '—')}</dd></div><div><dt>Proposal</dt><dd>${escapeHtml(event.proposal_id || '—')}</dd></div></dl>
+            </article>`;
+        }).join('');
     };
 
     const renderQueryLogs = () => {
@@ -153,8 +290,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCatalog = (payload) => {
         catalogPayload = payload;
         const historyCount = getHistory().length;
+        const releaseCount = getReleases().length;
         strategyCatalogState.classList.remove('error');
-        strategyCatalogState.textContent = historyCount ? `已读取 ${historyCount} 个已采用策略版本；策略详情和对应变更记录已关联。` : '暂无已采用策略。Agent 可生成候选提案，采用与生效必须由站长在服务器后台批准。';
+        strategyCatalogState.textContent = releaseCount
+            ? `已读取 ${releaseCount} 条 retrieval release 与 ${historyCount} 个策略快照；批准、上线和回滚状态分别展示。`
+            : '暂无 retrieval release。Agent 可公开生成候选；采用与生效必须由站长在服务器后台批准，并通过 Owner 受保护页面操作。';
+        renderActiveServing();
+        renderReleaseHistory();
         renderStrategyHistory();
         renderStrategyActivities();
     };
@@ -169,15 +311,27 @@ document.addEventListener('DOMContentLoaded', () => {
             strategyDebug('strategy_history_loaded', {
                 strategyCount: getHistory().length,
                 activityCount: getActivities().length,
-                activeStrategyPresent: Boolean(payload?.active_strategy_id)
+                releaseCount: getReleases().length,
+                activeStrategyPresent: Boolean(getActiveRelease())
+            });
+            releaseDiagnostics?.log('release-lifecycle-ui', 'debug', 'release_catalog_rendered', {
+                releaseCount: getReleases().length,
+                approvedNotActiveCount: getReleases().filter((item) => approvedNotActiveStates.has(item?.lifecycle) && !isCurrentRelease(item)).length,
+                rolledBackCount: getReleases().filter((item) => item?.lifecycle === 'rolled_back').length,
+                activePresent: Boolean(getActiveRelease())
             });
         } catch (error) {
             catalogPayload = {};
             approvedStrategyCount.textContent = '0';
             historyStrategyCount.textContent = '0';
             historyActivityCount.textContent = '0';
+            historyReleaseCount.textContent = '0';
+            historyApprovedNotActiveCount.textContent = '0';
+            historyRolledBackCount.textContent = '0';
             strategyCatalogState.classList.add('error');
             strategyCatalogState.textContent = '策略历史暂时不可用，请稍后重试。';
+            renderActiveServing();
+            renderReleaseHistory();
             renderStrategyHistory();
             renderStrategyActivities();
             console.warn('[search-console:strategy-ui]', { timestamp: new Date().toISOString(), event: 'strategy_catalog_failed', errorCode: error.message || 'network_error' });
@@ -199,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     historySearch?.addEventListener('input', () => {
         renderStrategyHistory();
         renderStrategyActivities();
+        renderReleaseHistory();
         strategyDebug('history_filter_applied', { hasKeyword: Boolean(historySearch.value.trim()) });
     });
     logSearch.addEventListener('input', renderQueryLogs);

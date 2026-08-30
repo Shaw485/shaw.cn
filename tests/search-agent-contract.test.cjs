@@ -286,6 +286,10 @@ const validAnalysis = () => {
         },
         status: 'proposal_ready',
         proposal: {
+            proposal_id: 'retrieval-proposal-444444444444',
+            proposal_revision: 'a'.repeat(64),
+            lifecycle: 'pending_owner_review',
+            approval_eligible: true,
             decision: 'request_owner_review',
             candidate_strategy_id: 'candidate-title-exact-multifield-weighted-v1',
             next_action: 'owner_review',
@@ -333,6 +337,18 @@ test('accepts a complete stage-analysis response and preserves the validated obj
 });
 
 test('rejects 200 responses with missing, NaN, or arithmetically inconsistent evidence', async (t) => {
+    await t.test('proposal lifecycle is immutable and approval eligible only after gates pass', async () => {
+        const analysis = validAnalysis();
+        analysis.proposal.lifecycle = 'active';
+        await expectContractFailure(analysis);
+    });
+
+    await t.test('proposal revision is a lowercase sha256', async () => {
+        const analysis = validAnalysis();
+        analysis.proposal.proposal_revision = 'A'.repeat(64);
+        await expectContractFailure(analysis);
+    });
+
     await t.test('missing required runtime trace', async () => {
         const analysis = validAnalysis();
         delete analysis.agent_run;

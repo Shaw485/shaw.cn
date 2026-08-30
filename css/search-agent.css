@@ -410,6 +410,32 @@
 .query-stage-summary { padding: 11px 18px; border-top: 1px solid var(--agent-line); color: #53626f; background: #fbfcfd; font-size: 11px; line-height: 1.55; }
 .query-stage-summary b { color: #27323c; font-variant-numeric: tabular-nums; }
 
+.release-lifecycle-card { border-top: 1px solid var(--agent-line); background: #fbfcfd; }
+.release-lifecycle-card > header { padding: 18px 22px; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--agent-line); }
+.release-lifecycle-card > header span { color: #7c8994; font-size: 8px; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.release-lifecycle-card > header h3 { margin-top: 5px; font-size: 17px; }
+.release-lifecycle-card > header p { max-width: 720px; margin-top: 6px; color: var(--agent-muted); font-size: 10px; line-height: 1.6; }
+.release-lifecycle-card > header > strong { flex: 0 0 auto; padding: 6px 9px; border-radius: 999px; color: #56636e; background: #e9edf0; font-size: 9px; }
+.release-lifecycle-card > header > strong.is-pending_owner_review,
+.release-lifecycle-card > header > strong.is-approved_for_validation,
+.release-lifecycle-card > header > strong.is-validating,
+.release-lifecycle-card > header > strong.is-staged,
+.release-lifecycle-card > header > strong.is-canary { color: #80580f; background: #fff2d7; }
+.release-lifecycle-card > header > strong.is-active { color: #08704f; background: #e5f6ef; }
+.release-lifecycle-card > header > strong.is-rejected,
+.release-lifecycle-card > header > strong.is-rejected_by_gate,
+.release-lifecycle-card > header > strong.is-validation_failed,
+.release-lifecycle-card > header > strong.is-rolled_back { color: #91342d; background: #fff0ee; }
+.release-lifecycle-track { margin: 0; padding: 16px 22px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 7px; list-style: none; }
+.release-lifecycle-track li { min-height: 34px; padding: 7px 8px; display: grid; place-items: center; border: 1px solid #dbe1e6; color: #7b8791; background: #fff; font-size: 8px; font-weight: 700; text-align: center; }
+.release-lifecycle-track li.is-current { color: #fff; border-color: #344a5b; background: #344a5b; box-shadow: 0 0 0 3px rgba(52,74,91,.12); }
+.release-lifecycle-meta { padding: 12px 22px 18px; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto; gap: 8px; align-items: center; }
+.release-lifecycle-meta span { min-width: 0; padding: 9px; border: 1px solid #e0e5e9; color: #77848f; background: #fff; font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.release-lifecycle-meta code { color: #34424f; font-size: 8px; }
+.release-lifecycle-meta a { min-height: 36px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; color: #fff; background: #263b4b; font-size: 9px; font-weight: 800; }
+.release-lifecycle-meta a:hover { background: #172a39; }
+.release-lifecycle-meta a[hidden] { display: none; }
+
 @media (max-width: 900px) {
     .workbench-layout { grid-template-columns: 1fr; }
     .agent-loop-panel { border-right: 0; border-bottom: 1px solid var(--agent-line); }
@@ -428,6 +454,8 @@
     .agent-tool-card-wide { grid-column: auto; }
     .bad-case-category-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .human-oracle-choice-grid { grid-template-columns: 1fr; }
+    .release-lifecycle-track { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .release-lifecycle-meta { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 700px) {
@@ -485,6 +513,7 @@
     .human-oracle-query-pair, .human-oracle-results { grid-template-columns: 1fr; }
     .human-oracle-query:first-child, .human-oracle-result-column:first-child { border-right: 0; border-bottom: 1px solid #d8dde3; }
     .human-oracle-form-actions button { width: 100%; }
+    .release-lifecycle-card > header { flex-direction: column; }
     .bad-case-query-pair > div:first-child, .bad-case-hit-column:first-child { border-right: 0; border-bottom: 1px solid #e1e5e8; }
     .bad-case-samples-heading, .bad-case-sample > header { align-items: flex-start; flex-direction: column; }
     .bad-case-tags { justify-content: flex-start; }

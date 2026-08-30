@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260828-strategy-compact">
-    <link rel="stylesheet" href="css/search-strategy.css?v=20260828-history-center">
+    <link rel="stylesheet" href="css/search-strategy.css?v=20260830-release-state-v1">
 </head>
 <body class="strategy-page">
     <nav class="navbar">
@@ -29,11 +29,12 @@
         <header class="strategy-hero">
             <div>
                 <h1>搜索策略</h1>
-                <p>按实际检索链路组织，当前策略待配置。</p>
+                <p>按真实 release lifecycle 查看候选、验证、灰度、生效与回滚。</p>
             </div>
             <div class="strategy-actions">
                 <a class="strategy-primary" href="search-eval.html">开始搜索</a>
                 <a class="strategy-secondary" href="search-agent.html">Agent 工作台</a>
+                <a class="strategy-secondary" href="search-owner.html">Owner 安全审批</a>
                 <a class="strategy-secondary" href="index.html">返回作品集</a>
             </div>
         </header>
@@ -78,23 +79,44 @@
         <section class="strategy-section history-center" id="strategy-history">
             <header class="section-heading">
                 <div><span>03 · HISTORY &amp; LOGS</span><h2>策略历史与日志</h2></div>
-                <p>在一个地方查看已采用策略、配置细节、三项核心指标、审批生效记录和本机搜索日志。</p>
+                <p>在一个地方核对发布生命周期、当前 active revision、索引健康、灰度状态、配置快照和本机搜索日志。</p>
             </header>
+            <section class="active-serving-card" id="activeServingCard" aria-labelledby="activeServingTitle">
+                <header>
+                    <div><span>Active serving</span><h3 id="activeServingTitle">当前在线检索版本</h3></div>
+                    <strong id="activeServingState" aria-live="polite">正在读取…</strong>
+                </header>
+                <dl>
+                    <div><dt>Strategy</dt><dd id="activeServingStrategy">—</dd></div>
+                    <div><dt>Strategy revision</dt><dd><code id="activeServingRevision">—</code></dd></div>
+                    <div><dt>Index</dt><dd><code id="activeServingIndex">—</code></dd></div>
+                    <div><dt>Health</dt><dd id="activeServingHealth">—</dd></div>
+                    <div><dt>Rollout</dt><dd id="activeServingRollout">—</dd></div>
+                </dl>
+                <p id="activeServingNote">只有 active pointer、策略配置与索引兼容且健康时，搜索对照页才启用优化后搜索。</p>
+            </section>
             <div class="strategy-catalog-state" id="strategyCatalogState">正在读取策略目录…</div>
             <div class="history-summary" aria-label="策略历史摘要">
-                <div><strong id="historyStrategyCount">0</strong><span>采用版本</span></div>
+                <div><strong id="historyReleaseCount">0</strong><span>发布记录</span></div>
+                <div><strong id="historyApprovedNotActiveCount">0</strong><span>已批准未上线</span></div>
+                <div><strong id="historyRolledBackCount">0</strong><span>回滚记录</span></div>
+                <div><strong id="historyStrategyCount">0</strong><span>策略快照</span></div>
                 <div><strong id="historyActivityCount">0</strong><span>变更记录</span></div>
                 <div><strong id="tabLogCount">0</strong><span>本机查询</span></div>
             </div>
             <div class="history-controls">
                 <div class="history-view-tabs" role="tablist" aria-label="历史记录类型">
-                    <button class="active" type="button" role="tab" aria-selected="true" data-history-view="versions">策略版本</button>
+                    <button class="active" type="button" role="tab" aria-selected="true" data-history-view="releases">发布状态</button>
+                    <button type="button" role="tab" aria-selected="false" data-history-view="versions">策略版本</button>
                     <button type="button" role="tab" aria-selected="false" data-history-view="activity">变更日志</button>
                     <button type="button" role="tab" aria-selected="false" data-history-view="queries">本机查询日志</button>
                 </div>
                 <label class="history-search"><span class="sr-only">筛选策略历史</span><input id="historySearch" type="search" placeholder="筛选策略名、ID 或审批记录"></label>
             </div>
-            <div class="history-panel active" id="historyVersions" data-history-panel="versions">
+            <div class="history-panel active" id="historyReleases" data-history-panel="releases">
+                <div class="release-status-list" id="retrievalReleaseList" aria-live="polite"></div>
+            </div>
+            <div class="history-panel" id="historyVersions" data-history-panel="versions">
                 <div class="approved-strategy-list" id="approvedStrategyList" aria-live="polite"></div>
             </div>
             <div class="history-panel" id="historyActivity" data-history-panel="activity">
@@ -113,6 +135,8 @@
     </main>
 
     <script src="js/search-console-store.js?v=20260828-strategy-compact"></script>
-    <script src="js/search-strategy.js?v=20260828-history-center"></script>
+    <script src="js/search-ui-debug.js?v=20260830-release-v1"></script>
+    <script src="js/search-release-contract.js?v=20260830-release-v1"></script>
+    <script src="js/search-strategy.js?v=20260830-release-state-v1"></script>
 </body>
 </html>

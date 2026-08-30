@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=20260825-search-eval">
-    <link rel="stylesheet" href="css/search-eval.css?v=20260828-agent-split">
+    <link rel="stylesheet" href="css/search-eval.css?v=20260830-active-serving-v1">
 </head>
 <body class="search-eval-page">
     <nav class="navbar">
@@ -36,7 +36,7 @@
                 <span>Bench<b>Mart</b></span>
                 <small>SEARCH COMPARISON</small>
             </a>
-            <span class="store-bar-title">Amazon ESCI 全量商品 · 两套搜索结果</span>
+            <span class="store-bar-title" id="comparisonReadiness">正在检查 active serving…</span>
             <div class="store-links">
                 <a class="store-strategy" href="search-agent.html">Agent 工作台</a>
                 <a class="store-strategy" href="search-strategy.html">策略平台</a>
@@ -51,7 +51,7 @@
                         <span class="lane-number">01</span>
                         <h1>优化前</h1>
                     </div>
-                    <span class="lane-status lane-status-live"><i></i> 已支持</span>
+                    <span class="lane-status lane-status-live" id="baselineServingBadge"><i></i> Baseline ready</span>
                 </header>
 
                 <form class="lane-search" id="baselineSearchForm" role="search">
@@ -66,6 +66,7 @@
                     <strong>搜索结果</strong>
                     <span id="baselineMeta" aria-live="polite">正在搜索…</span>
                 </div>
+                <div class="lane-execution" id="baselineExecution">Strategy <code>catalog-baseline-v1</code> · Revision <code>baseline</code></div>
                 <div class="result-state" id="baselineState" aria-live="polite">
                     <span class="state-spinner"></span>
                     <p>正在搜索商品…</p>
@@ -79,33 +80,35 @@
                         <span class="lane-number">02</span>
                         <h2>优化后</h2>
                     </div>
-                    <span class="lane-status lane-status-pending">暂未支持</span>
+                    <span class="lane-status lane-status-pending" id="activeServingBadge" aria-live="polite">检查中</span>
                 </header>
 
-                <form class="lane-search lane-search-disabled" role="search" aria-label="优化后搜索暂未支持">
+                <form class="lane-search lane-search-disabled" id="activeSearchForm" role="search" aria-label="优化后 active 搜索">
                     <label class="sr-only" for="optimizedQuery">优化后搜索</label>
-                    <input id="optimizedQuery" type="search" value="wireless mouse" disabled>
-                    <button type="button" aria-label="优化后搜索暂未支持" disabled>
+                    <input id="optimizedQuery" type="search" value="wireless mouse" maxlength="200" autocomplete="off" disabled required>
+                    <button id="activeSearchButton" type="submit" aria-label="执行优化后 active 搜索" disabled>
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
                     </button>
                 </form>
 
                 <div class="results-heading">
                     <strong>搜索结果</strong>
-                    <span>0 个结果</span>
+                    <span id="activeMeta" aria-live="polite">等待 active serving</span>
                 </div>
-                <div class="pending-results">
-                    <div class="pending-icon" aria-hidden="true">
-                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
-                    </div>
-                    <strong>优化后搜索暂未支持</strong>
+                <div class="lane-execution" id="activeExecution">Strategy <code>—</code> · Revision <code>—</code></div>
+                <div class="result-state active-result-state" id="activeState" aria-live="polite">
+                    <div class="pending-icon" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></div>
+                    <p>只有 active pointer、策略 revision 与索引全部就绪后才会启用。</p>
                 </div>
+                <div class="product-list" id="activeResults"></div>
             </article>
         </section>
 
     </main>
 
     <script src="js/search-console-store.js?v=20260828-console"></script>
-    <script src="js/search-eval.js?v=20260828-agent-split"></script>
+    <script src="js/search-ui-debug.js?v=20260830-release-v1"></script>
+    <script src="js/search-release-contract.js?v=20260830-release-v1"></script>
+    <script src="js/search-eval.js?v=20260830-active-serving-v1"></script>
 </body>
 </html>

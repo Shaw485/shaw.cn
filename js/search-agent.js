@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const agentRuntimeCounts = document.getElementById('agentRuntimeCounts');
     const agentRuntimeReplay = document.getElementById('agentRuntimeReplay');
     const agentRuntimeTimeline = document.getElementById('agentRuntimeTimeline');
+    const releaseLifecycleState = document.getElementById('agentReleaseLifecycleState');
+    const releaseLifecycleDescription = document.getElementById('agentReleaseLifecycleDescription');
+    const releaseLifecycleTrack = document.getElementById('agentReleaseLifecycleTrack');
+    const releaseProposalId = document.getElementById('agentReleaseProposalId');
+    const releaseProposalRevision = document.getElementById('agentReleaseProposalRevision');
+    const ownerReviewLink = document.getElementById('releaseReviewLink');
     const agentEvalRunButton = document.getElementById('agentEvalRunButton');
     const agentEvalStatus = document.getElementById('agentEvalStatus');
     const agentEvalResult = document.getElementById('agentEvalResult');
@@ -46,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const humanOracleClusterProgress = document.getElementById('humanOracleClusterProgress');
     const agentContract = window.SearchAgentContract;
     const agentToolsContract = window.SearchAgentToolsContract;
+    const releaseDiagnostics = window.SearchUiDiagnostics;
     let latestBadCaseSummary = null;
     let humanOracleState = null;
     let humanOracleView = null;
@@ -114,6 +121,77 @@ document.addEventListener('DOMContentLoaded', () => {
         decisionState.classList.remove('is-running', 'is-error', 'is-pending');
         decisionState.textContent = label;
         if (className) decisionState.classList.add(className);
+    };
+
+    const releaseLifecycleLabels = Object.freeze({
+        rejected_by_gate: '门禁拒绝',
+        pending_owner_review: '等待 Owner 审批',
+        rejected: 'Owner 已拒绝',
+        approved_for_validation: '已批准，等待验证',
+        validating: '正在验证',
+        validation_failed: '验证失败',
+        staged: '已暂存',
+        canary: '灰度中',
+        active: '当前生效',
+        rolled_back: '已回滚'
+    });
+
+    const clearReleaseLifecycle = (label = '等待候选', description = '分析完成后，这里显示候选的真实状态；公开页面没有任何审批或写入按钮。') => {
+        if (releaseLifecycleState) {
+            releaseLifecycleState.className = '';
+            releaseLifecycleState.textContent = label;
+        }
+        if (releaseLifecycleDescription) releaseLifecycleDescription.textContent = description;
+        releaseLifecycleTrack?.querySelectorAll('[data-lifecycle]').forEach((item) => {
+            item.classList.remove('is-current');
+            item.removeAttribute('aria-current');
+        });
+        if (releaseProposalId) releaseProposalId.textContent = '—';
+        if (releaseProposalRevision) releaseProposalRevision.textContent = '—';
+        if (ownerReviewLink) {
+            ownerReviewLink.hidden = true;
+            ownerReviewLink.href = 'search-owner.html';
+        }
+    };
+
+    const renderReleaseLifecycle = (proposal) => {
+        const state = proposal?.lifecycle;
+        const label = releaseLifecycleLabels[state] || '状态不可识别';
+        const eligible = proposal?.approval_eligible === true && state === 'pending_owner_review';
+        if (releaseLifecycleState) {
+            releaseLifecycleState.className = `is-${state || 'unknown'}`;
+            releaseLifecycleState.textContent = label;
+        }
+        if (releaseLifecycleDescription) {
+            releaseLifecycleDescription.textContent = eligible
+                ? '候选已通过工程门禁，但尚未上线。审批动作只在独立 Owner 页面执行。'
+                : state === 'rejected_by_gate'
+                    ? '候选未通过工程门禁，不能进入审批或发布流程。'
+                    : '此处只读展示服务器返回的真实生命周期，不提供匿名写操作。';
+        }
+        releaseLifecycleTrack?.querySelectorAll('[data-lifecycle]').forEach((item) => {
+            const current = item.dataset.lifecycle === state;
+            item.classList.toggle('is-current', current);
+            if (current) item.setAttribute('aria-current', 'step');
+            else item.removeAttribute('aria-current');
+        });
+        if (releaseProposalId) releaseProposalId.textContent = proposal?.proposal_id || '—';
+        if (releaseProposalRevision) releaseProposalRevision.textContent = proposal?.proposal_revision || '—';
+        if (ownerReviewLink) {
+            ownerReviewLink.hidden = !eligible;
+            ownerReviewLink.href = eligible
+                ? `search-owner.html?${new URLSearchParams({
+                    proposal_id: proposal.proposal_id,
+                    proposal_revision: proposal.proposal_revision
+                }).toString()}`
+                : 'search-owner.html';
+        }
+        releaseDiagnostics?.log('agent-release-ui', 'debug', 'candidate_lifecycle_rendered', {
+            proposalId: proposal?.proposal_id || null,
+            proposalRevision: proposal?.proposal_revision || null,
+            lifecycle: state || null,
+            approvalEligible: eligible
+        });
     };
 
     const formatDelta = (value) => {
@@ -1632,6 +1710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const passed = gateResult.passed === true;
 
         renderAgentRuntimeTrace(analysis.agent_run);
+        renderReleaseLifecycle(analysis.proposal);
 
         pipelineDiagnosisState.classList.remove('is-pass', 'is-fail');
         pipelineDiagnosisState.classList.add(passed ? 'is-pass' : 'is-fail');
@@ -1706,6 +1785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderLoading = () => {
         renderRuntimeLoading();
+        clearReleaseLifecycle('分析中', '正在生成并验证候选；本轮结束前不会开放任何审批动作。');
         strategyName.textContent = 'Agent 正在找 Bad Case';
         setState('分析中', 'is-running');
         proposalGrid.innerHTML = `
@@ -1729,6 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderError = (message) => {
+        clearReleaseLifecycle('候选不可用', '分析失败或证据契约不完整，本轮没有可审批候选。');
         clearRuntimeTrace({
             label: '轨迹不可用',
             className: 'is-fail',

@@ -25,7 +25,7 @@ test('Agent workbench is a dedicated page with the required dynamic nodes', () =
     }
     assert.match(page, /js\/search-agent-contract\.js/);
     assert.match(page, /js\/search-agent\.js/);
-    assert.match(page, /js\/search-agent-contract\.js\?v=20260829-public-workbench-v1/);
+    assert.match(page, /js\/search-agent-contract\.js\?v=20260830-release-lifecycle-v1/);
     assert.match(page, /search-eval\.html/);
     assert.match(page, /search-strategy\.html/);
 });
