@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '手撕 GPT',
             category: 'AI 学习项目 · LLM',
             date: '2026',
-            rating: '持续开发中',
+            rating: '后训练中',
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '🧠 注意力机制：手写 Q/K/V、因果遮罩与多头注意力',
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
-                '📉 训练闭环：计划补齐 Loss、反向传播与文本生成',
+                '📉 后训练实验：已完成受控预训练，正在推进 SFT 与固定评测',
                 '📝 学习记录：代码与原理说明同步沉淀到 GitHub'
             ],
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
@@ -184,6 +184,11 @@ document.addEventListener('DOMContentLoaded', function() {
             ],
             tags: ['RAG', 'Agent', 'Hybrid Search', 'Rerank', 'Evaluation', 'Trace'],
             screenshots: [],
+            primaryAction: {
+                url: 'https://7ff79fde7564.aime-app.bytedance.net/',
+                label: '打开 PRD Agent',
+                status: '前端已上线 · 需授权登录'
+            },
             resourceCopy: {
                 prd: '产品目标、知识边界、检索链路和评测方案正在脱敏整理，暂不公开内部业务材料。',
                 changelog: '记录从单路向量检索到分层召回、重排、证据校验与离线评测的迭代过程。',
@@ -214,6 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: '公开 Roadmap',
                         href: '/prd-agent-roadmap.html',
                         intro: '阅读可公开的阶段目标、交付物与验收方法；私有源码暂不对外展示。'
+                    },
+                    {
+                        title: 'PRD Agent 前端',
+                        href: 'https://7ff79fde7564.aime-app.bytedance.net/',
+                        intro: '打开已上线的 PRD Agent 对话前端；知识与回答能力仅向获得授权的用户开放。'
                     }
                 ]
             }
@@ -285,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: 'Pick Memory',
             category: '桌面工具 · 间隔复习',
             date: '2026',
-            rating: 'v0.3.1 已开源',
+            rating: 'v0.3.1 已上线',
             gradient: 'linear-gradient(135deg, #18231d 0%, #2f7255 58%, #9bc3ae 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"></path><path d="M8 4.5V20M11 9h4M11 13h4"></path><path d="m18.5 3 .7 1.5L21 5.2l-1.8.7-.7 1.6-.7-1.6-1.8-.7 1.8-.7z"></path>',
@@ -325,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: '下载 Windows'
                 }
             ],
-            platformStatus: 'v0.3.1 · GitHub 开源',
+            platformStatus: 'v0.3.1 · 已上线',
             resources: {
                 first: {
                     heading: '01 · 产品与安装',
@@ -432,10 +442,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
         { status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT，正在组装完整 Transformer Block，并继续推进训练与文本生成。', likes: 0 },
+        { status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
-        { status: '已开源', statusType: 'opensource', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
+        { status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
         { status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
