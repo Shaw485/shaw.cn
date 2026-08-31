@@ -3392,9 +3392,34 @@ body {
 
 .work-card-top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
     font-size: 12px;
+}
+
+.work-card-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+}
+
+.project-type-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 3px 8px;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    border-radius: 6px;
+    background: #F5F2ED;
+    color: #4F4A44;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
 .status-tag {

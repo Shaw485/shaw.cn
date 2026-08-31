@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: 'README',
-                        href: 'https://github.com/Shaw485/math_alarm/blob/main/README.md',
-                        intro: '快速了解主要功能、运行方式与开发说明。'
+                        href: '/project-doc.html?doc=math-alarm-readme',
+                        intro: '在站内以 UTF-8 文本了解主要功能、运行方式与开发说明。'
                     }
                 ]
             }
@@ -85,21 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 作品介绍',
                     title: '在线阅读玩法与功能说明',
-                    href: '/brain-egg-overview.txt',
+                    href: '/project-doc.html?doc=brain-egg-overview',
                     intro: '直接阅读游戏定位、操作方式、关卡结构、视觉风格与当前开发状态。'
                 },
                 second: {
                     heading: '02 · 版本记录',
                     title: '在线阅读 33 个版本记录',
-                    href: '/brain-egg-changelog.txt',
+                    href: '/project-doc.html?doc=brain-egg-changelog',
                     intro: '从首个可玩版本到动作、关卡、HUD 和稳定性优化，逐项查看完整迭代过程。'
                 },
                 codeHeading: '03 · 公开资料',
                 code: [
                     {
-                        title: 'GitHub 版本记录',
-                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt',
-                        intro: '在 GitHub 阅读版本记录，并查看文件历史。'
+                        title: '下载版本记录 TXT',
+                        href: '/brain-egg-changelog.txt?v=20260831-utf8-bom-v1',
+                        intro: '下载带 UTF-8 BOM 的完整版本记录，避免浏览器或文本编辑器误判编码。',
+                        download: '脑洞皮蛋-版本记录.txt'
                     },
                     {
                         title: '公开展示页源码',
@@ -140,14 +141,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 学习路线',
                     title: '在线阅读 Roadmap',
-                    href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/main/ROADMAP.md',
-                    intro: '查看从数据、Tokenizer、预训练到 SFT 的阶段规划、产物与验收门槛。'
+                    href: '/project-doc.html?doc=gpt-roadmap',
+                    intro: '在站内以 UTF-8 文本查看从数据、Tokenizer、预训练到 SFT 的阶段规划、产物与验收门槛。'
                 },
                 second: {
                     heading: '02 · 实现记录',
                     title: '在线阅读完整学习记录',
-                    href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/main/RECORD.md',
-                    intro: '按阶段查看实现过程、实验结果、问题诊断与下一步计划。'
+                    href: '/project-doc.html?doc=gpt-record',
+                    intro: '在站内以 UTF-8 文本按阶段查看实现过程、实验结果、问题诊断与下一步计划。'
                 },
                 codeHeading: '03 · 代码与证据',
                 code: [
@@ -266,14 +267,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 建设路线图',
                     title: 'Roadmap',
-                    href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/ROADMAP.md',
-                    intro: '查看八阶段建设顺序、每个阶段的交付物、验收门槛和明确不做的范围。'
+                    href: '/project-doc.html?doc=search-roadmap',
+                    intro: '在站内以 UTF-8 文本查看八阶段建设顺序、每个阶段的交付物、验收门槛和明确不做的范围。'
                 },
                 second: {
                     heading: '02 · 当前验收证据',
                     title: 'Stage 0 Report',
-                    href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/docs/STAGE_0_REPORT.md',
-                    intro: '查看本地技术闸门、43 条测试、环境约束、OpenSearch 待验证项与证据边界。'
+                    href: '/project-doc.html?doc=search-stage0-report',
+                    intro: '在站内以 UTF-8 文本查看本地技术闸门、43 条测试、环境约束、OpenSearch 待验证项与证据边界。'
                 },
                 codeHeading: '03 · 代码与说明',
                 code: [
@@ -284,8 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: 'README',
-                        href: 'https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md',
-                        intro: '快速了解项目定位、运行方式、评测边界和下一步计划。'
+                        href: '/project-doc.html?doc=search-readme',
+                        intro: '在站内以 UTF-8 文本快速了解项目定位、运行方式、评测边界和下一步计划。'
                     }
                 ]
             }
@@ -340,15 +341,15 @@ document.addEventListener('DOMContentLoaded', function() {
             resources: {
                 first: {
                     heading: '01 · 产品与安装',
-                    title: 'README',
-                    href: 'https://github.com/Shaw485/pick-memory#readme',
-                    intro: '查看产品能力、macOS / Windows 安装方法、数据说明与快捷键。'
+                    title: '在线阅读 README（UTF-8）',
+                    href: '/project-doc.html?doc=pick-memory-readme',
+                    intro: '在站内打开产品能力、macOS / Windows 安装方法、数据说明与快捷键，不再依赖 GitHub 文本编码。'
                 },
                 second: {
                     heading: '02 · 版本更新',
-                    title: 'Changelog',
-                    href: 'https://github.com/Shaw485/pick-memory/blob/main/CHANGELOG.md',
-                    intro: '查看卡片、划词学习、间隔策略、跨应用能力与安装包的迭代记录。'
+                    title: '在线阅读 Changelog（UTF-8）',
+                    href: '/project-doc.html?doc=pick-memory-changelog',
+                    intro: '在站内查看卡片、划词学习、间隔策略、跨应用能力与安装包的迭代记录。'
                 },
                 codeHeading: '03 · 代码与发布',
                 code: [
@@ -413,8 +414,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: '诊断说明',
-                        href: 'https://github.com/Shaw485/shaw.cn/blob/main/docs/AGENT_HARNESS_DEBUG.md',
-                        intro: '查看模块化日志的启用、过滤、导出与故障排查方法。'
+                        href: '/project-doc.html?doc=agent-harness-debug',
+                        intro: '在站内以 UTF-8 文本查看模块化日志的启用、过滤、导出与故障排查方法。'
                     }
                 ]
             }
@@ -425,15 +426,15 @@ document.addEventListener('DOMContentLoaded', function() {
       { prd:[['问题','普通闹钟容易被顺手关闭，用户并没有真正清醒。'],['方案','响铃后生成 a×b+c×d 数学题，答对才能结束。'],['体验','单闹钟、滚轮选时、三种铃声、锁屏提醒与开机恢复。'],['技术','Kotlin、Jetpack Compose、AlarmManager、DataStore。']],
         process:[['定义闭环','先跑通设置—触发—答题—关闭。'],['系统适配','验证精确闹钟、全屏通知、前台服务和开机恢复。'],['交互打磨','统一黑橙视觉与三行滚轮选时。'],['可靠性','处理跨日、重启和超时兜底。']],
         changelog:[['需求成型','确定单闹钟与数学题解锁机制。'],['原生实现','完成 Compose 界面、铃声与状态管理。'],['系统适配','补齐 Android 13/14 权限。'],['稳定性','增加开机恢复、跨日计算与异常回流。']],
-        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','https://github.com/Shaw485/math_alarm/blob/main/README.md'],['PRD PDF','/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf'],['完整改动记录 TXT','/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1']]},
+        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD PDF','/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf'],['完整改动记录 TXT','/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1']]},
       { prd:[['定位','黑白手绘风的平台跳跃小游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','粗线条、空心小草和圆润皮蛋角色。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
-        changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt']]}
-      ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','https://github.com/Shaw485/create-gpt-step-by-step/blob/main/README.md']]}
+        changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
+      ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','/project-doc.html?doc=gpt-roadmap']]}
       ,{ links:[] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','https://github.com/Shaw485/search-engine-eva-agent/blob/main/README.md']] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','https://github.com/Shaw485/pick-memory#readme']] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html'],['README','https://github.com/Shaw485/shaw.cn/blob/main/docs/AGENT_HARNESS_DEBUG.md']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','/project-doc.html?doc=search-readme']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','/project-doc.html?doc=pick-memory-readme']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html'],['README','/project-doc.html?doc=agent-harness-debug']] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 
@@ -441,13 +442,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
-        { status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
-        { status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0 },
-        { status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
-        { status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
-        { status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
+        { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
+        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0 },
+        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
+        { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -526,7 +527,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
             <div class="work-card" data-app="${app.id}">
                 <div class="work-card-top">
-                    <span class="status-tag status-${app.statusType}">${app.status}</span>
+                    <div class="work-card-labels">
+                        <span class="project-type-tag">${app.projectType}</span>
+                        <span class="status-tag status-${app.statusType}">${app.status}</span>
+                    </div>
                     <span class="work-date">${app.publishDate}</span>
                 </div>
                 <h3 class="work-title">「${app.shortName}」</h3>
@@ -538,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span>${app.likes}</span>
                         </button>
                     </div>
-                    <button class="btn-view-work" type="button">查看作品</button>
+                    <button class="btn-view-work" type="button">查看详情</button>
                 </div>
             </div>`;
         }).join('');
@@ -724,6 +728,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const app = appsData.find(a => a.id === appId);
         if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalFeatureDetails || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalTertiaryAction || !modalTertiaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
+        appModal.dataset.appId = String(app.id);
+
         modalIcon.style.background = app.gradient;
         modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
         modalTitle.textContent = app.title;
@@ -830,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!href) return '';
             const downloadName = typeof directDownload === 'string' ? `="${directDownload}"` : '';
             const linkAttrs = directDownload ? ` download${downloadName}` : ' target="_blank" rel="noopener"';
-            return `<a class="doc-card doc-card-link" href="${href}"${linkAttrs}><strong>${title}<span aria-hidden="true">${directDownload ? ' ↓' : ' ↗'}</span></strong><p>${intro}</p></a>`;
+            return `<a class="doc-card doc-card-link" href="${href}" data-project-resource="${title}"${linkAttrs}><strong>${title}<span aria-hidden="true">${directDownload ? ' ↓' : ' ↗'}</span></strong><p>${intro}</p></a>`;
         };
         if (app.resources) {
             modalPrdHeading.textContent = app.resources.first.heading;
@@ -883,6 +889,16 @@ document.addEventListener('DOMContentLoaded', function() {
     imageLightboxClose?.addEventListener('click', closeImageLightbox);
     imageLightbox?.addEventListener('click', (event) => {
         if (event.target === imageLightbox) closeImageLightbox();
+    });
+
+    appModal?.addEventListener('click', (event) => {
+        const resourceLink = event.target.closest('[data-project-resource]');
+        if (!resourceLink) return;
+        portfolioLog('resources', 'debug', 'resource-open', {
+            appId: Number(appModal.dataset.appId),
+            resource: resourceLink.dataset.projectResource,
+            delivery: resourceLink.hasAttribute('download') ? 'download' : 'read'
+        });
     });
 
     function closeAppModal() {

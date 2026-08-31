@@ -1,0 +1,135 @@
+:root {
+    color-scheme: light;
+    --ink: #1f2933;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --paper: #ffffff;
+    --canvas: #f6f7f8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.doc-site-header {
+    min-height: 64px;
+    padding: 0 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+}
+
+.doc-brand {
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.doc-site-header nav {
+    display: flex;
+    gap: 24px;
+}
+
+.doc-site-header nav a,
+.doc-back {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.doc-site-header a:hover,
+.doc-site-header a:focus-visible,
+.doc-back:hover,
+.doc-back:focus-visible {
+    color: var(--ink);
+}
+
+.doc-shell {
+    width: min(960px, calc(100% - 32px));
+    margin: 32px auto 64px;
+}
+
+.doc-toolbar {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.doc-download {
+    padding: 9px 14px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid #cfd4da;
+    border-radius: 8px;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.doc-reader {
+    padding: clamp(24px, 5vw, 56px);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.doc-eyebrow {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: .16em;
+}
+
+h1 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.2;
+}
+
+.doc-status {
+    margin: 0;
+    color: var(--muted);
+}
+
+.doc-status.is-error { color: #9b2c2c; }
+
+.doc-content {
+    margin: 32px 0 0;
+    padding-top: 28px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-top: 1px solid var(--line);
+    color: #303740;
+    font: 15px/1.85 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Microsoft YaHei", monospace;
+}
+
+@media (max-width: 640px) {
+    .doc-site-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    .doc-site-header nav {
+        width: 100%;
+        gap: 18px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .doc-shell { margin-top: 18px; }
+    .doc-reader { border-radius: 10px; }
+    .doc-content { font-size: 13px; }
+}

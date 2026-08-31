@@ -13,11 +13,19 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes` 和 `filters`：
+可用模块为 `likes`、`filters` 和 `resources`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'likes');
+location.reload();
+```
+
+资源入口可单独用 `resources` 模块排查。它只记录项目 ID、资源名称以及“阅读/下载”交付方式，不记录 URL、访问内容或访客信息：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'resources');
 location.reload();
 ```
 
