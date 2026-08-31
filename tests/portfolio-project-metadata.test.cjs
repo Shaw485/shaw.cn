@@ -32,3 +32,15 @@ test('PRD Agent work exposes the deployed frontend as an authorization-gated lin
     assert.match(prdBlock[0], /仅向获得授权的用户开放/);
     assert.doesNotMatch(prdBlock[0], /password|token|authorization/i);
 });
+
+test('Math Alarm changelog downloads as an explicitly encoded TXT file', () => {
+    const changelog = fs.readFileSync(path.join(root, '改动记录.txt'));
+    const mathAlarmBlock = script.match(/title: '数学题闹钟',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 1,/);
+    assert.ok(mathAlarmBlock, 'Math Alarm project block should exist');
+    assert.match(mathAlarmBlock[0], /title: '下载完整改动记录 TXT'/);
+    assert.match(mathAlarmBlock[0], /href: '\/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95\.txt\?v=20260831-utf8-bom-v1'/);
+    assert.match(mathAlarmBlock[0], /download: '数学题闹钟-版本记录\.txt'/);
+    assert.deepEqual([...changelog.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
+    assert.match(changelog.toString('utf8'), /62\.1 静态检查收尾/);
+    assert.match(index, /main\.js\?v=20260831-math-alarm-changelog-txt-v1/);
+});

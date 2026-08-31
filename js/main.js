@@ -40,9 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 second: {
                     heading: '02 · 版本记录',
-                    title: '在线阅读完整改动记录',
-                    href: '/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt',
-                    intro: '按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。'
+                    title: '下载完整改动记录 TXT',
+                    href: '/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1',
+                    intro: '下载 UTF-8 文本文件，按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。',
+                    download: '数学题闹钟-版本记录.txt'
                 },
                 codeHeading: '03 · 源码与说明',
                 code: [
@@ -424,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
       { prd:[['问题','普通闹钟容易被顺手关闭，用户并没有真正清醒。'],['方案','响铃后生成 a×b+c×d 数学题，答对才能结束。'],['体验','单闹钟、滚轮选时、三种铃声、锁屏提醒与开机恢复。'],['技术','Kotlin、Jetpack Compose、AlarmManager、DataStore。']],
         process:[['定义闭环','先跑通设置—触发—答题—关闭。'],['系统适配','验证精确闹钟、全屏通知、前台服务和开机恢复。'],['交互打磨','统一黑橙视觉与三行滚轮选时。'],['可靠性','处理跨日、重启和超时兜底。']],
         changelog:[['需求成型','确定单闹钟与数学题解锁机制。'],['原生实现','完成 Compose 界面、铃声与状态管理。'],['系统适配','补齐 Android 13/14 权限。'],['稳定性','增加开机恢复、跨日计算与异常回流。']],
-        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','https://github.com/Shaw485/math_alarm/blob/main/README.md'],['PRD PDF','/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf'],['完整改动记录 TXT','https://github.com/Shaw485/shaw.cn/blob/main/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt']]},
+        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','https://github.com/Shaw485/math_alarm/blob/main/README.md'],['PRD PDF','/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf'],['完整改动记录 TXT','/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1']]},
       { prd:[['定位','黑白手绘风的平台跳跃小游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','粗线条、空心小草和圆润皮蛋角色。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
         changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','https://github.com/Shaw485/shaw.cn/blob/main/brain-egg-changelog.txt']]}
@@ -827,7 +828,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         const resourceCard = (title, href, intro, directDownload = false) => {
             if (!href) return '';
-            const linkAttrs = directDownload ? ' download' : ' target="_blank" rel="noopener"';
+            const downloadName = typeof directDownload === 'string' ? `="${directDownload}"` : '';
+            const linkAttrs = directDownload ? ` download${downloadName}` : ' target="_blank" rel="noopener"';
             return `<a class="doc-card doc-card-link" href="${href}"${linkAttrs}><strong>${title}<span aria-hidden="true">${directDownload ? ' ↓' : ' ↗'}</span></strong><p>${intro}</p></a>`;
         };
         if (app.resources) {
@@ -843,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalChangelogHeading.textContent = '02 · 改动记录';
             modalCodeHeading.textContent = '03 · GitHub 与 README';
             modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],resourceCopy.prd,app.id===0);
-            modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog);
+            modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog,app.id===0?'数学题闹钟-版本记录.txt':false);
             modalCodeResources.innerHTML=[
                 resourceCard('GitHub 仓库',linkMap['GitHub'],resourceCopy.github),
                 resourceCard('README',linkMap['README'],resourceCopy.readme)
