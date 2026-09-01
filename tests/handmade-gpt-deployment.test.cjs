@@ -10,6 +10,7 @@ test('M036 online demo deployment stays loopback-only, rate-limited and body-fre
     const service = read('deploy/handmade-gpt/shaw-gpt-demo.service');
     const nginx = read('deploy/handmade-gpt/nginx-handmade-gpt.conf');
     const rateLimit = read('deploy/handmade-gpt/nginx-handmade-gpt-rate-limit.conf');
+    const onlinePage = read('deploy/handmade-gpt/online-index.html');
     const docs = read('docs/handmade-gpt-online-demo.md');
 
     assert.match(service, /--port 8772 --device cpu/);
@@ -23,6 +24,10 @@ test('M036 online demo deployment stays loopback-only, rate-limited and body-fre
     assert.match(nginx, /proxy_set_header Host 127\.0\.0\.1:8772/);
     assert.match(nginx, /proxy_pass http:\/\/127\.0\.0\.1:8772\/api\/generate/);
     assert.match(rateLimit, /rate=10r\/m/);
+    assert.match(onlinePage, /ShawSpace 服务器 CPU 推理/);
+    assert.match(onlinePage, /仅做小说续写；没有通过聊天或事实问答验收/);
+    assert.match(onlinePage, /name="m036-csrf" content="__CSRF_TOKEN__"/);
+    assert.doesNotMatch(onlinePage, /用户本机权重推理/);
     assert.match(docs, /不会记录输入正文、输出正文或 Token ID/);
     assert.match(docs, /server.*model.*inference.*security.*orchestrator/);
     assert.doesNotMatch(service + nginx + docs, /斗破苍穹|Authorization:|api[_-]?key/i);
