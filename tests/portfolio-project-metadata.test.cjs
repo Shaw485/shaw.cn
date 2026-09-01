@@ -25,7 +25,7 @@ test('self-developed model exposes only one same-origin CPU trial action', () =>
     assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
     const modelBlock = script.match(/title: '0\.015B 自研模型',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 3,/);
     assert.ok(modelBlock, 'self-developed model block should exist');
-    assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
+    assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
     assert.doesNotMatch(modelBlock[0], /secondaryAction:|tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
     assert.match(modelBlock[0], /platformStatus: 'M036 · 服务器 CPU 在线推理 · 仅限非商用'/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
@@ -107,7 +107,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
         '03-multi-item-decision-synthetic-v2.png'
     ];
     files.forEach(file => {
-        assert.match(prdBlock[0], new RegExp(`/assets/prd-agent/${file.replace('.', '\\.')}\\b`));
+        assert.match(prdBlock[0], new RegExp(`assets/prd-agent/${file.replace('.', '\\.')}\\b`));
         const image = fs.readFileSync(path.join(root, 'assets/prd-agent', file));
         assert.deepEqual([...image.subarray(0, 8)], [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], `${file} should be PNG`);
     });
@@ -123,7 +123,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M036 trial-only entry uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-m036-trial-only-v5/);
+    assert.match(index, /js\/main\.js\?v=20260901-m036-trial-only-path-v6/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -134,9 +134,9 @@ test('Math Alarm PRD, changelog and README open in the same-origin HTML reader',
     assert.ok(mathAlarmBlock, 'Math Alarm project block should exist');
     assert.match(mathAlarmBlock[0], /rating: 'v62\.1 · 已上线'/);
     assert.doesNotMatch(mathAlarmBlock[0], /4\.9 \(2,300 评价\)/);
-    assert.match(mathAlarmBlock[0], /title: '在线阅读完整 PRD',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-prd'/);
-    assert.match(mathAlarmBlock[0], /title: '在线阅读完整版本记录',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-changelog'/);
-    assert.match(mathAlarmBlock[0], /title: 'README',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-readme'/);
+    assert.match(mathAlarmBlock[0], /title: '在线阅读完整 PRD',[\s\S]*?href: 'project-doc\.html\?doc=math-alarm-prd'/);
+    assert.match(mathAlarmBlock[0], /title: '在线阅读完整版本记录',[\s\S]*?href: 'project-doc\.html\?doc=math-alarm-changelog'/);
+    assert.match(mathAlarmBlock[0], /title: 'README',[\s\S]*?href: 'project-doc\.html\?doc=math-alarm-readme'/);
     assert.doesNotMatch(mathAlarmBlock[0], /download:/);
     assert.doesNotMatch(mathAlarmBlock[0], /PRD\.pdf|极简数学题闹钟%20App%20PRD/);
     assert.deepEqual([...changelog.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
@@ -153,7 +153,7 @@ test('Math Alarm PRD, changelog and README open in the same-origin HTML reader',
 test('Odd Origin uses the supplied avatar and five landscape screenshots', () => {
     const block = script.match(/title: '怪奇之原',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 2,/);
     assert.ok(block, 'Odd Origin project block should exist');
-    assert.match(block[0], /iconImage: '\/assets\/odd-origin\/icon\.png'/);
+    assert.match(block[0], /iconImage: 'assets\/odd-origin\/icon\.png'/);
     assert.match(block[0], /screenshotLayout: 'landscape'/);
     assert.match(block[0], /rating: 'v188 真机预览 · 待上线'/);
     assert.match(block[0], /Web \/ 微信小游戏 v188（2026-09-01）/);
@@ -163,7 +163,7 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
         const image = fs.readFileSync(path.join(root, 'assets/odd-origin', file));
         assert.deepEqual([...image.subarray(0, 8)], [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], `${file} should be PNG`);
     });
-    assert.equal((block[0].match(/'\/assets\/odd-origin\/(?:title-screen|chapter-select|level-02|level-06|level-13)\.png'/g) || []).length, 5);
+    assert.equal((block[0].match(/'assets\/odd-origin\/(?:title-screen|chapter-select|level-02|level-06|level-13)\.png'/g) || []).length, 5);
     assert.match(script, /modalIcon\.classList\.toggle\('has-image', Boolean\(app\.iconImage\)\)/);
     assert.match(script, /<img src="\$\{app\.iconImage\}" alt="\$\{app\.title\} 头像">/);
     assert.match(styles, /\.app-modal-icon > img\s*\{[\s\S]*?object-fit:\s*cover/);
@@ -191,7 +191,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-prd-architecture-v4/);
-    assert.match(index, /main\.js\?v=20260901-m036-trial-only-v5/);
+    assert.match(index, /main\.js\?v=20260901-m036-trial-only-path-v6/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
@@ -215,7 +215,8 @@ test('all human-readable project resources use same-origin UTF-8 BOM delivery', 
     textResources.forEach(([file, docId]) => {
         const content = fs.readFileSync(path.join(root, file));
         assert.deepEqual([...content.subarray(0, 3)], [0xef, 0xbb, 0xbf], `${file} should start with UTF-8 BOM`);
-        assert.ok(script.includes(`/project-doc.html?doc=${docId}`), `${file} should use the same-origin reader`);
+        assert.ok(script.includes(`project-doc.html?doc=${docId}`), `${file} should use the same-origin reader`);
+        assert.ok(!script.includes(`/project-doc.html?doc=${docId}`), `${file} should preserve a GitHub Pages base path`);
     });
     assert.doesNotMatch(script, /raw\.githubusercontent\.com/);
     assert.doesNotMatch(script, /github\.com\/Shaw485\/pick-memory#readme/);
@@ -231,10 +232,13 @@ test('project document reader strictly decodes an allowlisted file and offers do
     assert.match(readerPage, /<meta charset="UTF-8">/);
     assert.doesNotMatch(readerPage, /AI 学习记录/);
     assert.match(readerPage, /id="docDownload"[^>]+download/);
+    assert.match(readerPage, /js\/project-doc\.js\?v=20260901-github-pages-path-v1/);
     assert.match(readerScript, /Object\.freeze\(\{/);
     assert.match(readerScript, /'math-alarm-prd': \['数学题闹钟 · 完整 PRD'/);
     assert.match(readerScript, /'math-alarm-changelog': \['数学题闹钟 · 版本记录'/);
     assert.match(readerScript, /'brain-egg-overview': \['怪奇之原 · 玩法与功能说明'/);
+    assert.doesNotMatch(readerScript, /\[[^\n]+, '\/(?:project-docs|brain-egg|%E6)/);
+    assert.match(readerScript, /new URL\(filePath, new URL\('\.', window\.location\.href\)\)\.href/);
     assert.match(readerScript, /'gpt-roadmap': \['0\.015B 自研模型 · Roadmap'/);
     assert.match(readerScript, /gpt-roadmap\.txt\?v=20260901-latest-records-v2/);
     assert.match(fs.readFileSync(path.join(root, 'project-docs/gpt-roadmap.txt'), 'utf8'), /M035继续预训练上下文A\/B（评测中）/);
@@ -249,6 +253,16 @@ test('project document reader strictly decodes an allowlisted file and offers do
     assert.match(readerScript, /document-id-rejected/);
     assert.match(readerStyles, /white-space:\s*pre-wrap/);
     assert.match(readerStyles, /@media \(max-width: 640px\)/);
+});
+
+test('all project-card site resources preserve a GitHub Pages base path', () => {
+    assert.doesNotMatch(script, /(?:href|iconImage): '\/(?:project-doc|assets|prd-agent|agent-harness|brain-egg)/);
+    assert.doesNotMatch(script, /url: '\/(?:handmade-gpt|project-doc|assets|prd-agent|agent-harness|brain-egg)/);
+    assert.doesNotMatch(script, /'\/assets\/(?:odd-origin|prd-agent)\//);
+    assert.match(script, /href: 'prd-agent-overview\.html'/);
+    assert.match(script, /href: 'agent-harness\.html#integration'/);
+    assert.match(script, /iconImage: 'assets\/odd-origin\/icon\.png'/);
+    assert.match(script, /'assets\/prd-agent\/03-multi-item-decision-synthetic-v2\.png'/);
 });
 
 test('AI learning record is removed from the site navigation', () => {

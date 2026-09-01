@@ -34,13 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 产品需求文档',
                     title: '在线阅读完整 PRD',
-                    href: '/project-doc.html?doc=math-alarm-prd',
+                    href: 'project-doc.html?doc=math-alarm-prd',
                     intro: '在站内阅读完整 PRD，查看产品目标、数学题解锁规则、核心流程与 Android 系统权限方案。'
                 },
                 second: {
                     heading: '02 · 版本记录',
                     title: '在线阅读完整版本记录',
-                    href: '/project-doc.html?doc=math-alarm-changelog',
+                    href: 'project-doc.html?doc=math-alarm-changelog',
                     intro: '在站内按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。'
                 },
                 codeHeading: '03 · 源码与说明',
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: 'README',
-                        href: '/project-doc.html?doc=math-alarm-readme',
+                        href: 'project-doc.html?doc=math-alarm-readme',
                         intro: '在站内以 UTF-8 文本了解主要功能、运行方式与开发说明。'
                     }
                 ]
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #dff3f6 0%, #c5e4ea 55%, #accfd7 100%)',
             iconStroke: '#111111',
             iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
-            iconImage: '/assets/odd-origin/icon.png',
+            iconImage: 'assets/odd-origin/icon.png',
             desc: '一款手绘风平台跳跃闯关游戏。当前版本为 Web / 微信小游戏 v188（2026-09-01）：玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地。',
             features: [
                 '🧭 旅途章节：从选关界面进入 20 个不同主题的关卡',
@@ -81,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['JavaScript', 'HTML5 Canvas', 'Platformer', 'Web Game', 'Hand-drawn'],
             screenshotLayout: 'landscape',
             screenshots: [
-                '/assets/odd-origin/title-screen.png',
-                '/assets/odd-origin/chapter-select.png',
-                '/assets/odd-origin/level-02.png',
-                '/assets/odd-origin/level-06.png',
-                '/assets/odd-origin/level-13.png'
+                'assets/odd-origin/title-screen.png',
+                'assets/odd-origin/chapter-select.png',
+                'assets/odd-origin/level-02.png',
+                'assets/odd-origin/level-06.png',
+                'assets/odd-origin/level-13.png'
             ],
             screenshotAlts: [
                 '怪奇之原标题页与踏上旅途按钮',
@@ -98,20 +98,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 作品介绍',
                     title: '在线阅读玩法与功能说明',
-                    href: '/project-doc.html?doc=brain-egg-overview',
+                    href: 'project-doc.html?doc=brain-egg-overview',
                     intro: '直接阅读游戏定位、操作方式、关卡结构、视觉风格与当前开发状态。'
                 },
                 second: {
                     heading: '02 · 版本记录',
                     title: '在线阅读全部改动记录',
-                    href: '/project-doc.html?doc=brain-egg-changelog',
+                    href: 'project-doc.html?doc=brain-egg-changelog',
                     intro: '当前已同步到 Web / 微信小游戏 v188（2026-09-01），覆盖从首个可玩版本到 UI、20 关、微信小游戏、音频、宽屏适配与稳定性调试的全部过程。'
                 },
                 codeHeading: '03 · 公开资料',
                 code: [
                     {
                         title: '下载版本记录 TXT',
-                        href: '/brain-egg-changelog.txt?v=20260901-brain-egg-complete-changelog-v1',
+                        href: 'brain-egg-changelog.txt?v=20260901-brain-egg-complete-changelog-v1',
                         intro: '下载带 UTF-8 BOM 的完整版本记录，避免浏览器或文本编辑器误判编码。',
                         download: '怪奇之原-版本记录.txt'
                     },
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
             primaryAction: {
-                url: '/handmade-gpt/?v=20260901-m036-trial-only',
+                url: 'https://shawspace.cn/handmade-gpt/?v=20260901-m036-trial-only',
                 label: '试用',
                 download: false
             },
@@ -300,13 +300,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 学习路线',
                     title: '在线阅读 Roadmap',
-                    href: '/project-doc.html?doc=gpt-roadmap',
+                    href: 'project-doc.html?doc=gpt-roadmap',
                     intro: '在站内以 UTF-8 文本查看从数据、Tokenizer、预训练到 SFT 的阶段规划、产物与验收门槛。'
                 },
                 second: {
                     heading: '02 · 实现记录',
                     title: '在线阅读完整学习记录',
-                    href: '/project-doc.html?doc=gpt-record',
+                    href: 'project-doc.html?doc=gpt-record',
                     intro: '在站内以 UTF-8 文本按阶段查看实现过程、实验结果、问题诊断与下一步计划。'
                 },
                 codeHeading: '03 · 代码与证据',
@@ -356,9 +356,9 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['RAG', 'Agent', 'Hybrid Search', 'Rerank', 'Evaluation', 'Trace'],
             screenshotLayout: 'landscape',
             screenshots: [
-                '/assets/prd-agent/01-multi-source-grounding-synthetic.png',
-                '/assets/prd-agent/02-versioned-evidence-synthetic.png',
-                '/assets/prd-agent/03-multi-item-decision-synthetic-v2.png'
+                'assets/prd-agent/01-multi-source-grounding-synthetic.png',
+                'assets/prd-agent/02-versioned-evidence-synthetic.png',
+                'assets/prd-agent/03-multi-item-decision-synthetic-v2.png'
             ],
             screenshotAlts: [
                 'PRD Agent 用虚构套装商品数据回答分项售后问题，并展示四条合成引用',
@@ -570,25 +570,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 作品介绍',
                     title: '在线阅读项目与架构说明',
-                    href: '/prd-agent-overview.html',
+                    href: 'prd-agent-overview.html',
                     intro: '直接阅读产品目标、核心检索链路、回答边界、评测方法与公开范围。'
                 },
                 second: {
                     heading: '02 · 建设路线',
                     title: '在线阅读脱敏 Roadmap',
-                    href: '/prd-agent-roadmap.html',
+                    href: 'prd-agent-roadmap.html',
                     intro: '查看评测集、知识治理、分层 Hybrid RAG、证据控制与运行监控的实施顺序。'
                 },
                 codeHeading: '03 · 公开阅读入口',
                 code: [
                     {
                         title: '产品说明',
-                        href: '/prd-agent-overview.html',
+                        href: 'prd-agent-overview.html',
                         intro: '阅读不包含企业内部文档、业务数据和账号信息的公开项目说明。'
                     },
                     {
                         title: '公开 Roadmap',
-                        href: '/prd-agent-roadmap.html',
+                        href: 'prd-agent-roadmap.html',
                         intro: '阅读可公开的阶段目标、交付物与验收方法；私有源码暂不对外展示。'
                     },
                     {
@@ -636,25 +636,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 建设路线图',
                     title: 'Roadmap',
-                    href: '/project-doc.html?doc=search-roadmap',
+                    href: 'project-doc.html?doc=search-roadmap',
                     intro: '在站内以 UTF-8 文本查看八阶段建设顺序、每个阶段的交付物、验收门槛和明确不做的范围。'
                 },
                 second: {
                     heading: '02 · 当前生产基线',
                     title: 'Full-catalog Baseline Report',
-                    href: '/project-doc.html?doc=search-full-catalog-baseline',
+                    href: 'project-doc.html?doc=search-full-catalog-baseline',
                     intro: '查看 1,814,924 个 ESCI 商品索引、生产 API 验收、语言样例、性能与明确未覆盖范围。'
                 },
                 codeHeading: '03 · 评测与源码',
                 code: [
                     {
                         title: 'Agent Evaluation Report',
-                        href: '/project-doc.html?doc=search-agent-evaluation',
+                        href: 'project-doc.html?doc=search-agent-evaluation',
                         intro: '查看本地 12-task Agent 行为评测；它验证工具、分支、证据、预算与 Trace，不代表搜索相关性评测，也尚未部署到生产。'
                     },
                     {
                         title: 'Stage 0 Report',
-                        href: '/project-doc.html?doc=search-stage0-report',
+                        href: 'project-doc.html?doc=search-stage0-report',
                         intro: '查看早期本地技术闸门、43 条测试、环境约束与当时的 OpenSearch 待验证项，作为历史基线证据。'
                     },
                     {
@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: 'README',
-                        href: '/project-doc.html?doc=search-readme',
+                        href: 'project-doc.html?doc=search-readme',
                         intro: '在站内以 UTF-8 文本快速了解项目定位、运行方式、评测边界和下一步计划。'
                     }
                 ]
@@ -721,13 +721,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 产品与安装',
                     title: '在线阅读 README（UTF-8）',
-                    href: '/project-doc.html?doc=pick-memory-readme',
+                    href: 'project-doc.html?doc=pick-memory-readme',
                     intro: '在站内打开产品能力、macOS / Windows 安装方法、数据说明与快捷键，不再依赖 GitHub 文本编码。'
                 },
                 second: {
                     heading: '02 · 版本更新',
                     title: '在线阅读 Changelog（UTF-8）',
-                    href: '/project-doc.html?doc=pick-memory-changelog',
+                    href: 'project-doc.html?doc=pick-memory-changelog',
                     intro: '在站内查看本地源码更新至 v0.3.4 的完整记录；这部分尚待推送，公开 GitHub 与安装包仍为 v0.3.1。'
                 },
                 codeHeading: '03 · 代码与发布',
@@ -775,13 +775,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 first: {
                     heading: '01 · 前端框架',
                     title: '打开 Agent Harness',
-                    href: '/agent-harness.html',
+                    href: 'agent-harness.html',
                     intro: '查看 Agent 目录、运行记录、评测证据、人工审批与 Trace 日志的统一前端框架。'
                 },
                 second: {
                     heading: '02 · 接入说明',
                     title: '查看接入清单',
-                    href: '/agent-harness.html#integration',
+                    href: 'agent-harness.html#integration',
                     intro: '查看统一数据协议、PRD Agent Adapter、搜索 Agent Adapter、权限审批和可观测性的待办。'
                 },
                 codeHeading: '03 · 源码与诊断',
@@ -793,7 +793,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         title: '诊断说明',
-                        href: '/project-doc.html?doc=agent-harness-debug',
+                        href: 'project-doc.html?doc=agent-harness-debug',
                         intro: '在站内以 UTF-8 文本查看模块化日志的启用、过滤、导出与故障排查方法。'
                     }
                 ]
@@ -805,15 +805,15 @@ document.addEventListener('DOMContentLoaded', function() {
       { prd:[['问题','普通闹钟容易被顺手关闭，用户并没有真正清醒。'],['方案','响铃后生成 a×b+c×d 数学题，答对才能结束。'],['体验','单闹钟、滚轮选时、三种铃声、锁屏提醒与开机恢复。'],['技术','Kotlin、Jetpack Compose、AlarmManager、DataStore。']],
         process:[['定义闭环','先跑通设置—触发—答题—关闭。'],['系统适配','验证精确闹钟、全屏通知、前台服务和开机恢复。'],['交互打磨','统一黑橙视觉与三行滚轮选时。'],['可靠性','处理跨日、重启和超时兜底。']],
         changelog:[['需求成型','确定单闹钟与数学题解锁机制。'],['原生实现','完成 Compose 界面、铃声与状态管理。'],['系统适配','补齐 Android 13/14 权限。'],['稳定性','增加开机恢复、跨日计算与异常回流。']],
-        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD','/project-doc.html?doc=math-alarm-prd'],['完整改动记录','/project-doc.html?doc=math-alarm-changelog']]},
+        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','project-doc.html?doc=math-alarm-readme'],['PRD','project-doc.html?doc=math-alarm-prd'],['完整改动记录','project-doc.html?doc=math-alarm-changelog']]},
       { prd:[['定位','手绘风的平台跳跃闯关游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','低饱和山野、粗线条道具和披风旅人。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
-        changelog:[['当前版本','Web / 微信小游戏 v188（2026-09-01）。'],['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留 89 个顶层记录与 4 个自动子记录，共 93 条。'],['持续迭代','覆盖原型、UI、20 关、编辑器、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
-      ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','/project-doc.html?doc=gpt-roadmap']]}
+        changelog:[['当前版本','Web / 微信小游戏 v188（2026-09-01）。'],['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留 89 个顶层记录与 4 个自动子记录，共 93 条。'],['持续迭代','覆盖原型、UI、20 关、编辑器、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','project-doc.html?doc=brain-egg-changelog']]}
+      ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','project-doc.html?doc=gpt-roadmap']]}
       ,{ links:[] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','/project-doc.html?doc=search-readme']] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','/project-doc.html?doc=pick-memory-readme']] }
-      ,{ links:[['GitHub','https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html'],['README','/project-doc.html?doc=agent-harness-debug']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','project-doc.html?doc=search-readme']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/pick-memory'],['README','project-doc.html?doc=pick-memory-readme']] }
+      ,{ links:[['GitHub','https://github.com/Shaw485/shaw.cn/blob/main/agent-harness.html'],['README','project-doc.html?doc=agent-harness-debug']] }
     ];
     appsData.forEach((app,i)=>Object.assign(app,projectDocs[i]));
 

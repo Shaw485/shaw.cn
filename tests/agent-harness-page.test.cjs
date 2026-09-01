@@ -121,7 +121,8 @@ test('portfolio adds Agent Harness as the seventh linked square-card project', (
     assert.match(script, /primaryAction: \{[\s\S]*?url: 'agent-harness\.html',[\s\S]*?label: '查看 Harness'/);
     assert.match(script, /publishDate: '2026\/8\/29'/);
     assert.match(script, /PRD Agent 与搜索 Agent 尚未接入/);
-    assert.match(script, /\/agent-harness\.html#integration/);
+    assert.match(script, /agent-harness\.html#integration/);
+    assert.doesNotMatch(script, /\/agent-harness\.html#integration/);
     assert.match(styles, /\.work-card \{[\s\S]*?aspect-ratio: 1 \/ 1/);
 });
 
