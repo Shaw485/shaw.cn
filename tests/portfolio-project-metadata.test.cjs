@@ -16,12 +16,16 @@ test('Pick Memory is presented as launched while retaining its open-source resou
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
-test('self-developed model uses the verified 0.015B parameter scale and honest release boundary', () => {
-    assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: '后训练中'/);
-    assert.match(script, /当前可验证的正式模型为 14,880,745 参数（约 0\.015B）/);
-    assert.match(script, /后训练实验：已完成受控预训练与多轮 SFT \/ replay 诊断，暂无发布候选/);
-    assert.match(script, /\{ projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026\/8\/22'/);
-    assert.match(script, /后训练诊断仍未产生发布候选/);
+test('self-developed model exposes the public noncommercial M036 local release', () => {
+    assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 已上线'/);
+    assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
+    assert.match(script, /primaryAction: \{[\s\S]*?shoucao-gpt-local-step5750-v1\.0\.0\.zip'[\s\S]*?label: '下载 M036 本地包'[\s\S]*?download: true/);
+    assert.match(script, /secondaryAction: \{[\s\S]*?shaw485-local-gpt-card\.hexiaoyu-07\.chatgpt\.site\/[\s\S]*?label: '查看运行说明'[\s\S]*?download: false/);
+    assert.match(script, /tertiaryAction: \{[\s\S]*?releases\/tag\/v1\.0\.0-local-step5750[\s\S]*?label: 'GitHub Release'/);
+    assert.match(script, /platformStatus: 'M036 · 已公开 · 仅限非商用'/);
+    assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
+    assert.match(script, /进入详情可下载，在自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行/);
+    assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
     assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
 });
@@ -49,11 +53,15 @@ test('model detail exposes verified architecture, data, tokenizer, training and 
         'AdamW',
         'MPS',
         '10,000 条：8,000 train / 800 val / 600 public / 600 sealed',
-        '无 release-ready checkpoint'
+        'SFT 权重不发布；M036 发布纯预训练 Step5750 推理包',
+        '55,379,341 bytes（约 55.4 MB）',
+        '6d62905fb7b3338817ffac3136c82d8b3af5d59ea2851215da8308d0acb8bc94',
+        'CC BY-NC 4.0',
+        'PolyForm Noncommercial 1.0.0'
     ].forEach(value => assert.ok(modelBlock[0].includes(value), `missing model spec: ${value}`));
-    assert.match(modelBlock[0], /main@212daf8/);
-    assert.match(modelBlock[0], /原始小说正文、可还原 Token 张量和模型权重不公开/);
-    assert.match(modelBlock[0], /blob\/212daf8d5010e600ecb93116bff4867d428eb303\/MODEL_CARD\.md/);
+    assert.match(modelBlock[0], /M036 公开包包含推理权重、模型配置、Tokenizer 与本地运行代码/);
+    assert.match(modelBlock[0], /训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开/);
+    assert.doesNotMatch(modelBlock[0], /模型权重不公开/);
 
     assert.match(index, /id="modalModelSpecs"[^>]+aria-labelledby="modalModelSpecsTitle"[^>]+hidden/);
     assert.match(index, /id="modalModelSpecGroups"/);
@@ -61,6 +69,13 @@ test('model detail exposes verified architecture, data, tokenizer, training and 
     assert.match(script, /heading\.textContent = group\.title/);
     assert.match(script, /description\.textContent = value/);
     assert.match(script, /portfolioLog\('model-specs', 'debug', 'specs-rendered'/);
+    assert.match(script, /portfolioLog\('actions', 'debug', 'action-opened', \{ appId, action: 'primary' \}\)/);
+    assert.match(script, /const primaryIsDownload = Boolean\(app\.apk \|\| app\.downloads\?\.length \|\| primaryAction\.download\)/);
+    assert.match(script, /const secondaryIsDownload = Boolean\(app\.downloads\?\.length \|\| secondaryAction\.download\)/);
+    assert.match(script, /if \(primaryIsDownload\) \{[\s\S]*?modalApkDownload\.setAttribute\('download', ''\);[\s\S]*?modalApkDownload\.removeAttribute\('download'\)/);
+    assert.match(script, /if \(secondaryIsDownload\) modalSecondaryDownload\.setAttribute\('download', ''\);[\s\S]*?else modalSecondaryDownload\.removeAttribute\('download'\)/);
+    assert.match(script, /modalDownloadStats\.hidden = !app\.apk/);
+    assert.match(script, /modalApkDownload\.dataset\.countDownload = app\.apk \? 'true' : 'false'/);
     assert.match(styles, /\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
     assert.match(styles, /@media \(max-width: 640px\)[\s\S]*?\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
     assert.match(script, /modalScreenshotsSection\.hidden = app\.screenshots\.length === 0/);
@@ -133,7 +148,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-model-specs-v1/);
-    assert.match(index, /main\.js\?v=20260901-model-specs-v1/);
+    assert.match(index, /main\.js\?v=20260901-m036-release-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

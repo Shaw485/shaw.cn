@@ -129,14 +129,14 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '0.015B 自研模型',
             category: 'AI 学习项目 · LLM',
             date: '2026',
-            rating: '后训练中',
+            rating: 'M036 已上线',
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。当前可验证的正式模型为 14,880,745 参数（约 0.015B），完整走通了语料治理、BPE、预训练、SFT、固定评测与失败样本复盘；当前仍处于后训练实验阶段，暂无可发布模型。',
+            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；M036 本地非商用运行包现已公开，下载后可在自己的 Windows、macOS 或 Linux 电脑上进行短中文小说续写。',
             modelSpecs: {
                 heading: '模型参数与训练口径',
-                note: '以下数据来自仓库 main@212daf8 的冻结配置、语料与 Token manifest、M016 训练报告及 M020/M021 后训练报告。原始小说正文、可还原 Token 张量和模型权重不公开。',
+                note: 'M036 公开包包含推理权重、模型配置、Tokenizer 与本地运行代码。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
                 groups: [
                     {
                         title: '模型身份',
@@ -145,8 +145,23 @@ document.addEventListener('DOMContentLoaded', function() {
                             ['模型类型', '中文 Decoder-only Causal Transformer'],
                             ['正式基座', 'M016 · 纯预训练 Step 5750'],
                             ['上下文窗口', '512 BPE Token'],
-                            ['当前状态', '后训练实验中；严格发布候选为空'],
-                            ['发布边界', '教学型单小说语言基座，不是通用聊天模型']
+                            ['当前状态', 'M036 · Step5750 本地运行包已公开'],
+                            ['发布边界', '公开非商用；教学型小说续写模型，不是通用聊天模型']
+                        ]
+                    },
+                    {
+                        title: 'M036 本地发布',
+                        items: [
+                            ['任务', '短中文小说续写；不是聊天或事实问答'],
+                            ['运行设备', '下载者自己的 CPU / NVIDIA GPU / Apple MPS'],
+                            ['运行方式', 'Windows / macOS / Linux 本地网页'],
+                            ['额外依赖', 'PyTorch 不随 ZIP 提供，首次启动时另行安装'],
+                            ['ZIP 大小', '55,379,341 bytes（约 55.4 MB）'],
+                            ['ZIP SHA-256', '6d62905fb7b3338817ffac3136c82d8b3af5d59ea2851215da8308d0acb8bc94'],
+                            ['权重与 Tokenizer', 'CC BY-NC 4.0'],
+                            ['包内代码', 'PolyForm Noncommercial 1.0.0'],
+                            ['许可性质', '公开可下载、源码可见、仅限非商用；不是 OSI 开源'],
+                            ['隐私', '本地服务只监听 127.0.0.1；日志不记录输入或输出正文']
                         ]
                     },
                     {
@@ -255,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             ['预训练保持', 'BPC 退化 2.33%'],
                             ['M021 耗时', '386.47 秒'],
                             ['失败样本', '小说续写 16 条中 1 条空输出'],
-                            ['结论', '仅为诊断节点；无 release-ready checkpoint']
+                            ['后续实验结论', 'M033–M035 未产生优于正式基座的 SFT / 长上下文候选'],
+                            ['发布结论', 'SFT 权重不发布；M036 发布纯预训练 Step5750 推理包']
                         ]
                     }
                 ]
@@ -265,11 +281,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 '🧠 注意力机制：手写 Q/K/V、因果遮罩与多头注意力',
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
-                '📉 后训练实验：已完成受控预训练与多轮 SFT / replay 诊断，暂无发布候选',
-                '📝 学习记录：代码与原理说明同步沉淀到 GitHub'
+                '📉 受控实验：完成预训练、多轮 SFT / replay 与长上下文对照，正式模型保持 Step5750',
+                '💻 本地运行：M036 包支持 Windows、macOS、Linux 与 CPU / CUDA / MPS',
+                '📝 可复核发布：模型卡、数据卡、许可证与 SHA-256 同步公开'
             ],
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
+            primaryAction: {
+                url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/download/v1.0.0-local-step5750/shoucao-gpt-local-step5750-v1.0.0.zip',
+                label: '下载 M036 本地包',
+                download: true
+            },
+            secondaryAction: {
+                url: 'https://shaw485-local-gpt-card.hexiaoyu-07.chatgpt.site/',
+                label: '查看运行说明',
+                download: false
+            },
+            tertiaryAction: {
+                url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/tag/v1.0.0-local-step5750',
+                label: 'GitHub Release'
+            },
+            platformStatus: 'M036 · 已公开 · 仅限非商用',
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
@@ -297,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         intro: '查看 0.015B 自研模型的源码、数据处理脚本、测试与最新提交。'
                     },
                     {
-                        title: '模型卡 · 参数与边界',
-                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/212daf8d5010e600ecb93116bff4867d428eb303/MODEL_CARD.md',
-                        intro: '按固定提交核对正式参数、数据边界、评测结论与未发布状态。'
+                        title: 'M036 本地运行包',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/tag/v1.0.0-local-step5750',
+                        intro: '查看模型能力边界、安装说明、许可证、文件清单与 SHA-256。'
                     },
                     {
                         title: '正式预训练配置',
@@ -598,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '手绘风平台跳跃闯关游戏。操控披风旅人穿越山野、石门、木箱与断崖，支持选关、移动、跳跃、提示、暂停和重来。', likes: 0 },
-        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '从零训练 14,880,745 参数（约 0.015B）的中文 Decoder-only Transformer；预训练已经跑通，后训练诊断仍未产生发布候选。', likes: 0 },
+        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型已发布 M036 本地运行包；进入详情可下载，在自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
@@ -876,11 +908,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalApkDownload?.addEventListener('click', () => {
+        const appId = Number(appModal?.dataset.appId);
+        portfolioLog('actions', 'debug', 'action-opened', { appId, action: 'primary' });
         if (modalApkDownload.dataset.countDownload !== 'true') return;
         fetch(downloadCounterHitUrl, { cache: 'no-store', keepalive: true })
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(setDownloadCount)
             .catch(() => {});
+    });
+
+    modalSecondaryDownload?.addEventListener('click', () => {
+        const appId = Number(appModal?.dataset.appId);
+        portfolioLog('actions', 'debug', 'action-opened', { appId, action: 'secondary' });
+    });
+
+    modalTertiaryAction?.addEventListener('click', () => {
+        const appId = Number(appModal?.dataset.appId);
+        portfolioLog('actions', 'debug', 'action-opened', { appId, action: 'tertiary' });
     });
 
     function openAppModal(appId) {
@@ -970,20 +1014,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const tertiaryAction = app.tertiaryAction;
         const platformStatus = modalPlatformActions.querySelector('.app-modal-platform-status');
         if (primaryAction) {
+            const primaryIsDownload = Boolean(app.apk || app.downloads?.length || primaryAction.download);
             modalApkDownload.href = primaryAction.url;
             modalApkLabel.textContent = primaryAction.label;
             modalApkDownload.dataset.countDownload = app.apk ? 'true' : 'false';
-            modalApkDownload.classList.toggle('is-navigation', !app.apk && !app.downloads);
-            if (app.apk || app.downloads) {
+            modalApkDownload.classList.toggle('is-navigation', !primaryIsDownload);
+            if (primaryIsDownload) {
                 modalApkDownload.setAttribute('download', '');
             } else {
                 modalApkDownload.removeAttribute('download');
             }
             if (secondaryAction) {
+                const secondaryIsDownload = Boolean(app.downloads?.length || secondaryAction.download);
                 modalSecondaryDownload.href = secondaryAction.url;
                 modalSecondaryLabel.textContent = secondaryAction.label;
-                modalSecondaryDownload.classList.toggle('is-navigation', !app.downloads);
-                if (app.downloads) modalSecondaryDownload.setAttribute('download', '');
+                modalSecondaryDownload.classList.toggle('is-navigation', !secondaryIsDownload);
+                if (secondaryIsDownload) modalSecondaryDownload.setAttribute('download', '');
                 else modalSecondaryDownload.removeAttribute('download');
                 modalSecondaryDownload.hidden = false;
                 modalSecondaryDownload.style.removeProperty('display');
