@@ -336,24 +336,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 '⚖️ 混合排序：融合向量、关键词检索与 Rerank',
                 '🧾 证据边界：区分可回答、部分证据与证据不足',
                 '🧪 离线评测：用真实 Bad Case 验证召回、重排和答案质量',
-                '🔐 脱敏展示：公开页面不暴露公司内部文档与业务数据'
+                '🧪 公开演示：三张界面图仅使用虚构的商品、规则、问答与引用，不包含内部数据'
             ],
             tags: ['RAG', 'Agent', 'Hybrid Search', 'Rerank', 'Evaluation', 'Trace'],
             screenshotLayout: 'landscape',
             screenshots: [
-                '/assets/prd-agent/01-multi-source-grounding-sanitized.png',
-                '/assets/prd-agent/02-versioned-evidence-sanitized.png',
-                '/assets/prd-agent/03-multi-item-decision-sanitized.png'
+                '/assets/prd-agent/01-multi-source-grounding-synthetic.png',
+                '/assets/prd-agent/02-versioned-evidence-synthetic.png',
+                '/assets/prd-agent/03-multi-item-decision-synthetic.png'
             ],
             screenshotAlts: [
-                'PRD Agent 回答复杂规则问题，并展开五条来源证据',
-                'PRD Agent 基于带更新时间的规则证据回答条件判断问题',
-                'PRD Agent 回答多对象规则问题，并提供五条可展开证据'
+                'PRD Agent 用虚构套装商品数据回答分项售后问题，并展示四条合成引用',
+                'PRD Agent 用虚构版本化规则回答自行寄回的适用条件',
+                'PRD Agent 用虚构多 SKU 数据回答同一订单分别审批的规则'
             ],
             screenshotCaptions: [
-                '多源证据回答：聚合多个文档片段，给出带边界说明的结论。公开图已移除账号、问题与内部规则正文。',
-                '版本化规则判断：用带更新时间的证据支持资格判断。公开图使用脱敏演示内容。',
-                '复杂场景问答：给出拆分处理结论，并保留证据供复核。公开图使用脱敏演示内容。'
+                '多源证据回答：使用虚构套装商品与四份演示文档，展示分项售后、优惠回算和引用链路。全部内容为合成演示数据。',
+                '版本化规则判断：使用虚构的「自行寄回适用条件 v0.2」回答资格问题。全部内容为合成演示数据。',
+                '多对象规则问答：用虚构的蓝牙键盘与保护套展示两个 SKU 分别审批的结论与证据。全部内容为合成演示数据。'
             ],
             primaryAction: {
                 url: 'https://7ff79fde7564.aime-app.bytedance.net/',
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v188：手绘风平台跳跃闯关游戏，已完成 20 关、音频、宽屏适配与稳定性调试，暂未公开试玩。', likes: 0 },
         { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '从零训练 14,880,745 参数（约 0.015B）的中文 Decoder-only Transformer；M035 正在评测上下文窗口 A/B，正式发布候选仍为空。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开卡片已补三张脱敏界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }

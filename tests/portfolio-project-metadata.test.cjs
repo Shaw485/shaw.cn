@@ -88,16 +88,17 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.ok(prdBlock, 'PRD Agent project block should exist');
     assert.match(prdBlock[0], /screenshotLayout: 'landscape'/);
     const files = [
-        '01-multi-source-grounding-sanitized.png',
-        '02-versioned-evidence-sanitized.png',
-        '03-multi-item-decision-sanitized.png'
+        '01-multi-source-grounding-synthetic.png',
+        '02-versioned-evidence-synthetic.png',
+        '03-multi-item-decision-synthetic.png'
     ];
     files.forEach(file => {
         assert.match(prdBlock[0], new RegExp(`/assets/prd-agent/${file.replace('.', '\\.')}\\b`));
         const image = fs.readFileSync(path.join(root, 'assets/prd-agent', file));
         assert.deepEqual([...image.subarray(0, 8)], [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], `${file} should be PNG`);
     });
-    assert.equal((prdBlock[0].match(/公开图/g) || []).length, 3);
+    assert.ok((prdBlock[0].match(/合成演示数据/g) || []).length >= 3);
+    assert.doesNotMatch(prdBlock[0], /sanitized\.png|马赛克|脱敏演示内容/);
     assert.doesNotMatch(prdBlock[0], /codex-clipboard|hexiaoyu\.07|virtual bundle|self arrange/i);
     assert.match(script, /figure\.className = 'screenshot-item'/);
     assert.match(script, /zoomButton\.type = 'button'/);
@@ -105,6 +106,10 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(script, /caption\.textContent = app\.screenshotCaptions\[index\]/);
     assert.match(script, /event\.target\.closest\('\.screenshot-zoom'\)/);
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
+});
+
+test('PRD Agent synthetic screenshots use a dedicated cache version', () => {
+    assert.match(index, /js\/main\.js\?v=20260901-prd-synthetic-demo-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -172,7 +177,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-latest-records-v2/);
-    assert.match(index, /main\.js\?v=20260901-latest-records-v2/);
+    assert.match(index, /main\.js\?v=20260901-prd-synthetic-demo-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
