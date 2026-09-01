@@ -133,10 +133,10 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站用服务器 CPU 在线试写短中文小说续写，也可下载 M036 本地非商用运行包，在自己的 Windows、macOS 或 Linux 电脑上运行。',
+            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站使用服务器 CPU，体验短中文小说续写。',
             modelSpecs: {
                 heading: '模型参数与训练口径',
-                note: 'M036 公开包包含推理权重、模型配置、Tokenizer 与本地运行代码。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
+                note: '当前提供 M036 Step5750 的在线小说续写体验。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
                 groups: [
                     {
                         title: '模型身份',
@@ -145,23 +145,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             ['模型类型', '中文 Decoder-only Causal Transformer'],
                             ['正式基座', 'M016 · 纯预训练 Step 5750'],
                             ['上下文窗口', '512 BPE Token'],
-                            ['当前状态', 'M036 · Step5750 本地运行包已公开'],
-                            ['发布边界', '公开非商用；教学型小说续写模型，不是通用聊天模型']
+                            ['当前状态', 'M036 · Step5750 在线试用'],
+                            ['使用边界', '教学型小说续写模型，不是通用聊天模型']
                         ]
                     },
                     {
-                        title: 'M036 本地发布',
+                        title: 'M036 在线试用',
                         items: [
                             ['任务', '短中文小说续写；不是聊天或事实问答'],
-                            ['运行设备', '下载者自己的 CPU / NVIDIA GPU / Apple MPS'],
-                            ['运行方式', 'Windows / macOS / Linux 本地网页'],
-                            ['额外依赖', 'PyTorch 不随 ZIP 提供，首次启动时另行安装'],
-                            ['ZIP 大小', '55,379,341 bytes（约 55.4 MB）'],
-                            ['ZIP SHA-256', '6d62905fb7b3338817ffac3136c82d8b3af5d59ea2851215da8308d0acb8bc94'],
-                            ['权重与 Tokenizer', 'CC BY-NC 4.0'],
-                            ['包内代码', 'PolyForm Noncommercial 1.0.0'],
-                            ['许可性质', '公开可下载、源码可见、仅限非商用；不是 OSI 开源'],
-                            ['隐私', '本地服务只监听 127.0.0.1；日志不记录输入或输出正文']
+                            ['算力来源', 'ShawSpace 服务器 CPU'],
+                            ['输入方式', '输入一个短语或半句话'],
+                            ['输出长度', '最多续写一两句话'],
+                            ['上下文限制', '输入最多 80 个字符'],
+                            ['访问限制', '按 IP 限流，生成请求串行处理'],
+                            ['隐私', '服务日志不记录输入或输出正文']
                         ]
                     },
                     {
@@ -271,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ['M021 耗时', '386.47 秒'],
                             ['失败样本', '小说续写 16 条中 1 条空输出'],
                             ['后续实验结论', 'M033–M035 未产生优于正式基座的 SFT / 长上下文候选'],
-                            ['发布结论', 'SFT 权重不发布；M036 发布纯预训练 Step5750 推理包']
+                            ['当前结论', 'SFT 未产生正式候选；在线试用采用纯预训练 Step5750']
                         ]
                     }
                 ]
@@ -282,30 +279,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
                 '📉 受控实验：完成预训练、多轮 SFT / replay 与长上下文对照，正式模型保持 Step5750',
-                '💻 本地运行：M036 包支持 Windows、macOS、Linux 与 CPU / CUDA / MPS',
-                '📝 可复核发布：模型卡、数据卡、许可证与 SHA-256 同步公开'
+                '🖥️ 在线试用：由 ShawSpace 服务器 CPU 运行，可直接体验短中文小说续写',
+                '📝 可复核记录：保留模型配置、训练结果、能力边界与失败实验'
             ],
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
             primaryAction: {
-                url: '/handmade-gpt/?v=20260901-m036-online',
-                label: '在线试写',
+                url: '/handmade-gpt/?v=20260901-m036-trial-only',
+                label: '试用',
                 download: false
             },
-            secondaryAction: {
-                url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/download/v1.0.0-local-step5750/shoucao-gpt-local-step5750-v1.0.0.zip',
-                label: '下载 M036 本地包',
-                download: true
-            },
-            tertiaryAction: {
-                url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/tag/v1.0.0-local-step5750',
-                label: 'GitHub Release'
-            },
-            platformStatus: 'M036 · 在线试写 · 本地下载 · 仅限非商用',
+            platformStatus: 'M036 · 服务器 CPU 在线推理 · 仅限非商用',
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
-                github: '查看公开源码与冻结证据；main 分支同步至 M021，M036 通过 GitHub Release 发布，站内记录已更新到 M035.1。',
+                github: '查看公开源码与冻结证据；main 分支同步至 M021，站内记录已更新到 M035.1。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
             },
             resources: {
@@ -326,12 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/create-gpt-step-by-step',
-                        intro: '查看公开源码、数据处理脚本与测试；main 分支同步至 M021，M036 通过 GitHub Release 发布，站内 Roadmap 与学习记录已更新到 M035.1。'
-                    },
-                    {
-                        title: 'M036 本地运行包',
-                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/tag/v1.0.0-local-step5750',
-                        intro: '查看模型能力边界、安装说明、许可证、文件清单与 SHA-256。'
+                        intro: '查看公开源码、数据处理脚本与测试；main 分支同步至 M021，站内 Roadmap 与学习记录已更新到 M035.1。'
                     },
                     {
                         title: '正式预训练配置',
@@ -840,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v188：手绘风平台跳跃闯关游戏，已完成 20 关、音频、宽屏适配与稳定性调试，暂未公开试玩。', likes: 0 },
-        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型可在线试写，也已发布 M036 本地运行包；可用本站服务器 CPU 体验，或下载到自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行。', likes: 0 },
+        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型，可直接使用本站服务器 CPU 体验。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },

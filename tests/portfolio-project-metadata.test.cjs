@@ -20,15 +20,16 @@ test('Pick Memory distinguishes the unpublished local record from the public rel
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
-test('self-developed model exposes a same-origin CPU demo and public noncommercial M036 local release', () => {
+test('self-developed model exposes only one same-origin CPU trial action', () => {
     assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 已上线'/);
     assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
-    assert.match(script, /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/\?v=20260901-m036-online'[\s\S]*?label: '在线试写'[\s\S]*?download: false/);
-    assert.match(script, /secondaryAction: \{[\s\S]*?shoucao-gpt-local-step5750-v1\.0\.0\.zip'[\s\S]*?label: '下载 M036 本地包'[\s\S]*?download: true/);
-    assert.match(script, /tertiaryAction: \{[\s\S]*?releases\/tag\/v1\.0\.0-local-step5750[\s\S]*?label: 'GitHub Release'/);
-    assert.match(script, /platformStatus: 'M036 · 在线试写 · 本地下载 · 仅限非商用'/);
+    const modelBlock = script.match(/title: '0\.015B 自研模型',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 3,/);
+    assert.ok(modelBlock, 'self-developed model block should exist');
+    assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
+    assert.doesNotMatch(modelBlock[0], /secondaryAction:|tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
+    assert.match(modelBlock[0], /platformStatus: 'M036 · 服务器 CPU 在线推理 · 仅限非商用'/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
-    assert.match(script, /可在线试写，也已发布 M036 本地运行包/);
+    assert.match(script, /可直接使用本站服务器 CPU 体验/);
     assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
     assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
@@ -57,13 +58,12 @@ test('model detail exposes verified architecture, data, tokenizer, training and 
         'AdamW',
         'MPS',
         '10,000 条：8,000 train / 800 val / 600 public / 600 sealed',
-        'SFT 权重不发布；M036 发布纯预训练 Step5750 推理包',
-        '55,379,341 bytes（约 55.4 MB）',
-        '6d62905fb7b3338817ffac3136c82d8b3af5d59ea2851215da8308d0acb8bc94',
-        'CC BY-NC 4.0',
-        'PolyForm Noncommercial 1.0.0'
+        '在线试用采用纯预训练 Step5750',
+        'ShawSpace 服务器 CPU',
+        '输入最多 80 个字符',
+        '服务日志不记录输入或输出正文'
     ].forEach(value => assert.ok(modelBlock[0].includes(value), `missing model spec: ${value}`));
-    assert.match(modelBlock[0], /M036 公开包包含推理权重、模型配置、Tokenizer 与本地运行代码/);
+    assert.match(modelBlock[0], /当前提供 M036 Step5750 的在线小说续写体验/);
     assert.match(modelBlock[0], /训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开/);
     assert.doesNotMatch(modelBlock[0], /模型权重不公开/);
 
@@ -122,8 +122,8 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
 });
 
-test('M036 online demo uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-prd-architecture-m036-online-v4/);
+test('M036 trial-only entry uses the current portfolio cache version', () => {
+    assert.match(index, /js\/main\.js\?v=20260901-m036-trial-only-v5/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -191,7 +191,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-prd-architecture-v3/);
-    assert.match(index, /main\.js\?v=20260901-prd-architecture-m036-online-v4/);
+    assert.match(index, /main\.js\?v=20260901-m036-trial-only-v5/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
