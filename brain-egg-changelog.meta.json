@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "sourceFile": "改动记事本.md",
+  "targetFile": "brain-egg-changelog.txt",
+  "utf8Bom": true,
+  "sourceBytes": 69168,
+  "targetBytes": 69171,
+  "sourceSha256": "69e922d78c44b4ce57f2e5c6b9c037eebbb3f5fc095b7e439749ba05e08c766a",
+  "targetSha256": "3181d04d38c9f83479f02151183318603c1d0747b30be80b0ef9264e6e1e92e9",
+  "topLevelGroups": 89,
+  "nestedSubrecords": 4,
+  "totalRecords": 93,
+  "latestTitle": "个人网站改动记录全量同步 — 2026-09-01"
+}

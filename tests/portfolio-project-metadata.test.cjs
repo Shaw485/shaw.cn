@@ -72,7 +72,10 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     assert.match(script, /portfolioLog\('media', 'warn', 'image-load-failed'/);
     assert.doesNotMatch(script, /脑洞皮蛋|大聪明脑洞蛋/);
     assert.doesNotMatch(fs.readFileSync(path.join(root, 'brain-egg-overview.txt'), 'utf8'), /脑洞皮蛋|大聪明脑洞蛋/);
-    assert.doesNotMatch(fs.readFileSync(path.join(root, 'brain-egg-changelog.txt'), 'utf8'), /脑洞皮蛋|大聪明脑洞蛋/);
+    const historicalChangelog = fs.readFileSync(path.join(root, 'brain-egg-changelog.txt'), 'utf8');
+    assert.match(historicalChangelog, /主页游戏名暂保持“大聪明脑洞蛋”，等待正式命名/,
+        '完整历史记录应保留正式命名前的原始变更说明');
+    assert.match(historicalChangelog, /Web \/ 微信小游戏 v188 完整窗口宽地图/);
 });
 
 test('portfolio uses a project list, detail actions and the agreed project type labels', () => {
@@ -87,7 +90,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-project-media-v1/);
-    assert.match(index, /main\.js\?v=20260901-project-media-v1/);
+    assert.match(index, /main\.js\?v=20260901-brain-egg-complete-changelog-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

@@ -103,15 +103,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 second: {
                     heading: '02 · 版本记录',
-                    title: '在线阅读 33 个版本记录',
+                    title: '在线阅读全部改动记录',
                     href: '/project-doc.html?doc=brain-egg-changelog',
-                    intro: '从首个可玩版本到动作、关卡、HUD 和稳定性优化，逐项查看完整迭代过程。'
+                    intro: '已与游戏项目《改动记事本》完整同步，覆盖从首个可玩版本到当前 UI、20 关、微信小游戏、音频、宽屏适配与稳定性调试的全部过程。'
                 },
                 codeHeading: '03 · 公开资料',
                 code: [
                     {
                         title: '下载版本记录 TXT',
-                        href: '/brain-egg-changelog.txt?v=20260901-project-media-v1',
+                        href: '/brain-egg-changelog.txt?v=20260901-brain-egg-complete-changelog-v1',
                         intro: '下载带 UTF-8 BOM 的完整版本记录，避免浏览器或文本编辑器误判编码。',
                         download: '怪奇之原-版本记录.txt'
                     },
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
         links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD','/project-doc.html?doc=math-alarm-prd'],['完整改动记录','/project-doc.html?doc=math-alarm-changelog']]},
       { prd:[['定位','手绘风的平台跳跃闯关游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','低饱和山野、粗线条道具和披风旅人。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
-        changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
+        changelog:[['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留所有顶层记录、自动子记录与正文。'],['持续迭代','覆盖原型、UI、关卡、编辑器、Android、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','/project-doc.html?doc=gpt-roadmap']]}
       ,{ links:[] }
       ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','/project-doc.html?doc=search-readme']] }
