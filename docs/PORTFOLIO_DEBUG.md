@@ -13,7 +13,7 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes`、`filters`、`resources`、`media` 和 `model-specs`：
+可用模块为 `likes`、`filters`、`resources`、`media`、`model-specs` 和 `actions`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
@@ -42,6 +42,14 @@ location.reload();
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'model-specs');
+location.reload();
+```
+
+模型下载与项目外链可单独用 `actions` 模块排查。它只记录项目 ID 和主要、次要或第三入口类型，不记录目标 URL、下载文件、访客信息或页面内容：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'actions');
 location.reload();
 ```
 
