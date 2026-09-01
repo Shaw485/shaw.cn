@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；M036 本地非商用运行包现已公开，下载后可在自己的 Windows、macOS 或 Linux 电脑上进行短中文小说续写。',
+            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站用服务器 CPU 在线试写短中文小说续写，也可下载 M036 本地非商用运行包，在自己的 Windows、macOS 或 Linux 电脑上运行。',
             modelSpecs: {
                 heading: '模型参数与训练口径',
                 note: 'M036 公开包包含推理权重、模型配置、Tokenizer 与本地运行代码。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
@@ -288,20 +288,20 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
             primaryAction: {
+                url: '/handmade-gpt/',
+                label: '在线试写',
+                download: false
+            },
+            secondaryAction: {
                 url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/download/v1.0.0-local-step5750/shoucao-gpt-local-step5750-v1.0.0.zip',
                 label: '下载 M036 本地包',
                 download: true
-            },
-            secondaryAction: {
-                url: 'https://shaw485-local-gpt-card.hexiaoyu-07.chatgpt.site/',
-                label: '查看运行说明',
-                download: false
             },
             tertiaryAction: {
                 url: 'https://github.com/Shaw485/create-gpt-step-by-step/releases/tag/v1.0.0-local-step5750',
                 label: 'GitHub Release'
             },
-            platformStatus: 'M036 · 已公开 · 仅限非商用',
+            platformStatus: 'M036 · 在线试写 · 本地下载 · 仅限非商用',
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
@@ -655,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v188：手绘风平台跳跃闯关游戏，已完成 20 关、音频、宽屏适配与稳定性调试，暂未公开试玩。', likes: 0 },
-        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型已发布 M036 本地运行包；进入详情可下载，在自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行。', likes: 0 },
+        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型可在线试写，也已发布 M036 本地运行包；可用本站服务器 CPU 体验，或下载到自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },

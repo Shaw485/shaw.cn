@@ -20,15 +20,15 @@ test('Pick Memory distinguishes the unpublished local record from the public rel
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
-test('self-developed model exposes the public noncommercial M036 local release', () => {
+test('self-developed model exposes a same-origin CPU demo and public noncommercial M036 local release', () => {
     assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 已上线'/);
     assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
-    assert.match(script, /primaryAction: \{[\s\S]*?shoucao-gpt-local-step5750-v1\.0\.0\.zip'[\s\S]*?label: '下载 M036 本地包'[\s\S]*?download: true/);
-    assert.match(script, /secondaryAction: \{[\s\S]*?shaw485-local-gpt-card\.hexiaoyu-07\.chatgpt\.site\/[\s\S]*?label: '查看运行说明'[\s\S]*?download: false/);
+    assert.match(script, /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/'[\s\S]*?label: '在线试写'[\s\S]*?download: false/);
+    assert.match(script, /secondaryAction: \{[\s\S]*?shoucao-gpt-local-step5750-v1\.0\.0\.zip'[\s\S]*?label: '下载 M036 本地包'[\s\S]*?download: true/);
     assert.match(script, /tertiaryAction: \{[\s\S]*?releases\/tag\/v1\.0\.0-local-step5750[\s\S]*?label: 'GitHub Release'/);
-    assert.match(script, /platformStatus: 'M036 · 已公开 · 仅限非商用'/);
+    assert.match(script, /platformStatus: 'M036 · 在线试写 · 本地下载 · 仅限非商用'/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
-    assert.match(script, /进入详情可下载，在自己的 CPU、NVIDIA GPU 或 Mac MPS 上运行/);
+    assert.match(script, /可在线试写，也已发布 M036 本地运行包/);
     assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
     assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
@@ -122,8 +122,8 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
 });
 
-test('M036 release uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-m036-release-v2/);
+test('M036 online demo uses the current portfolio cache version', () => {
+    assert.match(index, /js\/main\.js\?v=20260901-m036-online-demo-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -191,7 +191,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-latest-records-v2/);
-    assert.match(index, /main\.js\?v=20260901-m036-release-v2/);
+    assert.match(index, /main\.js\?v=20260901-m036-online-demo-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
