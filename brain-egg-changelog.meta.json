@@ -3,12 +3,12 @@
   "sourceFile": "改动记事本.md",
   "targetFile": "brain-egg-changelog.txt",
   "utf8Bom": true,
-  "sourceBytes": 70097,
-  "targetBytes": 70100,
-  "sourceSha256": "0e1850f272073c3de804a74d04edbfd5a314187141250a5a327c7bcf265c880e",
-  "targetSha256": "bc5658e6f94d53c82dd4a09e6d561a8f093b3e7973c31c8325d254aec08ca13c",
-  "topLevelGroups": 90,
+  "sourceBytes": 72841,
+  "targetBytes": 72844,
+  "sourceSha256": "3d8e18b31ed246b1096aeff530ab1cc1dce8114bcd9b7634b88bc332d2de561a",
+  "targetSha256": "5909eea721d4bf4cf5eb459ac19ecf5362d3c5843916810a9e9ddaaf57b3efda",
+  "topLevelGroups": 91,
   "nestedSubrecords": 4,
-  "totalRecords": 94,
-  "latestTitle": "微信小游戏 v188 上传与测试二维码 — 2026-09-01"
+  "totalRecords": 95,
+  "latestTitle": "Web / 微信小游戏 v189 真机背景音乐启动修复 — 2026-09-01"
 }
