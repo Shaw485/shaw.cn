@@ -23,7 +23,7 @@ test('Pick Memory distinguishes the unpublished local record from the public rel
 test('self-developed model exposes a same-origin CPU demo and public noncommercial M036 local release', () => {
     assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 已上线'/);
     assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
-    assert.match(script, /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/'[\s\S]*?label: '在线试写'[\s\S]*?download: false/);
+    assert.match(script, /primaryAction: \{[\s\S]*?url: '\/handmade-gpt\/\?v=20260901-m036-online'[\s\S]*?label: '在线试写'[\s\S]*?download: false/);
     assert.match(script, /secondaryAction: \{[\s\S]*?shoucao-gpt-local-step5750-v1\.0\.0\.zip'[\s\S]*?label: '下载 M036 本地包'[\s\S]*?download: true/);
     assert.match(script, /tertiaryAction: \{[\s\S]*?releases\/tag\/v1\.0\.0-local-step5750[\s\S]*?label: 'GitHub Release'/);
     assert.match(script, /platformStatus: 'M036 · 在线试写 · 本地下载 · 仅限非商用'/);

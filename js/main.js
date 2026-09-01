@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
             primaryAction: {
-                url: '/handmade-gpt/',
+                url: '/handmade-gpt/?v=20260901-m036-online',
                 label: '在线试写',
                 download: false
             },
