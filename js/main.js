@@ -125,21 +125,147 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 2,
-            title: '0.15B自研模型',
-            shortName: '0.15B自研模型',
+            title: '0.015B 自研模型',
+            shortName: '0.015B 自研模型',
             category: 'AI 学习项目 · LLM',
             date: '2026',
             rating: '后训练中',
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零训练 0.15B 参数语言模型的学习型项目。用 PyTorch 从字符 Tokenizer、Embedding 与 Bigram 基线开始，逐步实现 Causal Self-Attention、多头注意力、残差连接、LayerNorm、FFN 与 Transformer Block，并继续推进 SFT、固定评测与失败样本复盘。',
+            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。当前可验证的正式模型为 14,880,745 参数（约 0.015B），完整走通了语料治理、BPE、预训练、SFT、固定评测与失败样本复盘；当前仍处于后训练实验阶段，暂无可发布模型。',
+            modelSpecs: {
+                heading: '模型参数与训练口径',
+                note: '以下数据来自仓库 main@212daf8 的冻结配置、语料与 Token manifest、M016 训练报告及 M020/M021 后训练报告。原始小说正文、可还原 Token 张量和模型权重不公开。',
+                groups: [
+                    {
+                        title: '模型身份',
+                        items: [
+                            ['正式参数量', '14,880,745（14.88M，约 0.01488B）'],
+                            ['模型类型', '中文 Decoder-only Causal Transformer'],
+                            ['正式基座', 'M016 · 纯预训练 Step 5750'],
+                            ['上下文窗口', '512 BPE Token'],
+                            ['当前状态', '后训练实验中；严格发布候选为空'],
+                            ['发布边界', '教学型单小说语言基座，不是通用聊天模型']
+                        ]
+                    },
+                    {
+                        title: '网络结构',
+                        items: [
+                            ['Transformer 层数', '10 层'],
+                            ['Embedding / hidden', '320 维'],
+                            ['Attention heads', '8 个'],
+                            ['Head dimension', '40 维（320 ÷ 8）'],
+                            ['QKV 投影', '320 → 960，fused QKV，无 bias'],
+                            ['Attention 输出', '320 → 320'],
+                            ['FFN', '320 → 1,280 → 320，GELU'],
+                            ['Norm / residual', 'Pre-LayerNorm + 残差连接'],
+                            ['LayerNorm epsilon', '1e-5'],
+                            ['Dropout', '0.1'],
+                            ['注意力', 'PyTorch SDPA + causal mask'],
+                            ['推理缓存', '支持逐层 KV Cache']
+                        ]
+                    },
+                    {
+                        title: 'Embedding 与参数拆解',
+                        items: [
+                            ['Token embedding', '7,465 × 320 = 2,388,800'],
+                            ['Position embedding', '512 × 320 = 163,840（可学习绝对位置）'],
+                            ['Transformer blocks', '1,232,000 / 层 × 10 = 12,320,000'],
+                            ['Final LayerNorm', '640'],
+                            ['LM head bias', '7,465'],
+                            ['输出权重', '与 Token embedding 权重共享，不重复计数'],
+                            ['初始化标准差', '0.02'],
+                            ['合计', '14,880,745 参数']
+                        ]
+                    },
+                    {
+                        title: 'Tokenizer 与词表',
+                        items: [
+                            ['Tokenizer', 'Character-seeded BPE'],
+                            ['Base vocabulary', '4,459'],
+                            ['BPE 学习样本', '1,499,904 个训练集字符'],
+                            ['BPE merges', '3,000'],
+                            ['最终词表', '7,465'],
+                            ['Special tokens', '6 个：UNK / BOS / USER / ASSISTANT / EOS / PAD'],
+                            ['Special token IDs', '7,459–7,464'],
+                            ['平均压缩率', '约 1.709 字符 / Token'],
+                            ['边界处理', '每个章节 section 末追加 EOS'],
+                            ['防泄漏', 'BPE merge 仅由 train split 学习']
+                        ]
+                    },
+                    {
+                        title: '预训练数据',
+                        items: [
+                            ['语料来源', '已获授权的《斗破苍穹》单本小说文本'],
+                            ['清洗后总量', '6,120,275 字符 / 3,581,471 Token'],
+                            ['Train', '1,599 章节段；5,508,660 字符；3,223,207 Token'],
+                            ['Validation', '92 章节段；314,610 字符；184,003 Token'],
+                            ['Test', '84 章节段；297,005 字符；174,261 Token'],
+                            ['拆分方法', '完整章节 / 版本组拆分，随机种子 42'],
+                            ['UTF-8 语料体积', '17,179,036 bytes'],
+                            ['隐私与版权', '正文、清洗全文与可还原 Token 张量不随代码发布']
+                        ]
+                    },
+                    {
+                        title: '正式预训练配置',
+                        items: [
+                            ['训练步数', '6,000 optimizer steps；选定 Step 5750'],
+                            ['Micro batch', '2'],
+                            ['梯度累积', '4'],
+                            ['每步 Token', '4,096'],
+                            ['优化器', 'AdamW'],
+                            ['学习率', '3e-4；warmup 100 后 cosine 降至 3e-5'],
+                            ['Weight decay', '0.1'],
+                            ['Adam betas', '0.9 / 0.95'],
+                            ['Gradient clip', '1.0'],
+                            ['精度 / 设备', 'float32 / Apple MPS'],
+                            ['评估与保存', '每 250 步；评估 60 batches'],
+                            ['生成参数', 'max_new_tokens 256；temperature 0.7；top_k 20']
+                        ]
+                    },
+                    {
+                        title: '预训练结果',
+                        items: [
+                            ['训练 Token 暴露', '24,576,000（约 7.62 遍 train）'],
+                            ['Token / 参数', '约 1.652'],
+                            ['训练耗时', '5,513 秒（约 91.9 分钟）'],
+                            ['Step 5750 Val loss', '4.4576'],
+                            ['Step 5750 Val BPC', '3.7612'],
+                            ['固定窗口 Top-1', '24.17%'],
+                            ['选择原则', 'Test 未加载、未参与 checkpoint 选择'],
+                            ['能力边界', '固定续写可运行，但流畅度与局部连贯仅边缘通过']
+                        ]
+                    },
+                    {
+                        title: 'SFT 与最新诊断',
+                        items: [
+                            ['SFT v7 数据', '10,000 条：8,000 train / 800 val / 600 public / 600 sealed'],
+                            ['SFT Token', 'train 524,886；val 52,760；public 39,338'],
+                            ['M020 配置', '基于 Step 5750；batch 4；2,000 steps；LR 2e-5'],
+                            ['M020 优化器', 'AdamW；weight decay 0.05；betas 0.9 / 0.95；clip 1.0'],
+                            ['M020 设备 / 耗时', 'Apple MPS；1,978.1 秒'],
+                            ['M020 结果', 'Val loss 5.8975 → 3.3562，但行为门失败'],
+                            ['M021 Canary', '64 train + 16 unseen；400 steps；SFT batch 8'],
+                            ['M021 学习率', 'peak 1e-5 / min 1e-6；warmup 20'],
+                            ['M021 Replay', 'weight 0.25；batch 4 × block 128'],
+                            ['回放目标 Token', '204,800'],
+                            ['严格答案', 'Train 87.5% / Dev 68.75%'],
+                            ['非盲复核', 'Train 95.31% / Dev 87.5%'],
+                            ['预训练保持', 'BPC 退化 2.33%'],
+                            ['M021 耗时', '386.47 秒'],
+                            ['失败样本', '小说续写 16 条中 1 条空输出'],
+                            ['结论', '仅为诊断节点；无 release-ready checkpoint']
+                        ]
+                    }
+                ]
+            },
             features: [
-                '🧱 从零搭建：按模块实现 0.15B 语言模型，而不是直接调用完整模型',
+                '🧱 从零搭建：按模块实现 14.88M 参数语言模型，而不是直接调用完整模型',
                 '🧠 注意力机制：手写 Q/K/V、因果遮罩与多头注意力',
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
-                '📉 后训练实验：已完成受控预训练，正在推进 SFT 与固定评测',
+                '📉 后训练实验：已完成受控预训练与多轮 SFT / replay 诊断，暂无发布候选',
                 '📝 学习记录：代码与原理说明同步沉淀到 GitHub'
             ],
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
@@ -147,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
-                github: '查看 0.15B 自研模型的源码、Notebook 与最新学习进度。',
+                github: '查看 0.015B 自研模型的源码、Notebook 与最新学习进度。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
             },
             resources: {
@@ -168,12 +294,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/create-gpt-step-by-step',
-                        intro: '查看 0.15B 自研模型的源码、数据处理脚本、测试与最新提交。'
+                        intro: '查看 0.015B 自研模型的源码、数据处理脚本、测试与最新提交。'
                     },
                     {
-                        title: '训练里程碑',
-                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/tree/main/reports/milestones',
-                        intro: '查看训练曲线、指标、数据报告与可复核的阶段产物。'
+                        title: '模型卡 · 参数与边界',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/212daf8d5010e600ecb93116bff4867d428eb303/MODEL_CARD.md',
+                        intro: '按固定提交核对正式参数、数据边界、评测结论与未发布状态。'
+                    },
+                    {
+                        title: '正式预训练配置',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/212daf8d5010e600ecb93116bff4867d428eb303/configs/formal_pretrain_14m_bpe3000.json',
+                        intro: '核对层数、Embedding、Attention head、FFN、优化器、学习率与 Batch 配置。'
+                    },
+                    {
+                        title: '数据与 Token Manifest',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/tree/212daf8d5010e600ecb93116bff4867d428eb303/reports/milestones/016_formal_pretrain_14m',
+                        intro: '核对字符量、Token 数、词表、BPE merges、拆分与训练报告。'
+                    },
+                    {
+                        title: 'M021 后训练诊断',
+                        href: 'https://github.com/Shaw485/create-gpt-step-by-step/blob/212daf8d5010e600ecb93116bff4867d428eb303/reports/milestones/021_sft_v7_1_canary/README.md',
+                        intro: '查看 replay 实验、严格答案、预训练保持、失败样本与发布门禁。'
                     }
                 ]
             }
@@ -457,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '手绘风平台跳跃闯关游戏。操控披风旅人穿越山野、石门、木箱与断崖，支持选关、移动、跳跃、提示、暂停和重来。', likes: 0 },
-        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始训练 0.15B 自研模型；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
+        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '从零训练 14,880,745 参数（约 0.015B）的中文 Decoder-only Transformer；预训练已经跑通，后训练诊断仍未产生发布候选。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
@@ -577,8 +718,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDate = document.getElementById('modalDate');
 
     const modalDesc = document.getElementById('modalDesc');
+    const modalModelSpecs = document.getElementById('modalModelSpecs');
+    const modalModelSpecsTitle = document.getElementById('modalModelSpecsTitle');
+    const modalModelSpecsNote = document.getElementById('modalModelSpecsNote');
+    const modalModelSpecGroups = document.getElementById('modalModelSpecGroups');
     const modalFeatureDetails = document.getElementById('modalFeatureDetails');
     const modalScreenshots = document.getElementById('modalScreenshots');
+    const modalScreenshotsSection = modalScreenshots?.closest('.app-modal-screenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
     const modalApkLabel = document.getElementById('modalApkLabel');
     const modalSecondaryDownload = document.getElementById('modalSecondaryDownload');
@@ -739,7 +885,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openAppModal(appId) {
         const app = appsData.find(a => a.id === appId);
-        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalFeatureDetails || !modalScreenshots || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalTertiaryAction || !modalTertiaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
+        if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalModelSpecs || !modalModelSpecsTitle || !modalModelSpecsNote || !modalModelSpecGroups || !modalFeatureDetails || !modalScreenshots || !modalScreenshotsSection || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalTertiaryAction || !modalTertiaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         appModal.dataset.appId = String(app.id);
 
@@ -753,6 +899,43 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDate.textContent = app.date;
 
         modalDesc.textContent = app.desc;
+        modalModelSpecGroups.replaceChildren();
+        if (app.modelSpecs?.groups?.length) {
+            modalModelSpecsTitle.textContent = app.modelSpecs.heading || '模型参数与训练口径';
+            modalModelSpecsNote.textContent = app.modelSpecs.note || '';
+            app.modelSpecs.groups.forEach(group => {
+                const groupElement = document.createElement('section');
+                groupElement.className = 'model-spec-group';
+
+                const heading = document.createElement('h4');
+                heading.textContent = group.title;
+                groupElement.appendChild(heading);
+
+                const list = document.createElement('dl');
+                group.items.forEach(([label, value]) => {
+                    const row = document.createElement('div');
+                    row.className = 'model-spec-row';
+                    const term = document.createElement('dt');
+                    term.textContent = label;
+                    const description = document.createElement('dd');
+                    description.textContent = value;
+                    row.append(term, description);
+                    list.appendChild(row);
+                });
+                groupElement.appendChild(list);
+                modalModelSpecGroups.appendChild(groupElement);
+            });
+            modalModelSpecs.hidden = false;
+            portfolioLog('model-specs', 'debug', 'specs-rendered', {
+                appId: app.id,
+                groupCount: app.modelSpecs.groups.length,
+                rowCount: app.modelSpecs.groups.reduce((total, group) => total + group.items.length, 0)
+            });
+        } else {
+            modalModelSpecsTitle.textContent = '模型参数与训练口径';
+            modalModelSpecsNote.textContent = '';
+            modalModelSpecs.hidden = true;
+        }
         if (app.featureDetails?.length) {
             modalFeatureDetails.innerHTML = app.featureDetails.map(item => `
                 <article class="app-feature-detail">
@@ -767,7 +950,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
-        modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="${app.screenshotAlts?.[i] || `${app.title} 截图 ${i+1}`}" decoding="async">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
+        modalScreenshotsSection.hidden = app.screenshots.length === 0;
+        modalScreenshots.innerHTML = app.screenshots.map((url, i) => `<img src="${url}" alt="${app.screenshotAlts?.[i] || `${app.title} 截图 ${i + 1}`}" decoding="async">`).join('');
         modalIcon.querySelector('img')?.addEventListener('error', () => {
             portfolioLog('media', 'warn', 'image-load-failed', { appId: app.id, kind: 'avatar' });
         }, { once: true });
@@ -1152,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             date: '08.22—08.24', datetime: '2026-08-24', title: '手写 Transformer 模块',
             text: '实现 Self-Attention、Multi-Head、Residual、LayerNorm 与 FFN，并梳理到 Logits 的链路。',
-            project: '0.15B自研模型',
+            project: '0.015B 自研模型',
             abilities: ['LLM / 检索']
         },
         {
@@ -1175,8 +1359,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['RAG', 'EVALUATION', 'PRIVATE / REDACTED']
         },
         {
-            title: '0.15B 自研模型',
-            text: '用 PyTorch 实现 Tokenizer、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，并以 0.15B 参数规模建立模型边界的直观理解。',
+            title: '0.015B 自研模型',
+            text: '用 PyTorch 实现 Tokenizer、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，并以 14.88M 参数冻结版本建立模型边界的直观理解。',
             tags: ['PYTORCH', 'TRANSFORMER', 'BUILD']
         },
         {
@@ -1253,7 +1437,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             week: 8, phase: 'evidence', start: '2026-10-13', end: '2026-10-19', review: '10/16 21:00', title: '端到端案例与面试验证',
             learn: ['用问题、洞察、决策、实现、评测、结果和复盘讲 AI 产品案例', '准备产品策略、LLM 评测、检索与 Agent 系统设计高频问题', '表达模型边界、失败实验、跨团队协作和关键取舍'],
-            business: ['整理主案例：PRD Agent 2.0；辅助案例：数学题闹钟与 0.15B 自研模型', '录制中文 10 分钟演示与英文 3 分钟项目介绍', '邀请产品或技术同学按统一标准进行模拟面试'],
+            business: ['整理主案例：PRD Agent 2.0；辅助案例：数学题闹钟与 0.015B 自研模型', '录制中文 10 分钟演示与英文 3 分钟项目介绍', '邀请产品或技术同学按统一标准进行模拟面试'],
             output: '公开案例页 + 在线 Demo + PRD + 架构图 + 评测报告 + 演示视频 + 英文 One-pager + 简历描述。',
             acceptance: '新环境 15 分钟内可运行，核心链路无阻断；完成 ≥3 次模拟面试；产品判断、评测分析、技术理解、数据表达、项目推动 5 项平均 ≥4/5；准备 ≥20 道问题且至少 10 道能用项目数据回答。',
             jd: ['端到端交付', '项目管理', '沟通协作', '英文表达', '作品案例']

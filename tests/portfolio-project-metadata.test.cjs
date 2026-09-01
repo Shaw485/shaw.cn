@@ -16,12 +16,55 @@ test('Pick Memory is presented as launched while retaining its open-source resou
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
-test('0.15B self-developed model status and copy reflect the post-training stage', () => {
-    assert.match(script, /title: '0\.15B自研模型',[\s\S]*?rating: '后训练中'/);
-    assert.match(script, /后训练实验：已完成受控预训练，正在推进 SFT 与固定评测/);
+test('self-developed model uses the verified 0.015B parameter scale and honest release boundary', () => {
+    assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: '后训练中'/);
+    assert.match(script, /当前可验证的正式模型为 14,880,745 参数（约 0\.015B）/);
+    assert.match(script, /后训练实验：已完成受控预训练与多轮 SFT \/ replay 诊断，暂无发布候选/);
     assert.match(script, /\{ projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026\/8\/22'/);
-    assert.match(script, /受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘/);
+    assert.match(script, /后训练诊断仍未产生发布候选/);
+    assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
+});
+
+test('model detail exposes verified architecture, data, tokenizer, training and post-training parameters', () => {
+    const modelBlock = script.match(/title: '0\.015B 自研模型',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 3,/);
+    assert.ok(modelBlock, 'self-developed model block should exist');
+    [
+        '14,880,745（14.88M，约 0.01488B）',
+        '10 层',
+        'Embedding / hidden',
+        '8 个',
+        '40 维（320 ÷ 8）',
+        '320 → 1,280 → 320，GELU',
+        '7,465 × 320 = 2,388,800',
+        '512 × 320 = 163,840',
+        'Character-seeded BPE',
+        '4,459',
+        '3,000',
+        '7,465',
+        '6,120,275 字符 / 3,581,471 Token',
+        '3,223,207 Token',
+        '24,576,000',
+        'Micro batch',
+        'AdamW',
+        'MPS',
+        '10,000 条：8,000 train / 800 val / 600 public / 600 sealed',
+        '无 release-ready checkpoint'
+    ].forEach(value => assert.ok(modelBlock[0].includes(value), `missing model spec: ${value}`));
+    assert.match(modelBlock[0], /main@212daf8/);
+    assert.match(modelBlock[0], /原始小说正文、可还原 Token 张量和模型权重不公开/);
+    assert.match(modelBlock[0], /blob\/212daf8d5010e600ecb93116bff4867d428eb303\/MODEL_CARD\.md/);
+
+    assert.match(index, /id="modalModelSpecs"[^>]+aria-labelledby="modalModelSpecsTitle"[^>]+hidden/);
+    assert.match(index, /id="modalModelSpecGroups"/);
+    assert.match(script, /modalModelSpecGroups\.replaceChildren\(\)/);
+    assert.match(script, /heading\.textContent = group\.title/);
+    assert.match(script, /description\.textContent = value/);
+    assert.match(script, /portfolioLog\('model-specs', 'debug', 'specs-rendered'/);
+    assert.match(styles, /\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+    assert.match(styles, /@media \(max-width: 640px\)[\s\S]*?\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
+    assert.match(script, /modalScreenshotsSection\.hidden = app\.screenshots\.length === 0/);
+    assert.match(styles, /\.app-modal-screenshots\[hidden\]\s*\{\s*display:\s*none/);
 });
 
 test('PRD Agent work exposes the deployed frontend as an authorization-gated link', () => {
@@ -89,8 +132,8 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260901-project-media-v1/);
-    assert.match(index, /main\.js\?v=20260901-brain-egg-complete-changelog-v1/);
+    assert.match(index, /styles\.css\?v=20260901-model-specs-v1/);
+    assert.match(index, /main\.js\?v=20260901-model-specs-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
@@ -132,7 +175,7 @@ test('project document reader strictly decodes an allowlisted file and offers do
     assert.match(readerScript, /'math-alarm-prd': \['数学题闹钟 · 完整 PRD'/);
     assert.match(readerScript, /'math-alarm-changelog': \['数学题闹钟 · 版本记录'/);
     assert.match(readerScript, /'brain-egg-overview': \['怪奇之原 · 玩法与功能说明'/);
-    assert.match(readerScript, /'gpt-roadmap': \['0\.15B自研模型 · Roadmap'/);
+    assert.match(readerScript, /'gpt-roadmap': \['0\.015B 自研模型 · Roadmap'/);
     assert.match(readerScript, /new TextDecoder\('utf-8', \{ fatal: true \}\)/);
     assert.match(readerScript, /content\.textContent = decoded/);
     assert.doesNotMatch(readerScript, /innerHTML\s*=\s*decoded/);

@@ -13,7 +13,7 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes`、`filters`、`resources` 和 `media`：
+可用模块为 `likes`、`filters`、`resources`、`media` 和 `model-specs`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
@@ -34,6 +34,14 @@ location.reload();
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'media');
+location.reload();
+```
+
+模型参数表可单独用 `model-specs` 模块排查。它只记录项目 ID、参数分组数与参数行数，不记录语料正文、参数内容、资源 URL 或访客信息：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'model-specs');
 location.reload();
 ```
 
