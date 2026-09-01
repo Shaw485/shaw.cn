@@ -8,16 +8,19 @@ const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 
 test('M036 online demo deployment stays loopback-only, rate-limited and body-free in logs', () => {
     const service = read('deploy/handmade-gpt/shaw-gpt-demo.service');
+    const serverWrapper = read('deploy/handmade-gpt/online_server.py');
     const nginx = read('deploy/handmade-gpt/nginx-handmade-gpt.conf');
     const rateLimit = read('deploy/handmade-gpt/nginx-handmade-gpt-rate-limit.conf');
     const onlinePage = read('deploy/handmade-gpt/online-index.html');
     const docs = read('docs/handmade-gpt-online-demo.md');
 
-    assert.match(service, /--port 8772 --device cpu/);
+    assert.match(service, /online_server\.py --port 8772 --device cpu/);
     assert.match(service, /--allowed-origin https:\/\/shawspace\.cn/);
     assert.match(service, /--no-console-log --no-open-browser/);
     assert.match(service, /MemoryMax=950M/);
     assert.match(service, /ReadWritePaths=.*\/logs/);
+    assert.match(serverWrapper, /DemoHTTPServer\.allow_reuse_address = True/);
+    assert.match(serverWrapper, /raise SystemExit\(app\.main\(\)\)/);
     assert.match(nginx, /location = \/handmade-gpt\/api\/generate/);
     assert.match(nginx, /limit_req zone=shaw_gpt_demo_per_ip/);
     assert.match(nginx, /client_max_body_size 16k/);
