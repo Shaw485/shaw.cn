@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshots: [
                 '/assets/prd-agent/01-multi-source-grounding-synthetic.png',
                 '/assets/prd-agent/02-versioned-evidence-synthetic.png',
-                '/assets/prd-agent/03-multi-item-decision-synthetic.png'
+                '/assets/prd-agent/03-multi-item-decision-synthetic-v2.png'
             ],
             screenshotAlts: [
                 'PRD Agent 用虚构套装商品数据回答分项售后问题，并展示四条合成引用',
