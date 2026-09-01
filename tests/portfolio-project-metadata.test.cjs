@@ -27,7 +27,8 @@ test('self-developed model exposes only one same-origin CPU trial action', () =>
     assert.ok(modelBlock, 'self-developed model block should exist');
     assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
     assert.doesNotMatch(modelBlock[0], /secondaryAction:|tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
-    assert.match(modelBlock[0], /platformStatus: 'M036 · 服务器 CPU 在线推理 · 仅限非商用'/);
+    assert.doesNotMatch(modelBlock[0], /platformStatus:/);
+    assert.match(modelBlock[0], /cardFlow: \['语料', 'BPE', '预训练', '续写'\]/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
     assert.match(script, /可直接使用本站服务器 CPU 体验/);
     assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
@@ -123,7 +124,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M036 trial-only entry uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-m036-trial-only-path-v6/);
+    assert.match(index, /js\/main\.js\?v=20260901-m036-training-architecture-v7/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -191,7 +192,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-prd-architecture-v4/);
-    assert.match(index, /main\.js\?v=20260901-m036-trial-only-path-v6/);
+    assert.match(index, /main\.js\?v=20260901-m036-training-architecture-v7/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

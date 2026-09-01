@@ -134,6 +134,202 @@ document.addEventListener('DOMContentLoaded', function() {
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
             desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站使用服务器 CPU，体验短中文小说续写。',
+            cardFlow: ['语料', 'BPE', '预训练', '续写'],
+            architecture: {
+                eyebrow: 'FROM CORPUS TO CONTINUATION',
+                title: '从一部小说到逐 Token 续写',
+                summary: '先治理授权小说语料并冻结数据切分，再只用训练集学习 BPE，随后训练模型预测下一个 Token。正式上线的是纯预训练 Step5750；SFT、Replay 与长上下文实验未通过替换门槛，没有混入当前模型。',
+                state: '14.88M · Step 5750',
+                tabs: [
+                    {
+                        id: 'training',
+                        label: '训练过程',
+                        intro: '训练不是把整本小说一次塞给模型，而是把训练集不断切成 512 Token 窗口，让模型在每个位置预测紧随其后的 Token，并用误差反向更新参数。',
+                        stages: [
+                            {
+                                id: 'corpus-governance',
+                                title: '语料治理',
+                                caption: '授权文本 → 章节段',
+                                status: '数据',
+                                input: '已获授权的单本小说原始文本与章节结构。',
+                                action: '清洗排版噪声、合并重复版本，并按完整章节或版本组整理，避免同一内容跨集合泄漏。',
+                                output: '1,775 个可追踪章节段，共 6,120,275 个字符。',
+                                failure: '正文、可还原 Token 张量与受限训练产物不随网站公开。'
+                            },
+                            {
+                                id: 'frozen-splits',
+                                title: '冻结数据切分',
+                                caption: 'Train / Val / Test',
+                                status: '边界',
+                                input: '清洗后的完整章节段，随机种子 42。',
+                                action: '按章节与版本组切成 1,599 / 92 / 84 段；训练集学习，验证集选模型，测试集只做最终检查。',
+                                output: '相互隔离、可复算的数据边界。',
+                                failure: '测试集不参与调参或 checkpoint 选择，防止把考试题练进模型。'
+                            },
+                            {
+                                id: 'train-bpe',
+                                title: '训练 BPE',
+                                caption: '文字 → Token',
+                                status: 'Tokenizer',
+                                input: '仅训练集中的 1,499,904 个学习字符。',
+                                action: '从字符词表出发学习 3,000 次高频合并，并在每个章节末尾插入 EOS。',
+                                output: '7,465 个 Token 的词表；平均约 1.709 字符 / Token。',
+                                failure: 'BPE 不读取验证集和测试集，三份数据都必须通过编码—解码还原检查。'
+                            },
+                            {
+                                id: 'build-next-token-batch',
+                                title: '构造训练批次',
+                                caption: '窗口右移一位',
+                                status: '采样',
+                                input: '训练集 Token 序列与 512 Token 上下文窗口。',
+                                action: '每次取 2 个窗口；目标序列相对输入右移一位，梯度累积 4 次后再更新。',
+                                output: '每个 optimizer step 共学习 4,096 个下一 Token 目标。',
+                                failure: '输入和目标必须等长且严格错开一位，否则模型学不到续写关系。'
+                            },
+                            {
+                                id: 'forward-pass',
+                                title: '模型前向计算',
+                                caption: '上下文 → Logits',
+                                status: '计算',
+                                input: '批次 Token 与位置编号。',
+                                action: '经过 Embedding、10 个因果 Transformer Block、Final LayerNorm 与共享 LM Head。',
+                                output: '每个位置对 7,465 个候选 Token 的原始分数 Logits。',
+                                failure: '因果遮罩禁止当前位置看到未来 Token。'
+                            },
+                            {
+                                id: 'loss-backprop',
+                                title: 'Loss 与反向传播',
+                                caption: '错多少 → 怎么改',
+                                status: '学习',
+                                input: 'Logits 与真实的下一 Token ID。',
+                                action: 'Cross Entropy 衡量预测误差；反向传播计算所有参数的梯度并裁剪到 1.0。',
+                                output: '告诉 Embedding、Attention、FFN 等参数各自应该向哪个方向调整。',
+                                failure: '只看训练 Loss 会掩盖过拟合，因此必须同步看验证集与固定样本。'
+                            },
+                            {
+                                id: 'adamw-update',
+                                title: 'AdamW 更新',
+                                caption: '累计梯度 → 新参数',
+                                status: '优化',
+                                input: '4 个 micro batch 累积后的梯度。',
+                                action: 'AdamW 用 3e-4 峰值学习率，warmup 100 步后 cosine 降到 3e-5，并施加 0.1 weight decay。',
+                                output: '完成一次参数更新；总计运行 6,000 optimizer steps。',
+                                failure: '学习率、梯度范数或 Loss 异常时保留日志与 checkpoint，不盲目续跑。'
+                            },
+                            {
+                                id: 'checkpoint-selection',
+                                title: '选择 Step 5750',
+                                caption: '不是最后一步自动获胜',
+                                status: '验收',
+                                input: '每 250 步保存的 checkpoint、验证 BPC、Harness 与固定续写样本。',
+                                action: '比较质量、退化与稳定性：Step6000 的 BPC 只改善约 0.0081，低于 0.01 有效改善门槛，且 Harness 变差。',
+                                output: '冻结 Step5750 为正式纯预训练模型。',
+                                failure: '后续 SFT / Replay / 长上下文实验未通过替换门，因此不冒充正式模型。'
+                            }
+                        ],
+                        observers: [
+                            {
+                                id: 'post-training-experiments',
+                                label: '后训练实验支路',
+                                state: '已完成 · 无上线候选',
+                                origin: '从纯预训练 Step5750 复制候选权重开始',
+                                steps: ['SFT 与 Replay 对照', '纯续写 SFT', '长上下文 A/B 与固定集回归'],
+                                note: 'M020–M035 的候选没有同时通过目标能力、预训练保持与稳定性门禁，因此没有覆盖正式基座；线上仍是纯预训练 Step5750。'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'runtime',
+                        label: '工作架构',
+                        intro: '线上试用运行在 ShawSpace 服务器 CPU。用户给出短语或半句话后，服务逐 Token 续写，并在自然句界或安全上限处停止；它不是聊天或事实问答系统。',
+                        stages: [
+                            {
+                                id: 'prompt-entry',
+                                title: '短提示入口',
+                                caption: '短语或半句话',
+                                status: '输入',
+                                input: '最多 80 个字符的中文小说开头。',
+                                action: '服务检查请求来源、CSRF、长度和访问频率，生成请求按服务器能力串行处理。',
+                                output: '通过边界检查的续写提示。',
+                                failure: '空输入、超长输入、越权来源或超频请求会直接拒绝。'
+                            },
+                            {
+                                id: 'runtime-tokenize',
+                                title: 'BPE 编码与截窗',
+                                caption: '文字 → Token ID',
+                                status: '编码',
+                                input: '通过检查的提示文字与冻结 Tokenizer。',
+                                action: '编码成 BPE Token；超过上下文时只保留最近的 512 Token。',
+                                output: '模型可读取的 Token 序列。',
+                                failure: 'Tokenizer 与训练版本不一致会导致 ID 和权重错位。'
+                            },
+                            {
+                                id: 'embedding',
+                                title: 'Token + Position Embedding',
+                                caption: 'ID → 320 维向量',
+                                status: '表示',
+                                input: 'Token ID 与序列中的位置。',
+                                action: '查表得到 Token 含义向量和可学习位置向量，再把两者相加。',
+                                output: '形状为序列长度 × 320 的上下文表示。',
+                                failure: '模型只能使用 512 个已训练位置，不能无限扩大上下文。'
+                            },
+                            {
+                                id: 'transformer-blocks',
+                                title: '10 个 Transformer Block',
+                                caption: 'Attention + FFN',
+                                status: '推理',
+                                input: '320 维上下文表示。',
+                                action: '每层先 Pre-LayerNorm，再用 8 头 Q/K/V 因果注意力汇总前文，经过残差连接与 1,280 维 GELU FFN。',
+                                output: '包含前文关系的逐位置表示。',
+                                failure: '模型规模与单本小说数据决定了它只具备有限的局部连贯能力。'
+                            },
+                            {
+                                id: 'lm-head',
+                                title: 'Final Norm + LM Head',
+                                caption: '向量 → 7,465 个分数',
+                                status: '预测',
+                                input: '最后一个位置的 320 维表示。',
+                                action: 'Final LayerNorm 后，用与 Token Embedding 共享的输出权重投影为词表 Logits。',
+                                output: '下一个 Token 的候选分布。',
+                                failure: 'Logits 是分数，不是事实判断，也不代表模型理解了真实世界。'
+                            },
+                            {
+                                id: 'top-k-sampling',
+                                title: 'Top-K 采样',
+                                caption: '从候选中选一个',
+                                status: '生成',
+                                input: '下一个 Token 的 Logits。',
+                                action: '温度 0.7 调整分布，只保留 Top 20 候选后按概率采样一个 Token。',
+                                output: '本轮新生成的一个 Token。',
+                                failure: '随机采样让每次结果可能不同；模型不会查询外部知识库。'
+                            },
+                            {
+                                id: 'kv-cache-loop',
+                                title: 'KV Cache 循环',
+                                caption: '复用前文计算',
+                                status: '加速',
+                                input: '新 Token 与各层已经算过的 Key / Value。',
+                                action: '只计算新位置并复用缓存，然后继续预测下一个 Token；缓存满 512 时重建窗口。',
+                                output: '在服务器 CPU 上持续逐 Token 续写。',
+                                failure: '单请求锁和限流优先保证小服务器稳定，而不是追求高并发。'
+                            },
+                            {
+                                id: 'natural-stop',
+                                title: '自然停止并返回',
+                                caption: '一两句话',
+                                status: '输出',
+                                input: '逐步生成的 Token、EOS 与句子边界。',
+                                action: '遇到 EOS、自然句界、分句界或最多 60 个生成字符时停止，再解码成文字。',
+                                output: '一段短中文小说续写。',
+                                failure: '运行日志只记数量、耗时和停止原因，不记录提示、正文或 Token ID。'
+                            }
+                        ]
+                    }
+                ],
+                guardrails: ['授权与公开边界', '章节级防泄漏切分', 'BPE 只读 Train', 'Test 不用于选模', 'SFT 必须过替换门', '80 字输入与限流'],
+                telemetry: ['Train / Val Loss', '验证 BPC', '固定续写 Harness', '学习率与梯度范数', 'Checkpoint 哈希', '推理耗时与停止原因'],
+                boundary: '能力边界：这是教学型中文小说续写模型，只学习单本授权小说中的语言与叙事统计；不具备通用聊天、事实检索或外部世界知识。页面展示显式工程流程，不展示小说正文、可还原 Token、私有评测答案或隐藏思维链。'
+            },
             modelSpecs: {
                 heading: '模型参数与训练口径',
                 note: '当前提供 M036 Step5750 的在线小说续写体验。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
@@ -289,7 +485,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 label: '试用',
                 download: false
             },
-            platformStatus: 'M036 · 服务器 CPU 在线推理 · 仅限非商用',
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
@@ -1152,6 +1347,7 @@ document.addEventListener('DOMContentLoaded', function() {
         prdArchitectureSummary.textContent = architecture.summary;
         prdArchitectureState.textContent = architecture.state;
         prdArchitectureBoundary.textContent = architecture.boundary;
+        prdArchitectureTabs.setAttribute('aria-label', `${app.title} 架构视图`);
 
         const appendChips = (container, values) => {
             values.forEach(value => {
@@ -1258,7 +1454,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     field.textContent = stage[key];
                 });
                 if (shouldFocus) stageButtons[stageIndex].focus();
-                portfolioLog('prd-architecture', 'debug', 'stage-selected', { panel: tab.id, stage: stage.id });
+                portfolioLog('architecture', 'debug', 'stage-selected', { appId: app.id, panel: tab.id, stage: stage.id });
             };
             stageButtons.forEach((button, stageIndex) => {
                 button.addEventListener('click', () => selectStage(stageIndex));
@@ -1300,7 +1496,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     note.textContent = observer.note;
                     detailsElement.append(summary, origin, steps, note);
                     detailsElement.addEventListener('toggle', () => {
-                        portfolioLog('prd-architecture', 'debug', 'observer-toggled', { lane: observer.id, open: detailsElement.open });
+                        portfolioLog('architecture', 'debug', 'observer-toggled', { appId: app.id, panel: tab.id, lane: observer.id, open: detailsElement.open });
                     });
                     observerSection.appendChild(detailsElement);
                 });
@@ -1319,7 +1515,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 panels[index].hidden = !active;
             });
             if (shouldFocus) tabs[tabIndex].focus();
-            portfolioLog('prd-architecture', 'debug', 'panel-selected', { panel: architecture.tabs[tabIndex].id });
+            portfolioLog('architecture', 'debug', 'panel-selected', { appId: app.id, panel: architecture.tabs[tabIndex].id });
         };
 
         tabs.forEach((tabButton, tabIndex) => {
@@ -1336,7 +1532,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        portfolioLog('prd-architecture', 'debug', 'architecture-rendered', {
+        portfolioLog('architecture', 'debug', 'architecture-rendered', {
             appId: app.id,
             panelCount: architecture.tabs.length,
             stageCount: architecture.tabs.reduce((total, tab) => total + tab.stages.length, 0),

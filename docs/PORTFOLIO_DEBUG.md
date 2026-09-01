@@ -13,7 +13,7 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes`、`filters`、`resources`、`media`、`model-specs` 和 `actions`：
+可用模块为 `likes`、`filters`、`resources`、`media`、`model-specs`、`architecture` 和 `actions`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
@@ -42,6 +42,14 @@ location.reload();
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'model-specs');
+location.reload();
+```
+
+项目流程图可单独用 `architecture` 模块排查。它记录项目 ID、当前面板、阶段 ID、阶段数量和观察支路开关状态，不记录语料、用户输入、模型输出、Token ID、资源 URL 或访客信息：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'architecture');
 location.reload();
 ```
 

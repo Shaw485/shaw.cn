@@ -85,8 +85,8 @@ test('architecture renderer uses semantic controls, safe text rendering and modu
     assert.match(renderer, /ArrowLeft/);
     assert.match(renderer, /\.textContent =/);
     assert.doesNotMatch(renderer, /innerHTML/);
-    assert.match(renderer, /portfolioLog\('prd-architecture', 'debug', 'architecture-rendered'/);
-    assert.match(renderer, /portfolioLog\('prd-architecture', 'debug', 'stage-selected'/);
+    assert.match(renderer, /portfolioLog\('architecture', 'debug', 'architecture-rendered'/);
+    assert.match(renderer, /portfolioLog\('architecture', 'debug', 'stage-selected'/);
     assert.match(script, /function trapModalFocus\(event\)/);
     assert.match(script, /appModal\.setAttribute\('aria-hidden', 'false'\)/);
     assert.match(script, /appModal\.setAttribute\('aria-hidden', 'true'\)/);
