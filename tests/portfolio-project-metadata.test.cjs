@@ -8,11 +8,15 @@ const script = fs.readFileSync(path.join(root, 'js/main.js'), 'utf8');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'css/styles.css'), 'utf8');
 
-test('Pick Memory is presented as launched while retaining its open-source resources', () => {
-    assert.match(script, /title: 'Pick Memory · 拾忆卡',[\s\S]*?rating: 'v0\.3\.1 已上线'/);
-    assert.match(script, /platformStatus: 'v0\.3\.1 · 已上线'/);
-    assert.match(script, /\{ projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026\/8\/27'/);
+test('Pick Memory distinguishes the unpublished local record from the public release', () => {
+    assert.match(script, /title: 'Pick Memory · 拾忆卡',[\s\S]*?rating: '本地记录 v0\.3\.4 · Release v0\.3\.1'/);
+    assert.match(script, /platformStatus: '本地记录 v0\.3\.4（待推送）· Release v0\.3\.1 已上线'/);
+    assert.match(script, /公开 GitHub 与安装包仍为 v0\.3\.1/);
+    assert.match(script, /\{ projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026\/8\/28'/);
     assert.match(script, /https:\/\/github\.com\/Shaw485\/pick-memory/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/pick-memory-changelog.txt'), 'utf8'), /## 0\.3\.4 — 2026-08-28/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/pick-memory-changelog.txt'), 'utf8'), /禁止全局键盘注入和剪贴板访问/);
+    assert.match(fs.readFileSync(path.join(root, 'js/project-doc.js'), 'utf8'), /pick-memory-changelog\.txt\?v=20260901-latest-records-v2/);
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
@@ -20,8 +24,9 @@ test('self-developed model uses the verified 0.015B parameter scale and honest r
     assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: '后训练中'/);
     assert.match(script, /当前可验证的正式模型为 14,880,745 参数（约 0\.015B）/);
     assert.match(script, /后训练实验：已完成受控预训练与多轮 SFT \/ replay 诊断，暂无发布候选/);
-    assert.match(script, /\{ projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026\/8\/22'/);
-    assert.match(script, /后训练诊断仍未产生发布候选/);
+    assert.match(script, /\{ projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026\/9\/1'/);
+    assert.match(script, /M035 正在评测上下文窗口 A\/B/);
+    assert.match(script, /正式发布候选仍为空/);
     assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
 });
@@ -63,7 +68,7 @@ test('model detail exposes verified architecture, data, tokenizer, training and 
     assert.match(script, /portfolioLog\('model-specs', 'debug', 'specs-rendered'/);
     assert.match(styles, /\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
     assert.match(styles, /@media \(max-width: 640px\)[\s\S]*?\.model-spec-groups\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
-    assert.match(script, /modalScreenshotsSection\.hidden = app\.screenshots\.length === 0/);
+    assert.match(script, /modalScreenshotsSection\.hidden = screenshotUrls\.length === 0/);
     assert.match(styles, /\.app-modal-screenshots\[hidden\]\s*\{\s*display:\s*none/);
 });
 
@@ -78,11 +83,38 @@ test('PRD Agent work exposes the deployed frontend as an authorization-gated lin
     assert.doesNotMatch(prdBlock[0], /password|token|authorization/i);
 });
 
+test('PRD Agent card uses three privacy-safe screenshots with captions and keyboard zoom', () => {
+    const prdBlock = script.match(/title: 'PRD Agent',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 4,/);
+    assert.ok(prdBlock, 'PRD Agent project block should exist');
+    assert.match(prdBlock[0], /screenshotLayout: 'landscape'/);
+    const files = [
+        '01-multi-source-grounding-sanitized.png',
+        '02-versioned-evidence-sanitized.png',
+        '03-multi-item-decision-sanitized.png'
+    ];
+    files.forEach(file => {
+        assert.match(prdBlock[0], new RegExp(`/assets/prd-agent/${file.replace('.', '\\.')}\\b`));
+        const image = fs.readFileSync(path.join(root, 'assets/prd-agent', file));
+        assert.deepEqual([...image.subarray(0, 8)], [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], `${file} should be PNG`);
+    });
+    assert.equal((prdBlock[0].match(/公开图/g) || []).length, 3);
+    assert.doesNotMatch(prdBlock[0], /codex-clipboard|hexiaoyu\.07|virtual bundle|self arrange/i);
+    assert.match(script, /figure\.className = 'screenshot-item'/);
+    assert.match(script, /zoomButton\.type = 'button'/);
+    assert.match(script, /zoomButton\.setAttribute\('aria-label', `放大查看：\$\{alt\}`\)/);
+    assert.match(script, /caption\.textContent = app\.screenshotCaptions\[index\]/);
+    assert.match(script, /event\.target\.closest\('\.screenshot-zoom'\)/);
+    assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
+});
+
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
     const changelog = fs.readFileSync(path.join(root, '改动记录.txt'));
     const prd = fs.readFileSync(path.join(root, 'project-docs/math-alarm-prd.txt'));
+    const readme = fs.readFileSync(path.join(root, 'project-docs/math-alarm-readme.txt'));
     const mathAlarmBlock = script.match(/title: '数学题闹钟',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 1,/);
     assert.ok(mathAlarmBlock, 'Math Alarm project block should exist');
+    assert.match(mathAlarmBlock[0], /rating: 'v62\.1 · 已上线'/);
+    assert.doesNotMatch(mathAlarmBlock[0], /4\.9 \(2,300 评价\)/);
     assert.match(mathAlarmBlock[0], /title: '在线阅读完整 PRD',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-prd'/);
     assert.match(mathAlarmBlock[0], /title: '在线阅读完整版本记录',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-changelog'/);
     assert.match(mathAlarmBlock[0], /title: 'README',[\s\S]*?href: '\/project-doc\.html\?doc=math-alarm-readme'/);
@@ -94,6 +126,9 @@ test('Math Alarm PRD, changelog and README open in the same-origin HTML reader',
     assert.match(prd.toString('utf8'), /来源于项目原始 PRD（共 25 页）/);
     assert.match(prd.toString('utf8'), /===== 第 25 页 \/ 共 25 页 =====/);
     assert.doesNotMatch(prd.toString('utf8'), /�|[⻅⻆⻓⻔⻚⻛⻬]/);
+    assert.match(readme.toString('utf8'), /清晨 \/ 风来 \/ 钢琴/);
+    assert.doesNotMatch(readme.toString('utf8'), /清晨 \/ 曙光 \/ 山岚|占位用的正弦波/);
+    assert.match(fs.readFileSync(path.join(root, 'js/project-doc.js'), 'utf8'), /math-alarm-readme\.txt\?v=20260901-latest-records-v2/);
 });
 
 test('Odd Origin uses the supplied avatar and five landscape screenshots', () => {
@@ -101,6 +136,8 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     assert.ok(block, 'Odd Origin project block should exist');
     assert.match(block[0], /iconImage: '\/assets\/odd-origin\/icon\.png'/);
     assert.match(block[0], /screenshotLayout: 'landscape'/);
+    assert.match(block[0], /rating: 'v188 真机预览 · 待上线'/);
+    assert.match(block[0], /Web \/ 微信小游戏 v188（2026-09-01）/);
 
     const files = ['icon.png', 'title-screen.png', 'chapter-select.png', 'level-02.png', 'level-06.png', 'level-13.png'];
     files.forEach(file => {
@@ -119,6 +156,8 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     assert.match(historicalChangelog, /主页游戏名暂保持“大聪明脑洞蛋”，等待正式命名/,
         '完整历史记录应保留正式命名前的原始变更说明');
     assert.match(historicalChangelog, /Web \/ 微信小游戏 v188 完整窗口宽地图/);
+    assert.match(script, /89 个顶层记录与 4 个自动子记录，共 93 条/);
+    assert.match(fs.readFileSync(path.join(root, 'js/project-doc.js'), 'utf8'), /brain-egg-overview\.txt\?v=20260901-latest-records-v2/);
 });
 
 test('portfolio uses a project list, detail actions and the agreed project type labels', () => {
@@ -132,8 +171,8 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260901-model-specs-v1/);
-    assert.match(index, /main\.js\?v=20260901-model-specs-v1/);
+    assert.match(index, /styles\.css\?v=20260901-latest-records-v2/);
+    assert.match(index, /main\.js\?v=20260901-latest-records-v2/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
@@ -148,6 +187,8 @@ test('all human-readable project resources use same-origin UTF-8 BOM delivery', 
         ['project-docs/search-readme.txt', 'search-readme'],
         ['project-docs/search-roadmap.txt', 'search-roadmap'],
         ['project-docs/search-stage0-report.txt', 'search-stage0-report'],
+        ['project-docs/search-full-catalog-baseline.txt', 'search-full-catalog-baseline'],
+        ['project-docs/search-agent-evaluation.txt', 'search-agent-evaluation'],
         ['project-docs/pick-memory-readme.txt', 'pick-memory-readme'],
         ['project-docs/pick-memory-changelog.txt', 'pick-memory-changelog'],
         ['project-docs/agent-harness-debug.txt', 'agent-harness-debug']
@@ -176,6 +217,13 @@ test('project document reader strictly decodes an allowlisted file and offers do
     assert.match(readerScript, /'math-alarm-changelog': \['数学题闹钟 · 版本记录'/);
     assert.match(readerScript, /'brain-egg-overview': \['怪奇之原 · 玩法与功能说明'/);
     assert.match(readerScript, /'gpt-roadmap': \['0\.015B 自研模型 · Roadmap'/);
+    assert.match(readerScript, /gpt-roadmap\.txt\?v=20260901-latest-records-v2/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/gpt-roadmap.txt'), 'utf8'), /M035继续预训练上下文A\/B（评测中）/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/gpt-record.txt'), 'utf8'), /完成M035两臂1000步正式训练/);
+    assert.match(readerScript, /'search-full-catalog-baseline': \['搜索引擎评测 Agent · 全量基线报告'/);
+    assert.match(readerScript, /'search-agent-evaluation': \['搜索引擎评测 Agent · Agent 行为评测'/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/search-full-catalog-baseline.txt'), 'utf8'), /1,814,924/);
+    assert.match(fs.readFileSync(path.join(root, 'project-docs/search-agent-evaluation.txt'), 'utf8'), /production deployment not\s+performed/);
     assert.match(readerScript, /new TextDecoder\('utf-8', \{ fatal: true \}\)/);
     assert.match(readerScript, /content\.textContent = decoded/);
     assert.doesNotMatch(readerScript, /innerHTML\s*=\s*decoded/);

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '数学闹钟',
             category: 'Android App · 工具',
             date: '2026',
-            rating: '4.9 (2,300 评价)',
+            rating: 'v62.1 · 已上线',
             gradient: 'linear-gradient(135deg, #1c1c1e 0%, #000000 50%, #2c2c2e 100%)',
             iconStroke: '#FF9500',
             iconSVG: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>',
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/math_alarm',
-                        intro: '查看 Android 项目源码、目录结构与最新提交。'
+                        intro: '查看公开 Android 项目源码；公开仓库目前同步至 v60.0，站内版本记录与 APK 已更新到 v62.1。'
                     },
                     {
                         title: 'README',
@@ -64,12 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '怪奇之原',
             category: '浏览器游戏 · 平台跳跃',
             date: '2026',
-            rating: '持续开发中',
+            rating: 'v188 真机预览 · 待上线',
             gradient: 'linear-gradient(135deg, #dff3f6 0%, #c5e4ea 55%, #accfd7 100%)',
             iconStroke: '#111111',
             iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
             iconImage: '/assets/odd-origin/icon.png',
-            desc: '一款手绘风平台跳跃闯关游戏。玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地。',
+            desc: '一款手绘风平台跳跃闯关游戏。当前版本为 Web / 微信小游戏 v188（2026-09-01）：玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地。',
             features: [
                 '🧭 旅途章节：从选关界面进入 20 个不同主题的关卡',
                 '🎮 平台跳跃：通过左右移动与跳跃穿越平台、木箱和断崖',
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     heading: '02 · 版本记录',
                     title: '在线阅读全部改动记录',
                     href: '/project-doc.html?doc=brain-egg-changelog',
-                    intro: '已与游戏项目《改动记事本》完整同步，覆盖从首个可玩版本到当前 UI、20 关、微信小游戏、音频、宽屏适配与稳定性调试的全部过程。'
+                    intro: '当前已同步到 Web / 微信小游戏 v188（2026-09-01），覆盖从首个可玩版本到 UI、20 关、微信小游戏、音频、宽屏适配与稳定性调试的全部过程。'
                 },
                 codeHeading: '03 · 公开资料',
                 code: [
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
-                github: '查看 0.015B 自研模型的源码、Notebook 与最新学习进度。',
+                github: '查看公开源码与冻结证据；公开仓库当前同步至 M021，站内记录已更新到 M035.1。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
             },
             resources: {
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/create-gpt-step-by-step',
-                        intro: '查看 0.015B 自研模型的源码、数据处理脚本、测试与最新提交。'
+                        intro: '查看公开源码、数据处理脚本与测试；公开仓库当前同步至 M021，站内 Roadmap 与学习记录已更新到 M035.1。'
                     },
                     {
                         title: '模型卡 · 参数与边界',
@@ -339,7 +339,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 '🔐 脱敏展示：公开页面不暴露公司内部文档与业务数据'
             ],
             tags: ['RAG', 'Agent', 'Hybrid Search', 'Rerank', 'Evaluation', 'Trace'],
-            screenshots: [],
+            screenshotLayout: 'landscape',
+            screenshots: [
+                '/assets/prd-agent/01-multi-source-grounding-sanitized.png',
+                '/assets/prd-agent/02-versioned-evidence-sanitized.png',
+                '/assets/prd-agent/03-multi-item-decision-sanitized.png'
+            ],
+            screenshotAlts: [
+                'PRD Agent 回答复杂规则问题，并展开五条来源证据',
+                'PRD Agent 基于带更新时间的规则证据回答条件判断问题',
+                'PRD Agent 回答多对象规则问题，并提供五条可展开证据'
+            ],
+            screenshotCaptions: [
+                '多源证据回答：聚合多个文档片段，给出带边界说明的结论。公开图已移除账号、问题与内部规则正文。',
+                '版本化规则判断：用带更新时间的证据支持资格判断。公开图使用脱敏演示内容。',
+                '复杂场景问答：给出拆分处理结论，并保留证据供复核。公开图使用脱敏演示内容。'
+            ],
             primaryAction: {
                 url: 'https://7ff79fde7564.aime-app.bytedance.net/',
                 label: '打开 PRD Agent',
@@ -425,13 +440,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     intro: '在站内以 UTF-8 文本查看八阶段建设顺序、每个阶段的交付物、验收门槛和明确不做的范围。'
                 },
                 second: {
-                    heading: '02 · 当前验收证据',
-                    title: 'Stage 0 Report',
-                    href: '/project-doc.html?doc=search-stage0-report',
-                    intro: '在站内以 UTF-8 文本查看本地技术闸门、43 条测试、环境约束、OpenSearch 待验证项与证据边界。'
+                    heading: '02 · 当前生产基线',
+                    title: 'Full-catalog Baseline Report',
+                    href: '/project-doc.html?doc=search-full-catalog-baseline',
+                    intro: '查看 1,814,924 个 ESCI 商品索引、生产 API 验收、语言样例、性能与明确未覆盖范围。'
                 },
-                codeHeading: '03 · 代码与说明',
+                codeHeading: '03 · 评测与源码',
                 code: [
+                    {
+                        title: 'Agent Evaluation Report',
+                        href: '/project-doc.html?doc=search-agent-evaluation',
+                        intro: '查看本地 12-task Agent 行为评测；它验证工具、分支、证据、预算与 Trace，不代表搜索相关性评测，也尚未部署到生产。'
+                    },
+                    {
+                        title: 'Stage 0 Report',
+                        href: '/project-doc.html?doc=search-stage0-report',
+                        intro: '查看早期本地技术闸门、43 条测试、环境约束与当时的 OpenSearch 待验证项，作为历史基线证据。'
+                    },
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/search-engine-eva-agent',
@@ -451,11 +476,11 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: 'Pick Memory',
             category: '桌面工具 · 间隔复习',
             date: '2026',
-            rating: 'v0.3.1 已上线',
+            rating: '本地记录 v0.3.4 · Release v0.3.1',
             gradient: 'linear-gradient(135deg, #18231d 0%, #2f7255 58%, #9bc3ae 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"></path><path d="M8 4.5V20M11 9h4M11 13h4"></path><path d="m18.5 3 .7 1.5L21 5.2l-1.8.7-.7 1.6-.7-1.6-1.8-.7 1.8-.7z"></path>',
-            desc: 'Pick Memory 是一款本地优先的桌面间隔复习工具，把“随手收藏—按时复习—反馈掌握程度—管理知识库”连成一个轻量闭环。它既支持网页划词与手动添加，也通过 macOS 伴侣程序覆盖 Codex、备忘录、飞书等应用；知识卡以紧凑形式停留在网页左下角，不要求切换到专门的学习应用。',
+            desc: 'Pick Memory 是一款本地优先的桌面间隔复习工具，把“随手收藏—按时复习—反馈掌握程度—管理知识库”连成一个轻量闭环。本地源码记录已更新至 v0.3.4（待推送），公开 GitHub 与安装包仍为 v0.3.1；最新迭代补齐多标签页并发写入、iframe 划词、来源地址脱敏，以及 macOS 只读选区与禁止键盘注入的安全回归。',
             featureDetails: [
                 { title: '快速采集', detail: '网页选中文字后，可通过右键菜单加入知识库；也可点击扩展图标手动输入或粘贴内容，并使用 Command / Ctrl + Shift + K 快速打开添加窗口。macOS 版还支持 Codex、备忘录、飞书等应用中的跨应用划词。' },
                 { title: '间隔调度', detail: '新知识当天进入复习，之后按照 1、2、4、7、15、30、60、120、240 天逐步拉开间隔。系统优先显示已经到期的内容；当天没有到期卡片时，会选择较久未出现的知识作为“今日巩固”。' },
@@ -491,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: '下载 Windows'
                 }
             ],
-            platformStatus: 'v0.3.1 · 已上线',
+            platformStatus: '本地记录 v0.3.4（待推送）· Release v0.3.1 已上线',
             resources: {
                 first: {
                     heading: '01 · 产品与安装',
@@ -503,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     heading: '02 · 版本更新',
                     title: '在线阅读 Changelog（UTF-8）',
                     href: '/project-doc.html?doc=pick-memory-changelog',
-                    intro: '在站内查看卡片、划词学习、间隔策略、跨应用能力与安装包的迭代记录。'
+                    intro: '在站内查看本地源码更新至 v0.3.4 的完整记录；这部分尚待推送，公开 GitHub 与安装包仍为 v0.3.1。'
                 },
                 codeHeading: '03 · 代码与发布',
                 code: [
@@ -583,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
         links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD','/project-doc.html?doc=math-alarm-prd'],['完整改动记录','/project-doc.html?doc=math-alarm-changelog']]},
       { prd:[['定位','手绘风的平台跳跃闯关游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','低饱和山野、粗线条道具和披风旅人。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
-        changelog:[['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留所有顶层记录、自动子记录与正文。'],['持续迭代','覆盖原型、UI、关卡、编辑器、Android、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
+        changelog:[['当前版本','Web / 微信小游戏 v188（2026-09-01）。'],['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留 89 个顶层记录与 4 个自动子记录，共 93 条。'],['持续迭代','覆盖原型、UI、20 关、编辑器、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','/project-doc.html?doc=gpt-roadmap']]}
       ,{ links:[] }
       ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','/project-doc.html?doc=search-readme']] }
@@ -596,12 +621,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
-        { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
-        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '手绘风平台跳跃闯关游戏。操控披风旅人穿越山野、石门、木箱与断崖，支持选关、移动、跳跃、提示、暂停和重来。', likes: 0 },
-        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '从零训练 14,880,745 参数（约 0.015B）的中文 Decoder-only Transformer；预训练已经跑通，后训练诊断仍未产生发布候选。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
-        { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
+        { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
+        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v188：手绘风平台跳跃闯关游戏，已完成 20 关、音频、宽屏适配与稳定性调试，暂未公开试玩。', likes: 0 },
+        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '从零训练 14,880,745 参数（约 0.015B）的中文 Decoder-only Transformer；M035 正在评测上下文窗口 A/B，正式发布候选仍为空。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开卡片已补三张脱敏界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
+        { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
@@ -949,9 +974,31 @@ document.addEventListener('DOMContentLoaded', function() {
             modalFeatureDetails.hidden = true;
         }
 
+        const screenshotUrls = Array.isArray(app.screenshots) ? app.screenshots : [];
         modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
-        modalScreenshotsSection.hidden = app.screenshots.length === 0;
-        modalScreenshots.innerHTML = app.screenshots.map((url, i) => `<img src="${url}" alt="${app.screenshotAlts?.[i] || `${app.title} 截图 ${i + 1}`}" decoding="async">`).join('');
+        modalScreenshotsSection.hidden = screenshotUrls.length === 0;
+        modalScreenshots.replaceChildren();
+        screenshotUrls.forEach((url, index) => {
+            const alt = app.screenshotAlts?.[index] || `${app.title} 截图 ${index + 1}`;
+            const figure = document.createElement('figure');
+            figure.className = 'screenshot-item';
+            const zoomButton = document.createElement('button');
+            zoomButton.type = 'button';
+            zoomButton.className = 'screenshot-zoom';
+            zoomButton.setAttribute('aria-label', `放大查看：${alt}`);
+            const image = document.createElement('img');
+            image.src = url;
+            image.alt = alt;
+            image.decoding = 'async';
+            zoomButton.appendChild(image);
+            figure.appendChild(zoomButton);
+            if (app.screenshotCaptions?.[index]) {
+                const caption = document.createElement('figcaption');
+                caption.textContent = app.screenshotCaptions[index];
+                figure.appendChild(caption);
+            }
+            modalScreenshots.appendChild(figure);
+        });
         modalIcon.querySelector('img')?.addEventListener('error', () => {
             portfolioLog('media', 'warn', 'image-load-failed', { appId: app.id, kind: 'avatar' });
         }, { once: true });
@@ -963,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', function() {
         portfolioLog('media', 'debug', 'media-rendered', {
             appId: app.id,
             iconType: app.iconImage ? 'image' : 'svg',
-            screenshotCount: app.screenshots.length
+            screenshotCount: screenshotUrls.length
         });
         const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
         const secondaryAction = app.secondaryAction || app.downloads?.[1];
@@ -1095,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalScreenshots?.addEventListener('click', (event) => {
-        const image = event.target.closest('img');
+        const image = event.target.closest('.screenshot-zoom')?.querySelector('img');
         if (image) openImageLightbox(image);
     });
 
