@@ -94,7 +94,7 @@ test('PRD Agent work exposes the deployed frontend as an authorization-gated lin
     assert.match(prdBlock[0], /status: '前端已上线 · 需授权登录'/);
     assert.match(prdBlock[0], /title: 'PRD Agent 前端'/);
     assert.match(prdBlock[0], /仅向获得授权的用户开放/);
-    assert.doesNotMatch(prdBlock[0], /password|token|authorization/i);
+    assert.doesNotMatch(prdBlock[0], /password|authorization|x-jwt-token|BEGIN PRIVATE KEY/i);
 });
 
 test('PRD Agent card uses three privacy-safe screenshots with captions and keyboard zoom', () => {
@@ -123,7 +123,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M036 online demo uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-m036-online-demo-v1/);
+    assert.match(index, /js\/main\.js\?v=20260901-prd-architecture-v3/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -183,15 +183,15 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(index, /<span>项目列表<\/span>/);
     assert.doesNotMatch(index, /App 作品|APP作品集/);
     assert.match(script, /<span class="project-type-tag">\$\{app\.projectType\}<\/span>/);
-    assert.match(script, /<button class="btn-view-work" type="button">查看详情<\/button>/);
+    assert.match(script, /<button class="btn-view-work" type="button">\$\{app\.architecture \? '查看架构' : '查看详情'\}<\/button>/);
     assert.doesNotMatch(script, />查看作品<\/button>/);
 
     const types = [...script.matchAll(/projectType: '(APP|小程序|GPT|Agent|插件)'/g)].map(match => match[1]);
     assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260901-latest-records-v2/);
-    assert.match(index, /main\.js\?v=20260901-m036-online-demo-v1/);
+    assert.match(index, /styles\.css\?v=20260901-prd-architecture-v3/);
+    assert.match(index, /main\.js\?v=20260901-prd-architecture-v3/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

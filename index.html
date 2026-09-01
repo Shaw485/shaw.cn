@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260901-latest-records-v2">
+    <link rel="stylesheet" href="css/styles.css?v=20260901-prd-architecture-v3">
 </head>
 <body class="page-portfolio">
     <nav class="navbar">
@@ -74,10 +74,10 @@
         </div>
     </section>
 
-    <div class="app-modal" id="appModal">
+    <div class="app-modal" id="appModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="app-modal-backdrop" data-close-modal></div>
-        <div class="app-modal-content">
-            <button class="app-modal-close" data-close-modal>
+        <div class="app-modal-content" tabindex="-1">
+            <button class="app-modal-close" type="button" data-close-modal aria-label="关闭项目详情">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -136,6 +136,29 @@
                 <p id="modalDesc">
                     一款必须答对数学题才能停止响铃的闹钟 App，专治各种起床困难症。每次响铃随机生成「a × b + c × d」格式的题目，确保需要真正清醒计算才能答出。内置「清晨 / 风来 / 钢琴」三款高品质铃声；严格适配 Android 14 精确闹钟与全屏通知权限，开机重启后自动恢复闹钟；响铃超时（10 分钟）自动兜底结束。
                 </p>
+                <section class="prd-architecture" id="modalArchitecture" aria-labelledby="prdArchitectureTitle" hidden>
+                    <header class="prd-architecture-heading">
+                        <div>
+                            <p class="prd-architecture-kicker" id="prdArchitectureEyebrow"></p>
+                            <h3 id="prdArchitectureTitle"></h3>
+                            <p id="prdArchitectureSummary"></p>
+                        </div>
+                        <span class="prd-architecture-state" id="prdArchitectureState"></span>
+                    </header>
+                    <div class="prd-architecture-tabs" id="prdArchitectureTabs" role="tablist" aria-label="PRD Agent 架构视图"></div>
+                    <div class="prd-architecture-panels" id="prdArchitecturePanels"></div>
+                    <div class="prd-architecture-foundations">
+                        <section aria-labelledby="prdGuardrailsTitle">
+                            <h4 id="prdGuardrailsTitle">贯穿主链的护栏</h4>
+                            <ul class="prd-architecture-chips" id="prdArchitectureGuardrails"></ul>
+                        </section>
+                        <section aria-labelledby="prdTelemetryTitle">
+                            <h4 id="prdTelemetryTitle">可观测与评测</h4>
+                            <ul class="prd-architecture-chips" id="prdArchitectureTelemetry"></ul>
+                        </section>
+                    </div>
+                    <p class="prd-architecture-boundary" id="prdArchitectureBoundary"></p>
+                </section>
                 <section class="model-specs" id="modalModelSpecs" aria-labelledby="modalModelSpecsTitle" hidden>
                     <h3 id="modalModelSpecsTitle">模型参数与训练口径</h3>
                     <p class="model-specs-note" id="modalModelSpecsNote"></p>
@@ -191,6 +214,6 @@
         </svg>
     </button>
 
-    <script src="js/main.js?v=20260901-m036-online-demo-v1"></script>
+    <script src="js/main.js?v=20260901-prd-architecture-v3"></script>
 </body>
 </html>
