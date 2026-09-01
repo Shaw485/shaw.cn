@@ -33,17 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
             resources: {
                 first: {
                     heading: '01 · 产品需求文档',
-                    title: '直接下载 PRD PDF',
-                    href: '/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf',
-                    intro: '下载完整 PRD，查看产品目标、数学题解锁规则、核心流程与 Android 系统权限方案。',
-                    download: true
+                    title: '在线阅读完整 PRD',
+                    href: '/project-doc.html?doc=math-alarm-prd',
+                    intro: '在站内阅读完整 PRD，查看产品目标、数学题解锁规则、核心流程与 Android 系统权限方案。'
                 },
                 second: {
                     heading: '02 · 版本记录',
-                    title: '下载完整改动记录 TXT',
-                    href: '/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1',
-                    intro: '下载 UTF-8 文本文件，按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。',
-                    download: '数学题闹钟-版本记录.txt'
+                    title: '在线阅读完整版本记录',
+                    href: '/project-doc.html?doc=math-alarm-changelog',
+                    intro: '在站内按版本查看功能实现、Android 系统适配、交互调整与稳定性修复。'
                 },
                 codeHeading: '03 · 源码与说明',
                 code: [
@@ -62,25 +60,40 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 1,
-            title: '脑洞皮蛋',
-            shortName: '脑洞皮蛋',
+            title: '怪奇之原',
+            shortName: '怪奇之原',
             category: '浏览器游戏 · 平台跳跃',
             date: '2026',
             rating: '持续开发中',
-            gradient: 'linear-gradient(135deg, #ffffff 0%, #f2f2f2 55%, #d8d8d8 100%)',
+            gradient: 'linear-gradient(135deg, #dff3f6 0%, #c5e4ea 55%, #accfd7 100%)',
             iconStroke: '#111111',
             iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
-            desc: '一款黑白手绘风的平台跳跃游戏。操控圆润可爱的皮蛋角色穿越草地与台阶，寻找关卡出口；支持选关、移动、跳跃、暂停、重来和返回选关，角色在待机、行走与跳跃时拥有不同的动态表现。',
+            iconImage: '/assets/odd-origin/icon.png',
+            desc: '一款手绘风平台跳跃闯关游戏。玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地。',
             features: [
-                '🥚 手绘主角：圆润皮蛋造型，待机、行走和跳跃动作各不相同',
-                '🎮 平台跳跃：通过移动与跳跃跨越草地、台阶和关卡障碍',
-                '🗺️ 关卡选择：可从选关界面进入不同挑战',
-                '⏸️ 完整控制：支持暂停、继续、重来和返回选关',
-                '🌱 黑白世界：粗线条平台、空心小草与极简手绘视觉',
-                '📱 网页试玩：使用浏览器即可运行，兼顾触控操作'
+                '🧭 旅途章节：从选关界面进入 20 个不同主题的关卡',
+                '🎮 平台跳跃：通过左右移动与跳跃穿越平台、木箱和断崖',
+                '🚪 双门解谜：观察场景线索，在入口与出口之间找到通路',
+                '💡 关卡提示：支持提示、重来、暂停和返回章节选择',
+                '🎨 手绘世界：低饱和山野背景、粗线条道具与披风旅人',
+                '📱 触控操作：面向浏览器与小程序场景设计大尺寸控制按钮'
             ],
             tags: ['JavaScript', 'HTML5 Canvas', 'Platformer', 'Web Game', 'Hand-drawn'],
-            screenshots: [],
+            screenshotLayout: 'landscape',
+            screenshots: [
+                '/assets/odd-origin/title-screen.png',
+                '/assets/odd-origin/chapter-select.png',
+                '/assets/odd-origin/level-02.png',
+                '/assets/odd-origin/level-06.png',
+                '/assets/odd-origin/level-13.png'
+            ],
+            screenshotAlts: [
+                '怪奇之原标题页与踏上旅途按钮',
+                '怪奇之原旅途篇章选择页',
+                '怪奇之原第 2 关云阶试炼',
+                '怪奇之原第 6 关花之暗号',
+                '怪奇之原第 13 关进退之间'
+            ],
             resources: {
                 first: {
                     heading: '01 · 作品介绍',
@@ -98,9 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 code: [
                     {
                         title: '下载版本记录 TXT',
-                        href: '/brain-egg-changelog.txt?v=20260831-utf8-bom-v1',
+                        href: '/brain-egg-changelog.txt?v=20260901-project-media-v1',
                         intro: '下载带 UTF-8 BOM 的完整版本记录，避免浏览器或文本编辑器误判编码。',
-                        download: '脑洞皮蛋-版本记录.txt'
+                        download: '怪奇之原-版本记录.txt'
                     },
                     {
                         title: '公开展示页源码',
@@ -112,17 +125,17 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 2,
-            title: '手撕 GPT',
-            shortName: '手撕 GPT',
+            title: '0.15B自研模型',
+            shortName: '0.15B自研模型',
             category: 'AI 学习项目 · LLM',
             date: '2026',
             rating: '后训练中',
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零实现 GPT 的学习型项目。用 PyTorch 从字符 Tokenizer、Embedding 与 Bigram 基线开始，逐步手写 Causal Self-Attention、多头注意力、残差连接、LayerNorm、FFN 与 Transformer Block，最终跑通训练和自回归文本生成。',
+            desc: '一个从零训练 0.15B 参数语言模型的学习型项目。用 PyTorch 从字符 Tokenizer、Embedding 与 Bigram 基线开始，逐步实现 Causal Self-Attention、多头注意力、残差连接、LayerNorm、FFN 与 Transformer Block，并继续推进 SFT、固定评测与失败样本复盘。',
             features: [
-                '🧱 从零搭建：按模块实现 GPT，而不是直接调用完整模型',
+                '🧱 从零搭建：按模块实现 0.15B 语言模型，而不是直接调用完整模型',
                 '🧠 注意力机制：手写 Q/K/V、因果遮罩与多头注意力',
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
@@ -134,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
-                github: '查看从零实现 GPT 的源码、Notebook 与最新学习进度。',
+                github: '查看 0.15B 自研模型的源码、Notebook 与最新学习进度。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
             },
             resources: {
@@ -155,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/create-gpt-step-by-step',
-                        intro: '查看从零实现 GPT 的源码、数据处理脚本、测试与最新提交。'
+                        intro: '查看 0.15B 自研模型的源码、数据处理脚本、测试与最新提交。'
                     },
                     {
                         title: '训练里程碑',
@@ -426,8 +439,8 @@ document.addEventListener('DOMContentLoaded', function() {
       { prd:[['问题','普通闹钟容易被顺手关闭，用户并没有真正清醒。'],['方案','响铃后生成 a×b+c×d 数学题，答对才能结束。'],['体验','单闹钟、滚轮选时、三种铃声、锁屏提醒与开机恢复。'],['技术','Kotlin、Jetpack Compose、AlarmManager、DataStore。']],
         process:[['定义闭环','先跑通设置—触发—答题—关闭。'],['系统适配','验证精确闹钟、全屏通知、前台服务和开机恢复。'],['交互打磨','统一黑橙视觉与三行滚轮选时。'],['可靠性','处理跨日、重启和超时兜底。']],
         changelog:[['需求成型','确定单闹钟与数学题解锁机制。'],['原生实现','完成 Compose 界面、铃声与状态管理。'],['系统适配','补齐 Android 13/14 权限。'],['稳定性','增加开机恢复、跨日计算与异常回流。']],
-        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD PDF','/%E6%9E%81%E7%AE%80%E6%95%B0%E5%AD%A6%E9%A2%98%E9%97%B9%E9%92%9F%20App%20PRD.pdf'],['完整改动记录 TXT','/%E6%94%B9%E5%8A%A8%E8%AE%B0%E5%BD%95.txt?v=20260831-utf8-bom-v1']]},
-      { prd:[['定位','黑白手绘风的平台跳跃小游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','粗线条、空心小草和圆润皮蛋角色。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
+        links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','/project-doc.html?doc=math-alarm-readme'],['PRD','/project-doc.html?doc=math-alarm-prd'],['完整改动记录','/project-doc.html?doc=math-alarm-changelog']]},
+      { prd:[['定位','手绘风的平台跳跃闯关游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','低饱和山野、粗线条道具和披风旅人。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
         changelog:[['v1–v4','首个可玩版本，并修复下一关循环和 JSON 缓存。'],['v5–v20','补齐完成页、加载流程、调试能力与跳跃修复。'],['v21–v25','重做 HUD、角色、平台和出口视觉。'],['v26–v30','加入跳跃摆臂、暂停菜单并调整手感。'],['v31–v33','增加待机/行走/跳跃动画与草地。']],links:[['完整改动记录 TXT','/project-doc.html?doc=brain-egg-changelog']]}
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','/project-doc.html?doc=gpt-roadmap']]}
@@ -443,8 +456,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/3/14', shortDesc: '必须答对 a×b+c×d 格式数学题才能关闹钟，a/b/c/d 严格限定在 3–9；纯黑 + 橙色极简风，清晨/风来/钢琴三铃声，支持 Android 14+ 精确闹钟。', likes: 2 },
-        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '黑白手绘风平台跳跃游戏。操控可爱的皮蛋角色穿越草地与台阶，支持选关、移动、跳跃、暂停和重来。', likes: 0 },
-        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始手写 GPT；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
+        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/8/15', shortDesc: '手绘风平台跳跃闯关游戏。操控披风旅人穿越山野、石门、木箱与断崖，支持选关、移动、跳跃、提示、暂停和重来。', likes: 0 },
+        { projectType: 'GPT', status: '后训练中', statusType: 'wip', publishDate: '2026/8/22', shortDesc: '用 PyTorch 从 Tokenizer、Self-Attention 开始训练 0.15B 自研模型；受控预训练已经跑通，正在推进 SFT、固定评测与失败样本复盘。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/13', shortDesc: '企业 PRD 知识检索 Agent，围绕分层召回、Rerank、版本过滤、证据校验和离线 Bad Case 评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/25', shortDesc: '在双栏搜索页体验当前未优化的 BM25 商品结果；优化后面板暂未开放，后续每次优化都将在同一位置直接对照。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/27', shortDesc: '随手划词加入知识库，用紧凑悬浮卡按艾宾浩斯节奏滚动复习；支持卡片大小、曝光轮换和 macOS 跨应用收藏。', likes: 0 },
@@ -731,7 +744,10 @@ document.addEventListener('DOMContentLoaded', function() {
         appModal.dataset.appId = String(app.id);
 
         modalIcon.style.background = app.gradient;
-        modalIcon.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
+        modalIcon.classList.toggle('has-image', Boolean(app.iconImage));
+        modalIcon.innerHTML = app.iconImage
+            ? `<img src="${app.iconImage}" alt="${app.title} 头像">`
+            : `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="${app.iconStroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${app.iconSVG}</svg>`;
         modalTitle.textContent = app.title;
         modalCategory.textContent = app.category;
         modalDate.textContent = app.date;
@@ -751,7 +767,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         modalScreenshots.classList.toggle('is-landscape', app.screenshotLayout === 'landscape');
-        modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="截图${i+1}">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
+        modalScreenshots.innerHTML=app.screenshots.length?app.screenshots.map((url,i)=>`<img src="${url}" alt="${app.screenshotAlts?.[i] || `${app.title} 截图 ${i+1}`}" decoding="async">`).join(''):'<div class="empty-shot">开发记录持续补充中</div>';
+        modalIcon.querySelector('img')?.addEventListener('error', () => {
+            portfolioLog('media', 'warn', 'image-load-failed', { appId: app.id, kind: 'avatar' });
+        }, { once: true });
+        modalScreenshots.querySelectorAll('img').forEach((image, index) => {
+            image.addEventListener('error', () => {
+                portfolioLog('media', 'warn', 'image-load-failed', { appId: app.id, kind: 'screenshot', index });
+            }, { once: true });
+        });
+        portfolioLog('media', 'debug', 'media-rendered', {
+            appId: app.id,
+            iconType: app.iconImage ? 'image' : 'svg',
+            screenshotCount: app.screenshots.length
+        });
         const primaryAction = app.apk || app.primaryAction || app.downloads?.[0];
         const secondaryAction = app.secondaryAction || app.downloads?.[1];
         const tertiaryAction = app.tertiaryAction;
@@ -850,8 +879,8 @@ document.addEventListener('DOMContentLoaded', function() {
             modalPrdHeading.textContent = '01 · PRD';
             modalChangelogHeading.textContent = '02 · 改动记录';
             modalCodeHeading.textContent = '03 · GitHub 与 README';
-            modalPrdResource.innerHTML=resourceCard('PRD PDF',linkMap['PRD PDF'],resourceCopy.prd,app.id===0);
-            modalChangelogResource.innerHTML=resourceCard('完整改动记录 TXT',linkMap['完整改动记录 TXT'],resourceCopy.changelog,app.id===0?'数学题闹钟-版本记录.txt':false);
+            modalPrdResource.innerHTML=resourceCard('在线阅读完整 PRD',linkMap['PRD'],resourceCopy.prd);
+            modalChangelogResource.innerHTML=resourceCard('在线阅读完整版本记录',linkMap['完整改动记录'],resourceCopy.changelog);
             modalCodeResources.innerHTML=[
                 resourceCard('GitHub 仓库',linkMap['GitHub'],resourceCopy.github),
                 resourceCard('README',linkMap['README'],resourceCopy.readme)
@@ -1123,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             date: '08.22—08.24', datetime: '2026-08-24', title: '手写 Transformer 模块',
             text: '实现 Self-Attention、Multi-Head、Residual、LayerNorm 与 FFN，并梳理到 Logits 的链路。',
-            project: '手撕 GPT',
+            project: '0.15B自研模型',
             abilities: ['LLM / 检索']
         },
         {
@@ -1146,8 +1175,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tags: ['RAG', 'EVALUATION', 'PRIVATE / REDACTED']
         },
         {
-            title: '从零手搓 GPT',
-            text: '用 PyTorch 实现 Tokenizer、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，建立模型边界的直观理解。',
+            title: '0.15B 自研模型',
+            text: '用 PyTorch 实现 Tokenizer、Causal Self-Attention、多头注意力、残差、LayerNorm 与 FFN，并以 0.15B 参数规模建立模型边界的直观理解。',
             tags: ['PYTORCH', 'TRANSFORMER', 'BUILD']
         },
         {
@@ -1224,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             week: 8, phase: 'evidence', start: '2026-10-13', end: '2026-10-19', review: '10/16 21:00', title: '端到端案例与面试验证',
             learn: ['用问题、洞察、决策、实现、评测、结果和复盘讲 AI 产品案例', '准备产品策略、LLM 评测、检索与 Agent 系统设计高频问题', '表达模型边界、失败实验、跨团队协作和关键取舍'],
-            business: ['整理主案例：PRD Agent 2.0；辅助案例：数学题闹钟与手撕 GPT', '录制中文 10 分钟演示与英文 3 分钟项目介绍', '邀请产品或技术同学按统一标准进行模拟面试'],
+            business: ['整理主案例：PRD Agent 2.0；辅助案例：数学题闹钟与 0.15B 自研模型', '录制中文 10 分钟演示与英文 3 分钟项目介绍', '邀请产品或技术同学按统一标准进行模拟面试'],
             output: '公开案例页 + 在线 Demo + PRD + 架构图 + 评测报告 + 演示视频 + 英文 One-pager + 简历描述。',
             acceptance: '新环境 15 分钟内可运行，核心链路无阻断；完成 ≥3 次模拟面试；产品判断、评测分析、技术理解、数据表达、项目推动 5 项平均 ≥4/5；准备 ≥20 道问题且至少 10 道能用项目数据回答。',
             jd: ['端到端交付', '项目管理', '沟通协作', '英文表达', '作品案例']

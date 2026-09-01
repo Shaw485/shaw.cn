@@ -36,7 +36,7 @@ test('roadmap contains exactly the agreed weeks in order and evidence-based stat
         [2, '搜索评测 Agent', '正在验证'],
         [3, 'PRD Agent 分层评测', '正在验证'],
         [4, '对话安全评测 Lab', '待开始'],
-        [5, '手搓 GPT 受控训练', '已验证'],
+        [5, '0.15B 自研模型受控训练', '已验证'],
         [6, '用户研究与产品验证', '待开始'],
         [7, 'ShawSpace 求职作品集', '正在验证'],
         [8, '面试验证与定向投递', '待开始']

@@ -47,7 +47,7 @@
         },
         {
             week: 5,
-            title: '手搓 GPT 受控训练',
+            title: '0.15B 自研模型受控训练',
             status: '已验证',
             action: '在固定语料、随机种子、配置和评测协议下完成预训练与 SFT 对照，复核数据清单、训练曲线、Checkpoint 和能力保持性。',
             deliverable: '语料与 Token 清单、冻结配置、训练报告、Checkpoint 对比、固定探针评测、校验和及最终决策。',

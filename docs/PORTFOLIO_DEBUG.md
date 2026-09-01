@@ -13,7 +13,7 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes`、`filters` 和 `resources`：
+可用模块为 `likes`、`filters`、`resources` 和 `media`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
@@ -26,6 +26,14 @@ location.reload();
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'resources');
+location.reload();
+```
+
+头像与截图可单独用 `media` 模块排查。它只记录项目 ID、头像类型和截图数量，不记录图片 URL、访问者信息或页面内容：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'media');
 location.reload();
 ```
 
