@@ -123,7 +123,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M036 online demo uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-prd-architecture-v3/);
+    assert.match(index, /js\/main\.js\?v=20260901-prd-architecture-m036-online-v4/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -191,7 +191,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-prd-architecture-v3/);
-    assert.match(index, /main\.js\?v=20260901-prd-architecture-v3/);
+    assert.match(index, /main\.js\?v=20260901-prd-architecture-m036-online-v4/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
