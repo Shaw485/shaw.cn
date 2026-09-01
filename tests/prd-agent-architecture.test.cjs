@@ -67,6 +67,17 @@ test('architecture renderer uses semantic controls, safe text rendering and modu
 
     assert.match(index, /id="appModal"[^>]+role="dialog"[^>]+aria-modal="true"[^>]+aria-labelledby="modalTitle"[^>]+aria-hidden="true"/);
     assert.match(index, /id="modalArchitecture"[^>]+aria-labelledby="prdArchitectureTitle"[^>]+hidden/);
+    const headerPosition = index.indexOf('class="app-modal-header"');
+    const architecturePosition = index.indexOf('id="modalArchitecture"');
+    const screenshotsPosition = index.indexOf('class="app-modal-screenshots"');
+    const bodyPosition = index.indexOf('class="app-modal-body"');
+    assert.ok(
+        headerPosition > -1 &&
+        headerPosition < architecturePosition &&
+        architecturePosition < screenshotsPosition &&
+        screenshotsPosition < bodyPosition,
+        'modal order must be header, PRD Agent architecture, screenshots, then project body'
+    );
     assert.match(index, /id="prdArchitectureTabs"[^>]+role="tablist"/);
     assert.match(renderer, /setAttribute\('role', 'tab'\)/);
     assert.match(renderer, /setAttribute\('role', 'tabpanel'\)/);

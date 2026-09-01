@@ -190,7 +190,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260901-prd-architecture-v3/);
+    assert.match(index, /styles\.css\?v=20260901-prd-architecture-v4/);
     assert.match(index, /main\.js\?v=20260901-m036-trial-only-v5/);
 });
 

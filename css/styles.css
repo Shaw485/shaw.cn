@@ -2731,7 +2731,7 @@ img {
     --prd-arch: #0f766e;
     --prd-arch-dark: #123d39;
     --prd-arch-soft: #edf9f7;
-    margin-top: 30px;
+    margin: 30px 32px 0;
     padding: 28px;
     border: 1px solid #dfe7e4;
     border-radius: 22px;
@@ -3136,7 +3136,7 @@ img {
 
 @media (max-width: 640px) {
     .prd-architecture {
-        margin-top: 24px;
+        margin: 24px 20px 0;
         padding: 18px 16px;
         border-radius: 18px;
     }
@@ -3602,6 +3602,10 @@ img {
 }
 
 @media (max-width: 768px) {
+    .prd-architecture {
+        margin-inline: 20px;
+    }
+
     .apps-section {
         padding: 60px 0;
     }
