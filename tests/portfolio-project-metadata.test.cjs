@@ -122,7 +122,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
 });
 
-test('PRD Agent synthetic screenshots use a dedicated cache version', () => {
+test('M036 release uses the current portfolio cache version', () => {
     assert.match(index, /js\/main\.js\?v=20260901-m036-release-v2/);
 });
 

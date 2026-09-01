@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resourceCopy: {
                 prd: '学习路线与实现范围持续整理中，记录每个 GPT 模块为什么存在、如何实现以及怎样验收。',
                 changelog: '按 Tokenizer、Attention、Transformer Block、训练与生成阶段记录实现和验证结果。',
-                github: '查看公开源码与冻结证据；公开仓库当前同步至 M021，站内记录已更新到 M035.1。',
+                github: '查看公开源码与冻结证据；main 分支同步至 M021，M036 通过 GitHub Release 发布，站内记录已更新到 M035.1。',
                 readme: '快速了解项目目标、已完成模块、运行方式与下一步计划。'
             },
             resources: {
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         title: 'GitHub 仓库',
                         href: 'https://github.com/Shaw485/create-gpt-step-by-step',
-                        intro: '查看公开源码、数据处理脚本与测试；公开仓库当前同步至 M021，站内 Roadmap 与学习记录已更新到 M035.1。'
+                        intro: '查看公开源码、数据处理脚本与测试；main 分支同步至 M021，M036 通过 GitHub Release 发布，站内 Roadmap 与学习记录已更新到 M035.1。'
                     },
                     {
                         title: 'M036 本地运行包',
