@@ -13,7 +13,7 @@
 
 - 服务状态：`systemctl status shaw-gpt-demo`
 - 本机健康检查：`curl -fsS http://127.0.0.1:8772/api/status`
-- 分模块日志：`/opt/shaw-gpt-demo/runtime/logs/`，模块为 `server`、`model`、`inference`、`security`、`orchestrator`。
+- 分模块日志：`/opt/shaw-gpt-demo/releases/v1.0.0-local-step5750/logs/`，模块为 `server`、`model`、`inference`、`security`、`orchestrator`。
 - 默认日志级别为 `INFO`，可用 `GPT_DEMO_LOG_LEVEL_<MODULE>` 独立设置为 `DEBUG`、`WARNING`、`ERROR` 或 `OFF`；排障后应恢复默认级别。
 
 线上使用前应验证 Nginx 配置、服务健康接口、一次实际生成和服务重启恢复。公开页面应始终保留模型任务边界与非商用许可证说明。

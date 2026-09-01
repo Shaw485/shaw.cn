@@ -1,0 +1,2 @@
+# Remove structured M036 demo logs after 14 days.
+D /opt/shaw-gpt-demo/releases/v1.0.0-local-step5750/logs 0700 shaw-gpt shaw-gpt 14d

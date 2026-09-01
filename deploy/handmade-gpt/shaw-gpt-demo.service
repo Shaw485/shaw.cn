@@ -1,0 +1,33 @@
+[Unit]
+Description=ShawSpace M036 0.015B novel continuation demo
+After=network.target
+
+[Service]
+Type=simple
+User=shaw-gpt
+Group=shaw-gpt
+UMask=0077
+WorkingDirectory=/opt/shaw-gpt-demo/releases/v1.0.0-local-step5750
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+Environment=OMP_NUM_THREADS=2
+Environment=MKL_NUM_THREADS=2
+ExecStart=/opt/shaw-gpt-demo/venv/bin/python /opt/shaw-gpt-demo/releases/v1.0.0-local-step5750/app.py --port 8772 --device cpu --allowed-origin https://shawspace.cn --allowed-origin https://www.shawspace.cn --log-dir logs --no-console-log --no-open-browser
+Restart=on-failure
+RestartSec=3
+TimeoutStartSec=120
+TimeoutStopSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/shaw-gpt-demo/releases/v1.0.0-local-step5750/logs
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryHigh=700M
+MemoryMax=950M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target
