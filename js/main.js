@@ -387,6 +387,191 @@ document.addEventListener('DOMContentLoaded', function() {
                 '版本化规则判断：使用虚构的「自行寄回适用条件 v0.2」回答资格问题。全部内容为合成演示数据。',
                 '多对象规则问答：用虚构的蓝牙键盘与保护套展示两个 SKU 分别审批的结论与证据。全部内容为合成演示数据。'
             ],
+            cardFlow: ['问题', '权限', '证据', '回答'],
+            architecture: {
+                eyebrow: 'CURRENT SYSTEM · PRODUCTION + SHADOW',
+                title: '从问题到可引用答案',
+                summary: '当前生产版是一条证据优先、失败关闭的 RAG 主链。系统先在权限范围内检索与重排原始证据，再经过证据门控、答案生成和引用校验；证据不足时会澄清或拒答。',
+                state: 'Evidence-first RAG',
+                tabs: [
+                    {
+                        id: 'runtime',
+                        label: '在线问答主链',
+                        intro: '蓝绿色实线代表当前线上主链。每个阶段都只处理显式输入与可审计产出，不展示隐藏思维链。',
+                        stages: [
+                            {
+                                id: 'secure-entry',
+                                title: '安全入口',
+                                caption: '身份与范围',
+                                status: '已上线',
+                                input: '登录态与当前请求。',
+                                action: '由服务端验证身份，生成权限范围与请求标识，不接受浏览器自报身份。',
+                                output: '本次请求可访问的知识范围。',
+                                failure: '身份、权限或配置异常时默认拒绝。'
+                            },
+                            {
+                                id: 'query-resolution',
+                                title: 'Query 解析',
+                                caption: '追问可检索化',
+                                status: '已上线',
+                                input: '当前问题与有限的显式对话历史。',
+                                action: '把短追问整理为可独立检索的问题，并保留用户原始意图。',
+                                output: '显式检索 Query。',
+                                failure: '语义仍不明确时请求用户澄清。'
+                            },
+                            {
+                                id: 'candidate-retrieval',
+                                title: '候选证据召回',
+                                caption: '原始 Chunk',
+                                status: '已上线',
+                                input: '检索 Query 与允许访问的知识范围。',
+                                action: '从原始 Chunk 与权威规则层并行寻找候选证据，再合并候选。',
+                                output: '带来源的候选原文片段。',
+                                failure: '没有可用候选时不进入自由生成。'
+                            },
+                            {
+                                id: 'permission-filter',
+                                title: '权限过滤',
+                                caption: '资源边界',
+                                status: '已上线',
+                                input: '候选证据与服务端冻结的知识范围。',
+                                action: '按知识库范围和资源类型过滤候选，避免越权证据进入答案。',
+                                output: '允许进入排序的证据集合。',
+                                failure: '过滤失败时默认拒绝，不降级为无权限检索。'
+                            },
+                            {
+                                id: 'candidate-rerank',
+                                title: '候选重排',
+                                caption: '相关性排序',
+                                status: '已上线',
+                                input: '权限过滤后的候选 Chunk。',
+                                action: '结合语义相似度、关键词覆盖与业务短语信号重新排序。',
+                                output: '按相关性排序的候选证据。',
+                                failure: '低相关候选降权，不能靠扩大 Top-K 掩盖问题。'
+                            },
+                            {
+                                id: 'evidence-gate',
+                                title: '证据选择与门控',
+                                caption: '覆盖检查',
+                                status: '已上线',
+                                input: '重排结果与问题需要覆盖的要点。',
+                                action: '选择可引用证据，检查相关性、覆盖度和是否需要附件下钻。',
+                                output: '可用于回答的 Evidence 与引用关系。',
+                                failure: '证据不足时只做部分回答、澄清或拒答。'
+                            },
+                            {
+                                id: 'grounded-generation',
+                                title: '基于证据生成',
+                                caption: '受约束回答',
+                                status: '已上线',
+                                input: '当前问题、有限历史和已选 Evidence。',
+                                action: '模型只依据已选证据组织结构化答案，不用常识补齐缺失事实。',
+                                output: '答案草稿与逐条引用关系。',
+                                failure: '没有足够证据时不输出看似确定的结论。'
+                            },
+                            {
+                                id: 'citation-validation',
+                                title: '引用校验与回答',
+                                caption: '最终出口',
+                                status: '已上线',
+                                input: '答案草稿、引用关系与本次已选 Evidence。',
+                                action: '校验每个引用都能回到本次证据，并选择回答、部分回答、澄清或拒答。',
+                                output: '可追溯答案与来源，或清晰的证据不足说明。',
+                                failure: '引用校验失败时不返回看似完整的答案。'
+                            }
+                        ],
+                        observers: [
+                            {
+                                id: 'document-card-shadow',
+                                label: '文档卡 Hybrid Shadow',
+                                state: '已实现 · 生产默认关闭',
+                                origin: '从 Query 解析分支出去',
+                                steps: ['文档标题与范围导航', '关键词 + 多向量 Hybrid', '候选文档内定向 Chunk 搜索'],
+                                note: '只写入诊断 Trace，不增删 Evidence、不改变 Gate，也不改写线上答案。'
+                            },
+                            {
+                                id: 'limited-retrieval-loop',
+                                label: '有限检索 Loop',
+                                state: '离线研究 · 不参与线上答案',
+                                origin: '面向跨文档、多步骤或证据不足的复杂题',
+                                steps: ['识别证据缺口', '拆成 2–4 个子查询', '最多两轮补检与覆盖检查'],
+                                note: '尾延迟与稳定性尚未通过门禁，生产 Runtime 不包含 Planner。'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'quality',
+                        label: '质量优化闭环',
+                        intro: '优化以固定评测集和错误切片为中心，不对单道题逐题打补丁；每次实验都必须说明假设、收益和可能回退。',
+                        centerMessage: '固定评测集，而不是逐题打补丁',
+                        stages: [
+                            {
+                                id: 'real-failure',
+                                title: '真实失败',
+                                caption: '从用户问题出发',
+                                status: '输入',
+                                input: '真实提问、追问和失败反馈。',
+                                action: '保留可复现的失败现象与上下文边界。',
+                                output: '可定位的 Bad Case。',
+                                failure: '只看成功案例会掩盖系统性问题。'
+                            },
+                            {
+                                id: 'reusable-eval',
+                                title: '可复用评测样本',
+                                caption: '不绑定 Chunk ID',
+                                status: '数据',
+                                input: 'Bad Case 与可核验标准答案或来源。',
+                                action: '把问题、期望事实、必需来源和评分说明固化。',
+                                output: 'Chunk 重切后仍可回归的评测样本。',
+                                failure: '把答案绑死到旧 Chunk 会失去复用性。'
+                            },
+                            {
+                                id: 'layered-diagnosis',
+                                title: '分层归因',
+                                caption: '找真正瓶颈',
+                                status: '诊断',
+                                input: '检索 Trace、证据、答案和交互结果。',
+                                action: '分别判断文档选择、Chunk、重排、答案、引用、权限或体验问题。',
+                                output: '错误切片与根因假设。',
+                                failure: '只说“Chunk 不准”无法指导下一步。'
+                            },
+                            {
+                                id: 'hypothesis-experiment',
+                                title: '假设驱动实验',
+                                caption: '最多 3 个方案',
+                                status: '实验',
+                                input: '根因假设与预期改善切片。',
+                                action: '比较不超过三个可解释方案，并记录延迟、Token 与成本。',
+                                output: '可复核的版本对比证据。',
+                                failure: '同时改太多变量会失去归因能力。'
+                            },
+                            {
+                                id: 'full-regression',
+                                title: '全集回归',
+                                caption: '不仅测命中题',
+                                status: '验证',
+                                input: '候选版本与固定评测集。',
+                                action: '回归全部切片，并用全新 Holdout 检查过拟合。',
+                                output: '质量、延迟、成本和回退风险。',
+                                failure: '只重测修过的题会产生虚假提升。'
+                            },
+                            {
+                                id: 'product-decision',
+                                title: 'Go / Iterate / Stop',
+                                caption: '产品决策',
+                                status: '决策',
+                                input: '完整回归结果与已知限制。',
+                                action: '决定上线、继续迭代或停止，并给出下一轮数据与产品策略。',
+                                output: '带取舍、门禁和回滚条件的决策。',
+                                failure: '指标提升不等于值得上线。'
+                            }
+                        ]
+                    }
+                ],
+                guardrails: ['权限范围', '版本与权威来源', 'Evidence 引用', '失败关闭', '脱敏日志'],
+                telemetry: ['文档来源召回', 'Chunk / Evidence 覆盖', '引用校验', '分阶段耗时', 'P50 / P95', 'Token 与估算成本'],
+                boundary: '公开边界：这里只展示可审计的系统事件与显式检索步骤，不展示隐藏思维链、系统 Prompt、原始模型输出、内部文档、真实 Query、账号、密钥或私有评测答案。'
+            },
             primaryAction: {
                 url: 'https://7ff79fde7564.aime-app.bytedance.net/',
                 label: '打开 PRD Agent',
@@ -735,8 +920,11 @@ document.addEventListener('DOMContentLoaded', function() {
         grid.innerHTML = visibleApps.map(app => {
             const liked = likedAppIds.has(app.id);
             const pending = pendingLikeIds.has(app.id);
+            const cardFlow = app.cardFlow?.length
+                ? `<ol class="work-card-flow" aria-label="${app.shortName} 架构预览">${app.cardFlow.map(step => `<li>${step}</li>`).join('')}</ol>`
+                : '';
             return `
-            <div class="work-card" data-app="${app.id}">
+            <div class="work-card${app.cardFlow?.length ? ' has-flow' : ''}" data-app="${app.id}">
                 <div class="work-card-top">
                     <div class="work-card-labels">
                         <span class="project-type-tag">${app.projectType}</span>
@@ -746,6 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <h3 class="work-title">「${app.shortName}」</h3>
                 <p class="work-desc">${app.shortDesc}</p>
+                ${cardFlow}
                 <div class="work-card-bottom">
                     <div class="work-stats">
                         <button class="stat-item-mini like-button${liked ? ' liked' : ''}" type="button" data-like-app="${app.id}" aria-pressed="${liked}" aria-label="${liked ? `已喜欢${app.shortName}` : `喜欢${app.shortName}`}"${pending ? ' disabled' : ''}>
@@ -753,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span>${app.likes}</span>
                         </button>
                     </div>
-                    <button class="btn-view-work" type="button">查看详情</button>
+                    <button class="btn-view-work" type="button">${app.architecture ? '查看架构' : '查看详情'}</button>
                 </div>
             </div>`;
         }).join('');
@@ -780,6 +969,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalModelSpecsNote = document.getElementById('modalModelSpecsNote');
     const modalModelSpecGroups = document.getElementById('modalModelSpecGroups');
     const modalFeatureDetails = document.getElementById('modalFeatureDetails');
+    const modalArchitecture = document.getElementById('modalArchitecture');
+    const prdArchitectureEyebrow = document.getElementById('prdArchitectureEyebrow');
+    const prdArchitectureTitle = document.getElementById('prdArchitectureTitle');
+    const prdArchitectureSummary = document.getElementById('prdArchitectureSummary');
+    const prdArchitectureState = document.getElementById('prdArchitectureState');
+    const prdArchitectureTabs = document.getElementById('prdArchitectureTabs');
+    const prdArchitecturePanels = document.getElementById('prdArchitecturePanels');
+    const prdArchitectureGuardrails = document.getElementById('prdArchitectureGuardrails');
+    const prdArchitectureTelemetry = document.getElementById('prdArchitectureTelemetry');
+    const prdArchitectureBoundary = document.getElementById('prdArchitectureBoundary');
     const modalScreenshots = document.getElementById('modalScreenshots');
     const modalScreenshotsSection = modalScreenshots?.closest('.app-modal-screenshots');
     const modalApkDownload = document.getElementById('modalApkDownload');
@@ -802,6 +1001,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const worksFilters = document.querySelector('.works-filters');
     const workStatusFilter = document.getElementById('workStatusFilter');
     const worksFeedback = document.getElementById('worksFeedback');
+    let modalReturnFocus = null;
 
     const roles = [
         '全栈开发者',
@@ -952,11 +1152,221 @@ document.addEventListener('DOMContentLoaded', function() {
         portfolioLog('actions', 'debug', 'action-opened', { appId, action: 'tertiary' });
     });
 
-    function openAppModal(appId) {
+    function renderPrdArchitecture(app) {
+        const architecture = app.architecture;
+        appModal?.classList.toggle('has-architecture', Boolean(architecture));
+        if (!modalArchitecture || !prdArchitectureEyebrow || !prdArchitectureTitle || !prdArchitectureSummary || !prdArchitectureState || !prdArchitectureTabs || !prdArchitecturePanels || !prdArchitectureGuardrails || !prdArchitectureTelemetry || !prdArchitectureBoundary) return;
+
+        modalArchitecture.hidden = !architecture;
+        prdArchitectureTabs.replaceChildren();
+        prdArchitecturePanels.replaceChildren();
+        prdArchitectureGuardrails.replaceChildren();
+        prdArchitectureTelemetry.replaceChildren();
+        if (!architecture) return;
+
+        prdArchitectureEyebrow.textContent = architecture.eyebrow;
+        prdArchitectureTitle.textContent = architecture.title;
+        prdArchitectureSummary.textContent = architecture.summary;
+        prdArchitectureState.textContent = architecture.state;
+        prdArchitectureBoundary.textContent = architecture.boundary;
+
+        const appendChips = (container, values) => {
+            values.forEach(value => {
+                const item = document.createElement('li');
+                item.textContent = value;
+                container.appendChild(item);
+            });
+        };
+        appendChips(prdArchitectureGuardrails, architecture.guardrails);
+        appendChips(prdArchitectureTelemetry, architecture.telemetry);
+
+        const tabs = [];
+        const panels = [];
+
+        architecture.tabs.forEach((tab, tabIndex) => {
+            const tabButton = document.createElement('button');
+            const tabId = `prd-architecture-tab-${tab.id}`;
+            const panelId = `prd-architecture-panel-${tab.id}`;
+            tabButton.type = 'button';
+            tabButton.id = tabId;
+            tabButton.setAttribute('role', 'tab');
+            tabButton.setAttribute('aria-controls', panelId);
+            tabButton.setAttribute('aria-selected', String(tabIndex === 0));
+            tabButton.tabIndex = tabIndex === 0 ? 0 : -1;
+            tabButton.textContent = tab.label;
+            prdArchitectureTabs.appendChild(tabButton);
+            tabs.push(tabButton);
+
+            const panel = document.createElement('section');
+            panel.id = panelId;
+            panel.className = `prd-architecture-panel${tab.id === 'quality' ? ' is-quality' : ''}`;
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-labelledby', tabId);
+            panel.hidden = tabIndex !== 0;
+
+            const intro = document.createElement('p');
+            intro.className = 'prd-architecture-intro';
+            intro.textContent = tab.intro;
+            panel.appendChild(intro);
+
+            const flow = document.createElement('ol');
+            flow.className = 'prd-architecture-flow';
+            flow.setAttribute('aria-label', `${tab.label}的${tab.stages.length}个阶段`);
+
+            const stageButtons = [];
+            tab.stages.forEach((stage, stageIndex) => {
+                const item = document.createElement('li');
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'prd-architecture-node';
+                button.dataset.architectureStage = stage.id;
+                button.setAttribute('aria-pressed', String(stageIndex === 0));
+
+                const number = document.createElement('span');
+                number.className = 'prd-architecture-node-number';
+                number.textContent = String(stageIndex + 1).padStart(2, '0');
+                const status = document.createElement('span');
+                status.className = 'prd-architecture-node-status';
+                status.textContent = stage.status;
+                const title = document.createElement('strong');
+                title.textContent = stage.title;
+                const caption = document.createElement('small');
+                caption.textContent = stage.caption;
+                button.append(number, status, title, caption);
+                item.appendChild(button);
+                flow.appendChild(item);
+                stageButtons.push(button);
+            });
+            panel.appendChild(flow);
+
+            if (tab.centerMessage) {
+                const centerMessage = document.createElement('p');
+                centerMessage.className = 'prd-quality-message';
+                centerMessage.textContent = tab.centerMessage;
+                panel.appendChild(centerMessage);
+            }
+
+            const inspector = document.createElement('section');
+            inspector.className = 'prd-step-inspector';
+            inspector.setAttribute('aria-live', 'polite');
+            const inspectorKicker = document.createElement('p');
+            inspectorKicker.className = 'prd-step-inspector-kicker';
+            inspectorKicker.textContent = 'SELECTED STEP';
+            const inspectorTitle = document.createElement('h4');
+            const details = document.createElement('dl');
+            const inspectorFields = {};
+            [['input', '输入'], ['action', '处理'], ['output', '产出'], ['failure', '失败时']].forEach(([key, label]) => {
+                const row = document.createElement('div');
+                const term = document.createElement('dt');
+                const description = document.createElement('dd');
+                term.textContent = label;
+                row.append(term, description);
+                details.appendChild(row);
+                inspectorFields[key] = description;
+            });
+            inspector.append(inspectorKicker, inspectorTitle, details);
+            panel.appendChild(inspector);
+
+            const selectStage = (stageIndex, shouldFocus = false) => {
+                const stage = tab.stages[stageIndex];
+                stageButtons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === stageIndex)));
+                inspectorTitle.textContent = stage.title;
+                Object.entries(inspectorFields).forEach(([key, field]) => {
+                    field.textContent = stage[key];
+                });
+                if (shouldFocus) stageButtons[stageIndex].focus();
+                portfolioLog('prd-architecture', 'debug', 'stage-selected', { panel: tab.id, stage: stage.id });
+            };
+            stageButtons.forEach((button, stageIndex) => {
+                button.addEventListener('click', () => selectStage(stageIndex));
+            });
+            selectStage(0);
+
+            if (tab.observers?.length) {
+                const observerSection = document.createElement('section');
+                observerSection.className = 'prd-observer-lanes';
+                const observerHeader = document.createElement('div');
+                observerHeader.className = 'prd-observer-heading';
+                const observerTitle = document.createElement('h4');
+                observerTitle.textContent = 'Shadow / 离线支路';
+                const observerNote = document.createElement('p');
+                observerNote.textContent = '这些能力只进入观察与评测，不回流到当前线上答案。';
+                observerHeader.append(observerTitle, observerNote);
+                observerSection.appendChild(observerHeader);
+
+                tab.observers.forEach(observer => {
+                    const detailsElement = document.createElement('details');
+                    detailsElement.className = 'prd-observer-lane';
+                    const summary = document.createElement('summary');
+                    const label = document.createElement('strong');
+                    label.textContent = observer.label;
+                    const state = document.createElement('span');
+                    state.textContent = observer.state;
+                    summary.append(label, state);
+                    const origin = document.createElement('p');
+                    origin.className = 'prd-observer-origin';
+                    origin.textContent = observer.origin;
+                    const steps = document.createElement('ol');
+                    observer.steps.forEach(step => {
+                        const item = document.createElement('li');
+                        item.textContent = step;
+                        steps.appendChild(item);
+                    });
+                    const note = document.createElement('p');
+                    note.className = 'prd-observer-note';
+                    note.textContent = observer.note;
+                    detailsElement.append(summary, origin, steps, note);
+                    detailsElement.addEventListener('toggle', () => {
+                        portfolioLog('prd-architecture', 'debug', 'observer-toggled', { lane: observer.id, open: detailsElement.open });
+                    });
+                    observerSection.appendChild(detailsElement);
+                });
+                panel.appendChild(observerSection);
+            }
+
+            prdArchitecturePanels.appendChild(panel);
+            panels.push(panel);
+        });
+
+        const activateTab = (tabIndex, shouldFocus = false) => {
+            tabs.forEach((tabButton, index) => {
+                const active = index === tabIndex;
+                tabButton.setAttribute('aria-selected', String(active));
+                tabButton.tabIndex = active ? 0 : -1;
+                panels[index].hidden = !active;
+            });
+            if (shouldFocus) tabs[tabIndex].focus();
+            portfolioLog('prd-architecture', 'debug', 'panel-selected', { panel: architecture.tabs[tabIndex].id });
+        };
+
+        tabs.forEach((tabButton, tabIndex) => {
+            tabButton.addEventListener('click', () => activateTab(tabIndex));
+            tabButton.addEventListener('keydown', event => {
+                let nextIndex = tabIndex;
+                if (event.key === 'ArrowRight') nextIndex = (tabIndex + 1) % tabs.length;
+                else if (event.key === 'ArrowLeft') nextIndex = (tabIndex - 1 + tabs.length) % tabs.length;
+                else if (event.key === 'Home') nextIndex = 0;
+                else if (event.key === 'End') nextIndex = tabs.length - 1;
+                else return;
+                event.preventDefault();
+                activateTab(nextIndex, true);
+            });
+        });
+
+        portfolioLog('prd-architecture', 'debug', 'architecture-rendered', {
+            appId: app.id,
+            panelCount: architecture.tabs.length,
+            stageCount: architecture.tabs.reduce((total, tab) => total + tab.stages.length, 0),
+            observerLaneCount: architecture.tabs.reduce((total, tab) => total + (tab.observers?.length || 0), 0)
+        });
+    }
+
+    function openAppModal(appId, returnFocus = document.activeElement) {
         const app = appsData.find(a => a.id === appId);
         if (!app || !appModal || !modalIcon || !modalTitle || !modalCategory || !modalDate || !modalDesc || !modalModelSpecs || !modalModelSpecsTitle || !modalModelSpecsNote || !modalModelSpecGroups || !modalFeatureDetails || !modalScreenshots || !modalScreenshotsSection || !modalApkDownload || !modalApkLabel || !modalSecondaryDownload || !modalSecondaryLabel || !modalTertiaryAction || !modalTertiaryLabel || !modalPlatformActions || !modalDownloadStats || !modalPrdResource || !modalChangelogResource || !modalCodeResources || !modalPrdHeading || !modalChangelogHeading || !modalCodeHeading) return;
 
         appModal.dataset.appId = String(app.id);
+        modalReturnFocus = returnFocus instanceof HTMLElement ? returnFocus : null;
 
         modalIcon.style.background = app.gradient;
         modalIcon.classList.toggle('has-image', Boolean(app.iconImage));
@@ -968,6 +1378,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modalDate.textContent = app.date;
 
         modalDesc.textContent = app.desc;
+        renderPrdArchitecture(app);
         modalModelSpecGroups.replaceChildren();
         if (app.modelSpecs?.groups?.length) {
             modalModelSpecsTitle.textContent = app.modelSpecs.heading || '模型参数与训练口径';
@@ -1165,7 +1576,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         appModal.classList.add('open');
+        appModal.setAttribute('aria-hidden', 'false');
+        const modalContent = appModal.querySelector('.app-modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
         document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => appModal.querySelector('.app-modal-close')?.focus());
     }
 
 
@@ -1210,7 +1625,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeAppModal() {
         if (!appModal) return;
         appModal.classList.remove('open');
+        appModal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        const returnTarget = modalReturnFocus;
+        modalReturnFocus = null;
+        if (returnTarget?.isConnected) requestAnimationFrame(() => returnTarget.focus());
+    }
+
+    function trapModalFocus(event) {
+        if (event.key !== 'Tab' || !appModal?.classList.contains('open') || imageLightbox?.classList.contains('open')) return;
+        const focusable = [...appModal.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')]
+            .filter(element => !element.hidden && element.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     }
 
     function setWorksFeedback(message) {
@@ -1308,7 +1743,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const wrapper = e.target.closest('.work-card');
         if (!wrapper) return;
         const appId = parseInt(wrapper.dataset.app);
-        openAppModal(appId);
+        openAppModal(appId, wrapper.querySelector('.btn-view-work'));
     });
 
     loadLikeCounts();
@@ -1318,6 +1753,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.addEventListener('keydown', (e) => {
+        trapModalFocus(e);
         if (e.key === 'Escape' && imageLightbox?.classList.contains('open')) {
             closeImageLightbox();
         } else if (e.key === 'Escape' && appModal?.classList.contains('open')) {
