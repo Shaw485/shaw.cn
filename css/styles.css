@@ -4175,6 +4175,22 @@ body {
     transform: translateY(-52%);
 }
 
+.work-card-flow-compact {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.work-card-flow-compact li {
+    padding: 8px 1px;
+    font-size: 9px;
+    letter-spacing: -0.02em;
+}
+
+.work-card-flow-compact li:not(:last-child)::after {
+    right: -4px;
+    width: 4px;
+}
+
 .work-card-bottom {
     margin-top: auto;
     padding-top: 8px;
@@ -5154,22 +5170,43 @@ button.stat-item-mini {
 /* Shared project resources and standalone blog page. */
 .project-docs {
     display: grid;
-    gap: 32px;
-    margin-top: 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+    margin-top: 28px;
 }
 
 .project-docs section {
-    padding-top: 24px;
+    min-width: 0;
+    padding-top: 12px;
     border-top: 1px solid #ddd;
+}
+
+.project-docs section > h3 {
+    margin: 0 0 8px;
+    color: #625e57;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 .doc-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
 }
 
-.doc-card,
+#modalCodeResources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.doc-card {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    min-width: 0;
+}
+
 .record-list li {
     padding: 16px;
     border: 1px solid #ddd;
@@ -5198,13 +5235,61 @@ button.stat-item-mini {
 
 .doc-card-link strong {
     color: #1d1d1f;
+    font-size: 13px;
+    line-height: 1.35;
 }
 
-.doc-card p,
+.doc-card p {
+    margin: 4px 0 0;
+    color: #666;
+    line-height: 1.5;
+}
+
 .record-list p {
     margin: 7px 0 0;
     color: #666;
     line-height: 1.7;
+}
+
+.project-docs .doc-card p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+@media (max-width: 900px) {
+    .project-docs {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .project-docs section {
+        display: grid;
+        grid-template-columns: minmax(110px, 150px) minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .project-docs section > h3 {
+        margin: 3px 0 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .project-docs section {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .project-docs section > h3 {
+        margin: 0;
+    }
+
+    #modalCodeResources {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 .record-list {

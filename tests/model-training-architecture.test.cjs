@@ -24,7 +24,7 @@ function assertInOrder(source, values, label) {
 }
 
 test('model reuses the interactive architecture with training and runtime views', () => {
-    assert.match(model, /cardFlow: \['语料', 'BPE', '预训练', '续写'\]/);
+    assert.match(model, /cardFlow: \['语料', '预训练', '后训练', '续写'\]/);
     assertInOrder(model, [
         "id: 'training'",
         "label: '训练过程'",
@@ -87,5 +87,5 @@ test('shared architecture is accessible and independently debuggable', () => {
     assert.match(script, /portfolioLog\('architecture', 'debug', 'architecture-rendered', \{\s*appId: app\.id/);
     assert.match(debugGuide, /`architecture` 模块/);
     assert.match(debugGuide, /不记录语料、用户输入、模型输出、Token ID/);
-    assert.match(index, /js\/main\.js\?v=20260902-brain-egg-v191/);
+    assert.match(index, /js\/main\.js\?v=20260902-portfolio-compact-v1/);
 });

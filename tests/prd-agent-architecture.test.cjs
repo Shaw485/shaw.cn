@@ -18,10 +18,12 @@ function prdAgentBlock() {
 
 test('PRD Agent square card previews the architecture and opens the full view', () => {
     const block = prdAgentBlock();
-    assert.match(block, /cardFlow: \['问题', '权限', '证据', '回答'\]/);
-    assert.match(script, /class="work-card-flow"[^>]+架构预览/);
+    assert.match(block, /rating: '已上线'/);
+    assert.match(block, /cardFlow: \['问题', '召回', '重排', '回答', '引用', '评测'\]/);
+    assert.match(script, /class="work-card-flow\$\{compactFlowClass\}"[^>]+架构预览/);
     assert.match(script, /\$\{app\.architecture \? '查看架构' : '查看详情'\}/);
     assert.match(styles, /\.work-card-flow\s*\{[\s\S]*?grid-template-columns:\s*repeat\(4/);
+    assert.match(styles, /\.work-card-flow-compact\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6/);
 });
 
 test('production workflow is the truthful eight-stage evidence-first RAG path', () => {

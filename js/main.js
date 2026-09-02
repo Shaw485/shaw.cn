@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
             desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站使用服务器 CPU，体验短中文小说续写。',
-            cardFlow: ['语料', 'BPE', '预训练', '续写'],
+            cardFlow: ['语料', '预训练', '后训练', '续写'],
             architecture: {
                 eyebrow: 'FROM CORPUS TO CONTINUATION',
                 title: '从一部小说到逐 Token 续写',
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: 'PRD Agent',
             category: 'AI Agent · 企业知识 RAG',
             date: '2026',
-            rating: '持续开发中',
+            rating: '已上线',
             gradient: 'linear-gradient(135deg, #062f2a 0%, #0f766e 58%, #5eead4 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<path d="M6 3h9l3 3v15H6z"></path><path d="M14 3v4h4M9 11h6M9 15h4"></path><circle cx="17.5" cy="16.5" r="2.5"></circle><path d="m19.3 18.3 1.7 1.7"></path>',
@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '版本化规则判断：使用虚构的「自行寄回适用条件 v0.2」回答资格问题。全部内容为合成演示数据。',
                 '多对象规则问答：用虚构的蓝牙键盘与保护套展示两个 SKU 分别审批的结论与证据。全部内容为合成演示数据。'
             ],
-            cardFlow: ['问题', '权限', '证据', '回答'],
+            cardFlow: ['问题', '召回', '重排', '回答', '引用', '评测'],
             architecture: {
                 eyebrow: 'CURRENT SYSTEM · PRODUCTION + SHADOW',
                 title: '从问题到可引用答案',
@@ -1016,13 +1016,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (worksCount) worksCount.textContent = `(${appsData.length})`;
 
     const appCardFields = [
-        { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
-        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
-        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型，可直接使用本站服务器 CPU 体验。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
-        { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },
-        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/29', shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
+        { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', displayOrder: 2, shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
+        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', displayOrder: 5, shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
+        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 3, shortDesc: '14,880,745 参数的中文小说续写模型，可直接使用本站服务器 CPU 体验。', likes: 0 },
+        { projectType: 'Agent', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 4, shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', displayOrder: 6, shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
+        { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', displayOrder: 1, shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },
+        { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/29', displayOrder: 7, shortDesc: '统一承载 Agent 的运行、评测、审批与追踪。当前仅完成前端框架，PRD Agent 与搜索 Agent 尚未接入。', likes: 0 }
     ];
     appsData.forEach((app, i) => Object.assign(app, appCardFields[i]));
 
@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const likeApiBase = 'https://countapi.mileshilliard.com/api/v1';
     const likeStorageKey = 'shawspace_portfolio_likes_v1';
-    const portfolioState = { sort: 'latest', status: 'all' };
+    const portfolioState = { sort: 'featured', status: 'all' };
     const pendingLikeIds = new Set();
     const likedAppIds = (() => {
         try {
@@ -1081,8 +1081,11 @@ document.addEventListener('DOMContentLoaded', function() {
             ? [...appsData]
             : appsData.filter(app => app.statusType === portfolioState.status);
         return filtered.sort((a, b) => {
+            const featuredDelta = a.displayOrder - b.displayOrder;
             const dateDelta = publishTime(b.publishDate) - publishTime(a.publishDate);
-            return portfolioState.sort === 'popular' ? (b.likes - a.likes || dateDelta) : dateDelta;
+            if (portfolioState.sort === 'featured') return featuredDelta;
+            if (portfolioState.sort === 'popular') return b.likes - a.likes || featuredDelta;
+            return dateDelta || featuredDelta;
         });
     }
 
@@ -1098,8 +1101,9 @@ document.addEventListener('DOMContentLoaded', function() {
         grid.innerHTML = visibleApps.map(app => {
             const liked = likedAppIds.has(app.id);
             const pending = pendingLikeIds.has(app.id);
+            const compactFlowClass = app.cardFlow?.length > 4 ? ' work-card-flow-compact' : '';
             const cardFlow = app.cardFlow?.length
-                ? `<ol class="work-card-flow" aria-label="${app.shortName} 架构预览">${app.cardFlow.map(step => `<li>${step}</li>`).join('')}</ol>`
+                ? `<ol class="work-card-flow${compactFlowClass}" aria-label="${app.shortName} 架构预览">${app.cardFlow.map(step => `<li>${step}</li>`).join('')}</ol>`
                 : '';
             return `
             <div class="work-card${app.cardFlow?.length ? ' has-flow' : ''}" data-app="${app.id}">
@@ -1124,6 +1128,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>`;
         }).join('');
+        portfolioLog('cards', 'debug', 'cards-rendered', {
+            sort: portfolioState.sort,
+            status: portfolioState.status,
+            projectIds: visibleApps.map(app => app.id)
+        });
     }
     renderWorks();
 

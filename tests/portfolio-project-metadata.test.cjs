@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, '..');
 const script = fs.readFileSync(path.join(root, 'js/main.js'), 'utf8');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'css/styles.css'), 'utf8');
+const debugGuide = fs.readFileSync(path.join(root, 'docs/PORTFOLIO_DEBUG.md'), 'utf8');
 
 test('Pick Memory distinguishes the unpublished local record from the public release', () => {
     assert.match(script, /title: 'Pick Memory · 拾忆卡',[\s\S]*?rating: '本地记录 v0\.3\.4 · Release v0\.3\.1'/);
@@ -28,7 +29,7 @@ test('self-developed model exposes only one same-origin CPU trial action', () =>
     assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
     assert.doesNotMatch(modelBlock[0], /secondaryAction:|tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
     assert.doesNotMatch(modelBlock[0], /platformStatus:/);
-    assert.match(modelBlock[0], /cardFlow: \['语料', 'BPE', '预训练', '续写'\]/);
+    assert.match(modelBlock[0], /cardFlow: \['语料', '预训练', '后训练', '续写'\]/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
     assert.match(script, /可直接使用本站服务器 CPU 体验/);
     assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
@@ -98,6 +99,35 @@ test('PRD Agent work exposes the deployed frontend as an authorization-gated lin
     assert.doesNotMatch(prdBlock[0], /password|authorization|x-jwt-token|BEGIN PRIVATE KEY/i);
 });
 
+test('portfolio default order prioritizes shipped consumer work and keeps early agents last', () => {
+    assert.match(index, /data-work-sort="featured"[^>]+aria-pressed="true">推荐<\/button>/);
+    assert.match(index, /data-work-sort="latest"[^>]+aria-pressed="false">最新<\/button>/);
+    assert.match(index, /data-work-sort="popular"[^>]+aria-pressed="false">最热<\/button>/);
+    assert.match(script, /const portfolioState = \{ sort: 'featured', status: 'all' \}/);
+    assert.match(script, /if \(portfolioState\.sort === 'featured'\) return featuredDelta/);
+    assert.match(script, /if \(portfolioState\.sort === 'popular'\) return b\.likes - a\.likes \|\| featuredDelta/);
+
+    const fieldsStart = script.indexOf('const appCardFields = [');
+    const fieldsEnd = script.indexOf('];', fieldsStart);
+    const fields = script.slice(fieldsStart, fieldsEnd);
+    const displayOrders = [...fields.matchAll(/displayOrder: (\d+)/g)].map(match => Number(match[1]));
+    assert.deepEqual(displayOrders, [2, 5, 3, 4, 6, 1, 7]);
+    assert.match(script, /projectType: 'Agent', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1', displayOrder: 4/);
+    assert.match(script, /portfolioLog\('cards', 'debug', 'cards-rendered'/);
+    assert.match(debugGuide, /卡片排序与状态筛选后的渲染结果可单独用 `cards` 模块排查/);
+    assert.match(debugGuide, /不记录项目正文、链接、访客信息或任何敏感内容/);
+});
+
+test('project resources use one compact desktop row with accessible groups', () => {
+    ['modalPrdHeading', 'modalChangelogHeading', 'modalCodeHeading'].forEach(id => {
+        assert.match(index, new RegExp(`<section aria-labelledby="${id}"><h3 id="${id}">`));
+    });
+    assert.match(styles, /\.project-docs\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+    assert.match(styles, /#modalCodeResources\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+    assert.match(styles, /\.project-docs \.doc-card p\s*\{[\s\S]*?-webkit-line-clamp:\s*2/);
+    assert.match(styles, /@media \(max-width: 640px\)[\s\S]*?#modalCodeResources\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
+});
+
 test('PRD Agent card uses three privacy-safe screenshots with captions and keyboard zoom', () => {
     const prdBlock = script.match(/title: 'PRD Agent',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 4,/);
     assert.ok(prdBlock, 'PRD Agent project block should exist');
@@ -124,7 +154,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('portfolio uses the current cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260902-brain-egg-v191/);
+    assert.match(index, /js\/main\.js\?v=20260902-portfolio-compact-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -191,8 +221,8 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260901-prd-architecture-v4/);
-    assert.match(index, /main\.js\?v=20260902-brain-egg-v191/);
+    assert.match(index, /styles\.css\?v=20260902-portfolio-compact-v1/);
+    assert.match(index, /main\.js\?v=20260902-portfolio-compact-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

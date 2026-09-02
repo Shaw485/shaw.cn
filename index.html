@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Shaw 的产品作品集：把灵感做成真实可用的产品。">
     <title>作品集 · Shaw's Space</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230071e3'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260901-prd-architecture-v4">
+    <link rel="stylesheet" href="css/styles.css?v=20260902-portfolio-compact-v1">
 </head>
 <body class="page-portfolio">
     <nav class="navbar">
@@ -52,7 +53,8 @@
                     <span class="works-count">(7)</span>
                 </div>
                 <div class="works-filters">
-                    <button class="filter-btn active" type="button" data-work-sort="latest" aria-pressed="true">最新</button>
+                    <button class="filter-btn active" type="button" data-work-sort="featured" aria-pressed="true">推荐</button>
+                    <button class="filter-btn" type="button" data-work-sort="latest" aria-pressed="false">最新</button>
                     <button class="filter-btn" type="button" data-work-sort="popular" aria-pressed="false">最热</button>
                     <div class="filter-dropdown">
                         <label class="sr-only" for="workStatusFilter">按开发状态筛选</label>
@@ -168,9 +170,9 @@
                 <div class="app-feature-details" id="modalFeatureDetails" hidden></div>
 
                 <div class="project-docs">
-                  <section><h3 id="modalPrdHeading">01 · PRD</h3><div class="doc-grid" id="modalPrdResource"></div></section>
-                  <section><h3 id="modalChangelogHeading">02 · 改动记录</h3><div class="doc-grid" id="modalChangelogResource"></div></section>
-                  <section><h3 id="modalCodeHeading">03 · GitHub 与 README</h3><div class="doc-grid" id="modalCodeResources"></div></section>
+                  <section aria-labelledby="modalPrdHeading"><h3 id="modalPrdHeading">01 · PRD</h3><div class="doc-grid" id="modalPrdResource"></div></section>
+                  <section aria-labelledby="modalChangelogHeading"><h3 id="modalChangelogHeading">02 · 改动记录</h3><div class="doc-grid" id="modalChangelogResource"></div></section>
+                  <section aria-labelledby="modalCodeHeading"><h3 id="modalCodeHeading">03 · GitHub 与 README</h3><div class="doc-grid" id="modalCodeResources"></div></section>
                 </div>
             </div>
         </div>
@@ -215,6 +217,6 @@
         </svg>
     </button>
 
-    <script src="js/main.js?v=20260902-brain-egg-v191"></script>
+    <script src="js/main.js?v=20260902-portfolio-compact-v1"></script>
 </body>
 </html>

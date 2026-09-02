@@ -13,11 +13,19 @@ location.reload();
 
 ## 仅调试一个模块
 
-可用模块为 `likes`、`filters`、`resources`、`media`、`model-specs`、`architecture` 和 `actions`：
+可用模块为 `cards`、`likes`、`filters`、`resources`、`media`、`model-specs`、`architecture` 和 `actions`：
 
 ```js
 localStorage.setItem('shaw.debug.portfolio', '1');
 localStorage.setItem('shaw.debug.portfolio.modules', 'likes');
+location.reload();
+```
+
+卡片排序与状态筛选后的渲染结果可单独用 `cards` 模块排查。它只记录排序方式、状态筛选值和项目数字 ID 顺序，不记录项目正文、链接、访客信息或任何敏感内容：
+
+```js
+localStorage.setItem('shaw.debug.portfolio', '1');
+localStorage.setItem('shaw.debug.portfolio.modules', 'cards');
 location.reload();
 ```
 
