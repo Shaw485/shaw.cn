@@ -123,8 +123,8 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
 });
 
-test('M036 trial-only entry uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260901-m036-training-architecture-v7/);
+test('portfolio uses the current cache version', () => {
+    assert.match(index, /js\/main\.js\?v=20260902-brain-egg-v191/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -156,8 +156,8 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     assert.ok(block, 'Odd Origin project block should exist');
     assert.match(block[0], /iconImage: 'assets\/odd-origin\/icon\.png'/);
     assert.match(block[0], /screenshotLayout: 'landscape'/);
-    assert.match(block[0], /rating: 'v188 真机预览 · 待上线'/);
-    assert.match(block[0], /Web \/ 微信小游戏 v188（2026-09-01）/);
+    assert.match(block[0], /rating: 'v191 真机预览 · 待上线'/);
+    assert.match(block[0], /Web \/ 微信小游戏 v191（2026-09-02）/);
 
     const files = ['icon.png', 'title-screen.png', 'chapter-select.png', 'level-02.png', 'level-06.png', 'level-13.png'];
     files.forEach(file => {
@@ -175,9 +175,9 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     const historicalChangelog = fs.readFileSync(path.join(root, 'brain-egg-changelog.txt'), 'utf8');
     assert.match(historicalChangelog, /主页游戏名暂保持“大聪明脑洞蛋”，等待正式命名/,
         '完整历史记录应保留正式命名前的原始变更说明');
-    assert.match(historicalChangelog, /Web \/ 微信小游戏 v188 完整窗口宽地图/);
-    assert.match(script, /89 个顶层记录与 4 个自动子记录，共 93 条/);
-    assert.match(fs.readFileSync(path.join(root, 'js/project-doc.js'), 'utf8'), /brain-egg-overview\.txt\?v=20260901-latest-records-v2/);
+    assert.match(historicalChangelog, /Web \/ 微信小游戏 v191 手机可听背景音乐与胶囊安全日志/);
+    assert.match(script, /93 个顶层记录与 4 个自动子记录，共 97 条/);
+    assert.match(fs.readFileSync(path.join(root, 'js/project-doc.js'), 'utf8'), /brain-egg-overview\.txt\?v=20260902-brain-egg-v191/);
 });
 
 test('portfolio uses a project list, detail actions and the agreed project type labels', () => {
@@ -192,7 +192,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260901-prd-architecture-v4/);
-    assert.match(index, /main\.js\?v=20260901-m036-training-architecture-v7/);
+    assert.match(index, /main\.js\?v=20260902-brain-egg-v191/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

@@ -87,5 +87,5 @@ test('shared architecture is accessible and independently debuggable', () => {
     assert.match(script, /portfolioLog\('architecture', 'debug', 'architecture-rendered', \{\s*appId: app\.id/);
     assert.match(debugGuide, /`architecture` 模块/);
     assert.match(debugGuide, /不记录语料、用户输入、模型输出、Token ID/);
-    assert.match(index, /js\/main\.js\?v=20260901-m036-training-architecture-v7/);
+    assert.match(index, /js\/main\.js\?v=20260902-brain-egg-v191/);
 });

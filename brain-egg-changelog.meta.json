@@ -3,12 +3,12 @@
   "sourceFile": "改动记事本.md",
   "targetFile": "brain-egg-changelog.txt",
   "utf8Bom": true,
-  "sourceBytes": 75535,
-  "targetBytes": 75538,
-  "sourceSha256": "da9db6548eae98d9b365e0f99e30ae03258f98e44988ae7713e873e80222c25e",
-  "targetSha256": "60266244e116637141731be24b1d07310c6fcdbd831e7df19a52a1f92de48381",
-  "topLevelGroups": 92,
+  "sourceBytes": 78621,
+  "targetBytes": 78624,
+  "sourceSha256": "ec862cb511e73ff3ccd6d5820bc20536b242c7ac32daebc7ff0a9149ad284446",
+  "targetSha256": "76517bb60acf8e7a355ba617686068c4a5fdb26678443d8d8c18a837e138f009",
+  "topLevelGroups": 93,
   "nestedSubrecords": 4,
-  "totalRecords": 96,
-  "latestTitle": "Web / 微信小游戏 v190 第 5、12、15 关交互修复 — 2026-09-01"
+  "totalRecords": 97,
+  "latestTitle": "Web / 微信小游戏 v191 手机可听背景音乐与胶囊安全日志 — 2026-09-02"
 }

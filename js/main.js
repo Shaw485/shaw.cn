@@ -64,12 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '怪奇之原',
             category: '浏览器游戏 · 平台跳跃',
             date: '2026',
-            rating: 'v188 真机预览 · 待上线',
+            rating: 'v191 真机预览 · 待上线',
             gradient: 'linear-gradient(135deg, #dff3f6 0%, #c5e4ea 55%, #accfd7 100%)',
             iconStroke: '#111111',
             iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
             iconImage: 'assets/odd-origin/icon.png',
-            desc: '一款手绘风平台跳跃闯关游戏。当前版本为 Web / 微信小游戏 v188（2026-09-01）：玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地。',
+            desc: '一款手绘风平台跳跃闯关游戏。当前版本为 Web / 微信小游戏 v191（2026-09-02）：玩家操控披风旅人穿过山野、石门、木箱与断崖，在 20 个旅途篇章中寻找出口；支持选关、移动、跳跃、提示、暂停、重来和返回营地，并完成手机外放背景音乐与可导出运行日志的真机调试。',
             features: [
                 '🧭 旅途章节：从选关界面进入 20 个不同主题的关卡',
                 '🎮 平台跳跃：通过左右移动与跳跃穿越平台、木箱和断崖',
@@ -105,13 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     heading: '02 · 版本记录',
                     title: '在线阅读全部改动记录',
                     href: 'project-doc.html?doc=brain-egg-changelog',
-                    intro: '当前已同步到 Web / 微信小游戏 v188（2026-09-01），覆盖从首个可玩版本到 UI、20 关、微信小游戏、音频、宽屏适配与稳定性调试的全部过程。'
+                    intro: '当前已同步到 Web / 微信小游戏 v191（2026-09-02），覆盖从首个可玩版本到 UI、20 关、微信小游戏、音频、宽屏适配、胶囊安全日志与稳定性调试的全部过程。'
                 },
                 codeHeading: '03 · 公开资料',
                 code: [
                     {
                         title: '下载版本记录 TXT',
-                        href: 'brain-egg-changelog.txt?v=20260901-brain-egg-complete-changelog-v1',
+                        href: 'brain-egg-changelog.txt?v=20260902-brain-egg-v191',
                         intro: '下载带 UTF-8 BOM 的完整版本记录，避免浏览器或文本编辑器误判编码。',
                         download: '怪奇之原-版本记录.txt'
                     },
@@ -1003,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', function() {
         links:[['GitHub','https://github.com/Shaw485/math_alarm'],['README','project-doc.html?doc=math-alarm-readme'],['PRD','project-doc.html?doc=math-alarm-prd'],['完整改动记录','project-doc.html?doc=math-alarm-changelog']]},
       { prd:[['定位','手绘风的平台跳跃闯关游戏。'],['玩法','移动、跳跃、穿越平台并找到出口。'],['视觉','低饱和山野、粗线条道具和披风旅人。'],['架构','Godot 4.x + JSON 数据驱动关卡，并维护网页预览。']],
         process:[['可玩原型','完成移动、跳跃、碰撞与出口。'],['关卡系统','加入主菜单、选关和 JSON 加载。'],['视觉统一','重做角色、平台、门、小草与 HUD。'],['动作反馈','增加待机、行走、跳跃姿态。'],['持续修错','回归缓存、按钮、出生点和平台高度。']],
-        changelog:[['当前版本','Web / 微信小游戏 v188（2026-09-01）。'],['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留 89 个顶层记录与 4 个自动子记录，共 93 条。'],['持续迭代','覆盖原型、UI、20 关、编辑器、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','project-doc.html?doc=brain-egg-changelog']]}
+        changelog:[['当前版本','Web / 微信小游戏 v191（2026-09-02）。'],['完整源记录','公开文件与游戏项目《改动记事本》逐字同步，保留 93 个顶层记录与 4 个自动子记录，共 97 条。'],['持续迭代','覆盖原型、UI、20 关、编辑器、微信小游戏、音频、宽屏适配和稳定性调试。']],links:[['完整改动记录 TXT','project-doc.html?doc=brain-egg-changelog']]}
       ,{ links:[['GitHub','https://github.com/Shaw485/create-gpt-step-by-step'],['README','project-doc.html?doc=gpt-roadmap']]}
       ,{ links:[] }
       ,{ links:[['GitHub','https://github.com/Shaw485/search-engine-eva-agent'],['README','project-doc.html?doc=search-readme']] }
@@ -1017,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
-        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v188：手绘风平台跳跃闯关游戏，已完成 20 关、音频、宽屏适配与稳定性调试，暂未公开试玩。', likes: 0 },
+        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
         { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', shortDesc: '14,880,745 参数的中文小说续写模型，可直接使用本站服务器 CPU 体验。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/9/1', shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },

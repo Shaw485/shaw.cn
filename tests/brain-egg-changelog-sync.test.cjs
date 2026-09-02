@@ -19,8 +19,8 @@ test('公开网站不再硬编码33条，并使用完整同步入口和新缓存
   assert.doesNotMatch(mainScript, /在线阅读\s*33\s*个版本记录/);
   assert.match(mainScript, /在线阅读全部改动记录/);
   assert.doesNotMatch(mainScript, /\['v31–v33'/);
-  assert.match(index, /js\/main\.js\?v=20260901-m036-training-architecture-v7/);
-  assert.match(readerScript, /brain-egg-changelog\.txt\?v=20260901-brain-egg-complete-changelog-v1/);
+  assert.match(index, /js\/main\.js\?v=20260902-brain-egg-v191/);
+  assert.match(readerScript, /brain-egg-changelog\.txt\?v=20260902-brain-egg-v191/);
 });
 
 test('公开记录、UTF-8 BOM、元数据和当前游戏记事本内容一致', () => {
@@ -35,7 +35,7 @@ test('公开记录、UTF-8 BOM、元数据和当前游戏记事本内容一致',
   assert.ok(meta.nestedSubrecords >= 4, '四条自动子记录也必须保留');
   assert.strictEqual(meta.totalRecords, meta.topLevelGroups + meta.nestedSubrecords);
   assert.strictEqual(meta.latestTitle, sourceContent.toString('utf8').match(/^##\s+(.+)$/m)[1].trim());
-  assert.match(sourceContent.toString('utf8'), /^## Web \/ 微信小游戏 v188/m);
+  assert.match(sourceContent.toString('utf8'), /^## Web \/ 微信小游戏 v191/m);
   if (fs.existsSync(workspaceSource)) {
     assert.ok(sourceContent.equals(withoutBom(fs.readFileSync(workspaceSource))), '公开记录去除编码标记后必须与游戏《改动记事本》逐字一致');
   }
