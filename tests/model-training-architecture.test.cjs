@@ -24,12 +24,17 @@ function assertInOrder(source, values, label) {
 }
 
 test('model reuses the interactive architecture with training and runtime views', () => {
-    assert.match(model, /cardFlow: \['语料', '预训练', '后训练', '续写'\]/);
+    assert.match(model, /cardFlow: \['语料', 'BPE', '预训练', '后训练', '续写', '问答'\]/);
+    assert.match(model, /eyebrow: 'TRAINING & DUAL RUNTIME'/);
+    assert.match(model, /title: '从语料训练到续写与问答'/);
+    assert.match(model, /state: '14\.88M · 双入口'/);
     assertInOrder(model, [
         "id: 'training'",
         "label: '训练过程'",
         "id: 'runtime'",
-        "label: '工作架构'"
+        "label: '工作架构'",
+        "id: 'qa-runtime'",
+        "label: '问答实验架构'"
     ], 'model architecture tabs');
 
     assertInOrder(model, [
@@ -53,6 +58,15 @@ test('model reuses the interactive architecture with training and runtime views'
         "id: 'kv-cache-loop'",
         "id: 'natural-stop'"
     ], 'runtime stages');
+
+    assertInOrder(model, [
+        "id: 'qa-question-entry'",
+        "id: 'qa-fact-router'",
+        "id: 'qa-answer-slot'",
+        "id: 'qa-r7-reader'",
+        "id: 'qa-fact-validator'",
+        "id: 'qa-response'"
+    ], 'QA experiment stages');
 });
 
 test('training architecture preserves frozen facts and release boundaries', () => {
@@ -72,10 +86,10 @@ test('training architecture preserves frozen facts and release boundaries', () =
         '温度 0.7',
         'Top 20',
         '最多 60 个生成字符',
-        '不具备通用聊天、事实检索或外部世界知识'
+        '不具备通用聊天或外部世界知识'
     ].forEach(value => assert.ok(model.includes(value), `missing architecture fact: ${value}`));
-    assert.match(model, /后训练实验支路[\s\S]*?已完成 · 无上线候选/);
-    assert.match(model, /M020–M035[\s\S]*?线上仍是纯预训练 Step5750/);
+    assert.match(model, /后训练实验支路[\s\S]*?已完成 · 无正式候选/);
+    assert.match(model, /M020–M035[\s\S]*?M023 R7 仅作为标明失败边界的独立问答实验开放/);
     assert.doesNotMatch(model, /platformStatus:/);
 });
 
@@ -87,5 +101,5 @@ test('shared architecture is accessible and independently debuggable', () => {
     assert.match(script, /portfolioLog\('architecture', 'debug', 'architecture-rendered', \{\s*appId: app\.id/);
     assert.match(debugGuide, /`architecture` 模块/);
     assert.match(debugGuide, /不记录语料、用户输入、模型输出、Token ID/);
-    assert.match(index, /js\/main\.js\?v=20260902-portfolio-compact-v1/);
+    assert.match(index, /js\/main\.js\?v=20260903-m037-dual-trials-v1/);
 });

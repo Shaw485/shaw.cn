@@ -19,7 +19,7 @@ test('公开网站不再硬编码33条，并使用完整同步入口和新缓存
   assert.doesNotMatch(mainScript, /在线阅读\s*33\s*个版本记录/);
   assert.match(mainScript, /在线阅读全部改动记录/);
   assert.doesNotMatch(mainScript, /\['v31–v33'/);
-  assert.match(index, /js\/main\.js\?v=20260902-portfolio-compact-v1/);
+  assert.match(index, /js\/main\.js\?v=20260903-m037-dual-trials-v1/);
   assert.match(readerScript, /brain-egg-changelog\.txt\?v=20260902-brain-egg-v191/);
 });
 

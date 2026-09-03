@@ -129,17 +129,17 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '0.015B 自研模型',
             category: 'AI 学习项目 · LLM',
             date: '2026',
-            rating: 'M036 已上线',
+            rating: 'M036 · M037 已上线',
             gradient: 'linear-gradient(135deg, #111827 0%, #1d4ed8 58%, #60a5fa 100%)',
             iconStroke: '#FFFFFF',
             iconSVG: '<circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><path d="M10.6 6.4 6.4 10.6M13.4 6.4l4.2 4.2M6.4 13.4l4.2 4.2M17.6 13.4l-4.2 4.2"></path>',
-            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型为 14,880,745 参数（约 0.015B）的纯预训练 Step5750；现在可在本站使用服务器 CPU，体验短中文小说续写。',
-            cardFlow: ['语料', '预训练', '后训练', '续写'],
+            desc: '一个从零训练中文 Decoder-only Transformer 的学习型项目。正式模型是 14,880,745 参数的纯预训练 Step5750 续写版；另提供 M023 R7 Step4000 问答实验版，仅覆盖 96 条已审核小说事实。',
+            cardFlow: ['语料', 'BPE', '预训练', '后训练', '续写', '问答'],
             architecture: {
-                eyebrow: 'FROM CORPUS TO CONTINUATION',
-                title: '从一部小说到逐 Token 续写',
-                summary: '先治理授权小说语料并冻结数据切分，再只用训练集学习 BPE，随后训练模型预测下一个 Token。正式上线的是纯预训练 Step5750；SFT、Replay 与长上下文实验未通过替换门槛，没有混入当前模型。',
-                state: '14.88M · Step 5750',
+                eyebrow: 'TRAINING & DUAL RUNTIME',
+                title: '从语料训练到续写与问答',
+                summary: '先治理授权小说语料并冻结数据切分，再只用训练集学习 BPE，随后训练模型预测下一个 Token。正式续写版仍是纯预训练 Step5750；问答版是独立的 M023 R7 检索增强实验，并未替换正式基座。',
+                state: '14.88M · 双入口',
                 tabs: [
                     {
                         id: 'training',
@@ -231,17 +231,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             {
                                 id: 'post-training-experiments',
                                 label: '后训练实验支路',
-                                state: '已完成 · 无上线候选',
+                                state: '已完成 · 无正式候选',
                                 origin: '从纯预训练 Step5750 复制候选权重开始',
                                 steps: ['SFT 与 Replay 对照', '纯续写 SFT', '长上下文 A/B 与固定集回归'],
-                                note: 'M020–M035 的候选没有同时通过目标能力、预训练保持与稳定性门禁，因此没有覆盖正式基座；线上仍是纯预训练 Step5750。'
+                                note: 'M020–M035 的候选没有同时通过目标能力、预训练保持与稳定性门禁，因此没有覆盖正式基座。M023 R7 仅作为标明失败边界的独立问答实验开放，不是正式候选。'
                             }
                         ]
                     },
                     {
                         id: 'runtime',
                         label: '工作架构',
-                        intro: '线上试用运行在 ShawSpace 服务器 CPU。用户给出短语或半句话后，服务逐 Token 续写，并在自然句界或安全上限处停止；它不是聊天或事实问答系统。',
+                        intro: '这里展示正式续写版的工作架构。用户给出短语或半句话后，服务器上的 Step5750 逐 Token 续写，并在自然句界或安全上限处停止。',
                         stages: [
                             {
                                 id: 'prompt-entry',
@@ -324,29 +324,96 @@ document.addEventListener('DOMContentLoaded', function() {
                                 failure: '运行日志只记数量、耗时和停止原因，不记录提示、正文或 Token ID。'
                             }
                         ]
+                    },
+                    {
+                        id: 'qa-runtime',
+                        label: '问答实验架构',
+                        intro: '问答实验版不是闭卷问答。它先把问题路由到 96 条已审核事实之一，再把已核验答案作为上下文交给 M023 R7 Step4000 组织语言；输出偏离事实时会回退。',
+                        stages: [
+                            {
+                                id: 'qa-question-entry',
+                                title: '小说问题入口',
+                                caption: '最多 80 个字符',
+                                status: '输入',
+                                input: '一个具体、单行的小说事实问题。',
+                                action: '检查 Host、Origin、CSRF、请求大小和保留标记；问题正文不写入日志。',
+                                output: '通过安全边界的短问题。',
+                                failure: '空输入、超长、控制字符或保留提示标记会直接拒绝。'
+                            },
+                            {
+                                id: 'qa-fact-router',
+                                title: '审核事实路由',
+                                caption: '问题 → 96 条事实',
+                                status: '检索',
+                                input: '用户问题与服务器私有的 96 条审核事实。',
+                                action: '先匹配规范问题，再要求模糊匹配得分至少 300、第一二名差距至少 100。',
+                                output: '唯一高置信事实，或“未命中 / 有歧义”。',
+                                failure: '未命中或有歧义时不调用模型，只提示把问题问得更具体。'
+                            },
+                            {
+                                id: 'qa-answer-slot',
+                                title: '构造答案槽上下文',
+                                caption: '审核答案 → Prompt',
+                                status: 'Grounding',
+                                input: '匹配到的规范问题与已核验答案。',
+                                action: '按 R7 训练格式把答案放入“已核验答案”字段，要求模型保留人物、关系、数量和限定语。',
+                                output: '不超过 512 Token 的检索增强提示。',
+                                failure: '不读取或对外发送小说原文证据窗口。'
+                            },
+                            {
+                                id: 'qa-r7-reader',
+                                title: 'R7 问答实验权重',
+                                caption: 'Step4000 · Greedy',
+                                status: '生成',
+                                input: 'BOS / USER / 检索增强提示 / ASSISTANT Token。',
+                                action: '14.88M 参数模型以 Top-1 贪心解码，最多生成 128 Token，遇到 EOS 停止。',
+                                output: '模型组织的短答案。',
+                                failure: '即使已提供事实，原始 R7 仍有 19/96 个规范问题发生错误复述。'
+                            },
+                            {
+                                id: 'qa-fact-validator',
+                                title: '事实约束校验',
+                                caption: '关系 / 方向 / 必要槽位',
+                                status: '校验',
+                                input: '模型答案与审核事实的结构化规则。',
+                                action: '检查必要人物与对象、关系方向、禁止断言、冲突和拒答；只移除机械的证据状态前缀。',
+                                output: '通过的模型原回答，或审核答案回退。',
+                                failure: '回退会在界面明确标记，不能假装成模型独立答对。'
+                            },
+                            {
+                                id: 'qa-response',
+                                title: '返回带来源状态的答案',
+                                caption: '模型生成 / 审核回退',
+                                status: '输出',
+                                input: '校验结果与自然化后的短答案。',
+                                action: '返回答案、是否调用模型以及是否发生回退；日志只记录布尔值、计数和耗时。',
+                                output: '一个可体验、但边界清楚的小说事实问答结果。',
+                                failure: '它不是通用聊天、外部知识检索或闭卷事实问答。'
+                            }
+                        ]
                     }
                 ],
-                guardrails: ['授权与公开边界', '章节级防泄漏切分', 'BPE 只读 Train', 'Test 不用于选模', 'SFT 必须过替换门', '80 字输入与限流'],
-                telemetry: ['Train / Val Loss', '验证 BPC', '固定续写 Harness', '学习率与梯度范数', 'Checkpoint 哈希', '推理耗时与停止原因'],
-                boundary: '能力边界：这是教学型中文小说续写模型，只学习单本授权小说中的语言与叙事统计；不具备通用聊天、事实检索或外部世界知识。页面展示显式工程流程，不展示小说正文、可还原 Token、私有评测答案或隐藏思维链。'
+                guardrails: ['授权与公开边界', '章节级防泄漏切分', 'BPE 只读 Train', 'Test 不用于选模', 'SFT 必须过替换门', '问答高置信路由与事实回退'],
+                telemetry: ['Train / Val Loss', '验证 BPC', '固定续写 Harness', '问答路由状态与回退率', 'Checkpoint 哈希', '推理耗时与停止原因'],
+                boundary: '能力边界：正式模型是教学型中文小说续写模型；问答入口是只覆盖 96 条审核事实的检索增强实验，原始 R7 真人验收仅 41/64。二者都不具备通用聊天或外部世界知识。页面不展示小说正文、可还原 Token、私有评测答案或隐藏思维链。'
             },
             modelSpecs: {
-                heading: '模型参数与训练口径',
-                note: '当前提供 M036 Step5750 的在线小说续写体验。训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开。',
+                heading: '模型参数与双入口口径',
+                note: '续写版使用正式 M036 Step5750；问答版使用独立 M023 R7 Step4000 实验权重。训练语料正文、可还原 Token 张量、事实包、评测问答、训练日志和优化器状态不公开。',
                 groups: [
                     {
-                        title: '模型身份',
+                        title: '续写正式版',
                         items: [
                             ['正式参数量', '14,880,745（14.88M，约 0.01488B）'],
                             ['模型类型', '中文 Decoder-only Causal Transformer'],
                             ['正式基座', 'M016 · 纯预训练 Step 5750'],
                             ['上下文窗口', '512 BPE Token'],
-                            ['当前状态', 'M036 · Step5750 在线试用'],
+                            ['当前状态', 'M036 · Step5750 续写版在线试用'],
                             ['使用边界', '教学型小说续写模型，不是通用聊天模型']
                         ]
                     },
                     {
-                        title: 'M036 在线试用',
+                        title: '续写版工作方式',
                         items: [
                             ['任务', '短中文小说续写；不是聊天或事实问答'],
                             ['算力来源', 'ShawSpace 服务器 CPU'],
@@ -355,6 +422,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             ['上下文限制', '输入最多 80 个字符'],
                             ['访问限制', '按 IP 限流，生成请求串行处理'],
                             ['隐私', '服务日志不记录输入或输出正文']
+                        ]
+                    },
+                    {
+                        title: '问答实验版',
+                        items: [
+                            ['定位', 'M023 R7 Step4000 检索增强问答实验'],
+                            ['覆盖范围', '96 条已审核小说事实'],
+                            ['工作方式', '高置信事实路由 → 已核验答案槽 → 小模型组织语言'],
+                            ['解码', 'Top-1 贪心；最多 128 Token；EOS 停止'],
+                            ['生成校验', '检查必要人物、对象、关系方向与禁止断言'],
+                            ['错误处理', '模型偏离事实时明确回退到审核答案'],
+                            ['原始人审', '41 / 64 通过，未达到正式候选门槛'],
+                            ['能力边界', '不是通用聊天、闭卷问答或外部知识检索'],
+                            ['与正式版关系', '独立实验权重，不替换 Step5750']
                         ]
                     },
                     {
@@ -475,14 +556,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 '🔁 Transformer Block：组合残差、LayerNorm 与 FFN',
                 '📐 Shape 验证：逐步检查张量维度、参数量和注意力概率',
                 '📉 受控实验：完成预训练、多轮 SFT / replay 与长上下文对照，正式模型保持 Step5750',
-                '🖥️ 在线试用：由 ShawSpace 服务器 CPU 运行，可直接体验短中文小说续写',
+                '🖥️ 双入口试用：可分别体验正式小说续写与 96 条审核事实上的问答实验',
                 '📝 可复核记录：保留模型配置、训练结果、能力边界与失败实验'
             ],
             tags: ['Python', 'PyTorch', 'Transformer', 'Self-Attention', 'LLM'],
             screenshots: [],
             primaryAction: {
-                url: 'https://shawspace.cn/handmade-gpt/?v=20260901-m036-trial-only',
-                label: '试用',
+                url: 'https://shawspace.cn/handmade-gpt/?v=20260903-m037-dual-trials-v1',
+                label: '续写版-试用',
+                download: false
+            },
+            secondaryAction: {
+                url: 'https://shawspace.cn/handmade-gpt-qa/?v=20260903-m037-dual-trials-v1',
+                label: '问答版-试用',
                 download: false
             },
             resourceCopy: {

@@ -21,17 +21,20 @@ test('Pick Memory distinguishes the unpublished local record from the public rel
     assert.doesNotMatch(index, /<option value="opensource">/);
 });
 
-test('self-developed model exposes only one same-origin CPU trial action', () => {
-    assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 已上线'/);
-    assert.match(script, /正式模型为 14,880,745 参数（约 0\.015B）的纯预训练 Step5750/);
+test('self-developed model exposes separate continuation and bounded QA trials', () => {
+    assert.match(script, /title: '0\.015B 自研模型',[\s\S]*?rating: 'M036 · M037 已上线'/);
+    assert.match(script, /正式模型是 14,880,745 参数的纯预训练 Step5750 续写版/);
     const modelBlock = script.match(/title: '0\.015B 自研模型',[\s\S]*?\n\s*\},\n\s*\{\n\s*id: 3,/);
     assert.ok(modelBlock, 'self-developed model block should exist');
-    assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt\/\?v=20260901-m036-trial-only'[\s\S]*?label: '试用'[\s\S]*?download: false/);
-    assert.doesNotMatch(modelBlock[0], /secondaryAction:|tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
+    assert.match(modelBlock[0], /primaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt\/\?v=20260903-m037-dual-trials-v1'[\s\S]*?label: '续写版-试用'[\s\S]*?download: false/);
+    assert.match(modelBlock[0], /secondaryAction: \{[\s\S]*?url: 'https:\/\/shawspace\.cn\/handmade-gpt-qa\/\?v=20260903-m037-dual-trials-v1'[\s\S]*?label: '问答版-试用'[\s\S]*?download: false/);
+    assert.doesNotMatch(modelBlock[0], /tertiaryAction:|下载 M036 本地包|GitHub Release|releases\/download|releases\/tag/);
     assert.doesNotMatch(modelBlock[0], /platformStatus:/);
-    assert.match(modelBlock[0], /cardFlow: \['语料', '预训练', '后训练', '续写'\]/);
+    assert.match(modelBlock[0], /cardFlow: \['语料', 'BPE', '预训练', '后训练', '续写', '问答'\]/);
     assert.match(script, /\{ projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1'/);
-    assert.match(script, /可直接使用本站服务器 CPU 体验/);
+    assert.match(modelBlock[0], /96 条已审核小说事实/);
+    assert.match(modelBlock[0], /原始人审', '41 \/ 64 通过，未达到正式候选门槛'/);
+    assert.match(modelBlock[0], /不是通用聊天、闭卷问答或外部知识检索/);
     assert.doesNotMatch(script, /暂无可发布模型|后训练诊断仍未产生发布候选/);
     assert.doesNotMatch(script, /0\.15B|150,000,000/);
     assert.doesNotMatch(script, /手撕 GPT|手搓 GPT/);
@@ -65,8 +68,8 @@ test('model detail exposes verified architecture, data, tokenizer, training and 
         '输入最多 80 个字符',
         '服务日志不记录输入或输出正文'
     ].forEach(value => assert.ok(modelBlock[0].includes(value), `missing model spec: ${value}`));
-    assert.match(modelBlock[0], /当前提供 M036 Step5750 的在线小说续写体验/);
-    assert.match(modelBlock[0], /训练语料正文、可还原 Token 张量、SFT 数据、评测问答、训练日志和优化器状态不公开/);
+    assert.match(modelBlock[0], /续写版使用正式 M036 Step5750；问答版使用独立 M023 R7 Step4000 实验权重/);
+    assert.match(modelBlock[0], /训练语料正文、可还原 Token 张量、事实包、评测问答、训练日志和优化器状态不公开/);
     assert.doesNotMatch(modelBlock[0], /模型权重不公开/);
 
     assert.match(index, /id="modalModelSpecs"[^>]+aria-labelledby="modalModelSpecsTitle"[^>]+hidden/);
@@ -153,8 +156,8 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
     assert.match(styles, /\.screenshot-zoom:focus-visible\s*\{/);
 });
 
-test('portfolio uses the current cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260902-portfolio-compact-v1/);
+test('M037 dual-trial entry uses the current portfolio cache version', () => {
+    assert.match(index, /js\/main\.js\?v=20260903-m037-dual-trials-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -222,7 +225,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260902-portfolio-compact-v1/);
-    assert.match(index, /main\.js\?v=20260902-portfolio-compact-v1/);
+    assert.match(index, /main\.js\?v=20260903-m037-dual-trials-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
