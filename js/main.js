@@ -1104,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', displayOrder: 2, shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
         { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', displayOrder: 5, shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
-        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 3, shortDesc: '14,880,745 参数的中文小说续写模型，可直接使用本站服务器 CPU 体验。', likes: 0 },
+        { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 3, shortDesc: '14,880,745 参数的中文小说语言模型，可体验小说续写与 96 条审核事实范围内的问答。', likes: 0 },
         { projectType: 'Agent', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 4, shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', displayOrder: 6, shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
         { projectType: '插件', status: '已上线', statusType: 'online', publishDate: '2026/8/28', displayOrder: 1, shortDesc: '本地源码记录 v0.3.4（待推送）、公开安装包 v0.3.1；支持间隔复习、iframe 划词、来源脱敏与 macOS 只读选区。', likes: 0 },
