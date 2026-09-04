@@ -157,7 +157,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M037 dual-trial entry uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260903-m037-dual-trials-v1/);
+    assert.match(index, /js\/main\.js\?v=20260904-odd-origin-filing-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -189,7 +189,9 @@ test('Odd Origin uses the supplied avatar and five landscape screenshots', () =>
     assert.ok(block, 'Odd Origin project block should exist');
     assert.match(block[0], /iconImage: 'assets\/odd-origin\/icon\.png'/);
     assert.match(block[0], /screenshotLayout: 'landscape'/);
-    assert.match(block[0], /rating: 'v191 真机预览 · 待上线'/);
+    assert.match(block[0], /rating: 'v191 真机预览 · 备案中'/);
+    assert.match(script, /projectType: '小程序', status: '备案中', statusType: 'pending'/);
+    assert.match(index, /<option value="pending">备案中<\/option>/);
     assert.match(block[0], /Web \/ 微信小游戏 v191（2026-09-02）/);
 
     const files = ['icon.png', 'title-screen.png', 'chapter-select.png', 'level-02.png', 'level-06.png', 'level-13.png'];
@@ -225,7 +227,7 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
     assert.match(index, /styles\.css\?v=20260902-portfolio-compact-v1/);
-    assert.match(index, /main\.js\?v=20260903-m037-dual-trials-v1/);
+    assert.match(index, /main\.js\?v=20260904-odd-origin-filing-v1/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {

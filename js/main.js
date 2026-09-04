@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shortName: '怪奇之原',
             category: '浏览器游戏 · 平台跳跃',
             date: '2026',
-            rating: 'v191 真机预览 · 待上线',
+            rating: 'v191 真机预览 · 备案中',
             gradient: 'linear-gradient(135deg, #dff3f6 0%, #c5e4ea 55%, #accfd7 100%)',
             iconStroke: '#111111',
             iconSVG: '<path d="M12 3c4 0 7 4.2 7 9.2 0 4.8-3.1 8.8-7 8.8s-7-4-7-8.8C5 7.2 8 3 12 3z"></path><circle cx="9.5" cy="11" r="0.8" fill="#111111"></circle><circle cx="14.5" cy="11" r="0.8" fill="#111111"></circle><path d="M9.5 15c1.4 1.2 3.6 1.2 5 0"></path>',
@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const appCardFields = [
         { projectType: 'APP', status: '已上线', statusType: 'online', publishDate: '2026/8/29', displayOrder: 2, shortDesc: 'v62.1：必须答对 a×b+c×d 格式数学题才能关闹钟，支持三款铃声、Android 14 精确闹钟、重启恢复与 10 分钟超时兜底。', likes: 2 },
-        { projectType: '小程序', status: '待上线', statusType: 'pending', publishDate: '2026/9/1', displayOrder: 5, shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
+        { projectType: '小程序', status: '备案中', statusType: 'pending', publishDate: '2026/9/1', displayOrder: 5, shortDesc: 'Web / 微信小游戏 v191：手绘风平台跳跃闯关游戏，已完成 20 关、手机外放背景音乐、宽屏适配与可导出真机日志，暂未公开试玩。', likes: 0 },
         { projectType: 'GPT', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 3, shortDesc: '14,880,745 参数的中文小说语言模型，可体验小说续写与 96 条审核事实范围内的问答。', likes: 0 },
         { projectType: 'Agent', status: '已上线', statusType: 'online', publishDate: '2026/9/1', displayOrder: 4, shortDesc: '企业 PRD 知识检索 Agent，公开详情已补三张合成数据问答界面图；围绕分层召回、Rerank、版本过滤、证据校验与离线评测持续优化。', likes: 0 },
         { projectType: 'Agent', status: '开发中', statusType: 'wip', publishDate: '2026/8/30', displayOrder: 6, shortDesc: '公开搜索页已接入 1,814,924 个 ESCI 商品的 BM25 基线，并提供 Bad Case、候选策略与 Harness 对比证据。', likes: 0 },
