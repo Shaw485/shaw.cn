@@ -317,3 +317,22 @@ test('AI learning record is removed from the site navigation', () => {
         assert.doesNotMatch(html, /<a[^>]+href="ai-growth\.html"[^>]*>AI 学习记录<\/a>/, `${file} should not expose the AI learning navigation item`);
     });
 });
+
+test('blog column is removed from the site navigation while the direct page remains available', () => {
+    const navPages = [
+        'index.html',
+        'blog.html',
+        'contact.html',
+        'project-doc.html',
+        'agent-harness.html',
+        'search-agent.html',
+        'search-eval.html',
+        'search-strategy.html',
+        'ai-growth.html'
+    ];
+    navPages.forEach(file => {
+        const html = fs.readFileSync(path.join(root, file), 'utf8');
+        assert.doesNotMatch(html, /<a[^>]+href="blog\.html"[^>]*>博客记录<\/a>/, `${file} should not expose the blog navigation item`);
+    });
+    assert.match(fs.readFileSync(path.join(root, 'blog.html'), 'utf8'), /<h1 class="section-title">博客记录<\/h1>/);
+});
