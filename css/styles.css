@@ -856,10 +856,15 @@ img {
 }
 
 .logo-mark {
+    display: block;
+    flex: 0 0 24px;
     width: 24px;
     height: 24px;
     border-radius: 7px;
-    background: linear-gradient(135deg, var(--color-accent) 0%, #5ac8fa 100%);
+    border: 1px solid rgba(20, 30, 40, 0.12);
+    background: #f4f6f4;
+    object-fit: cover;
+    object-position: 50% 30%;
 }
 
 .nav-links {

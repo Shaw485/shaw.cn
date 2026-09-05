@@ -111,18 +111,16 @@ test('Harness diagnostics are module-filtered, bounded and redact sensitive fiel
     assert.doesNotMatch(`${pageSafe(read('agent-harness.html'))}\n${script}`, /Basic\s+[A-Za-z0-9+/=]{12,}/);
 });
 
-test('portfolio adds Agent Harness as the seventh linked square-card project', () => {
+test('Agent Harness stays reachable directly but is not a portfolio project card', () => {
     const page = read('index.html');
     const script = read('js/main.js');
     const styles = read('css/styles.css');
 
-    assert.match(page, /<span class="works-count">\(7\)<\/span>/);
-    assert.match(script, /id: 6,[\s\S]*?title: 'Agent Harness'/);
-    assert.match(script, /primaryAction: \{[\s\S]*?url: 'agent-harness\.html',[\s\S]*?label: '查看 Harness'/);
-    assert.match(script, /publishDate: '2026\/8\/29'/);
-    assert.match(script, /PRD Agent 与搜索 Agent 尚未接入/);
-    assert.match(script, /agent-harness\.html#integration/);
-    assert.doesNotMatch(script, /\/agent-harness\.html#integration/);
+    assert.match(page, /<span class="works-count">\(6\)<\/span>/);
+    assert.doesNotMatch(script, /title: 'Agent Harness'/);
+    assert.doesNotMatch(script, /url: 'agent-harness\.html'/);
+    assert.doesNotMatch(script, /href: 'agent-harness\.html#integration'/);
+    assert.match(read('agent-harness.html'), /<h1>Agent Harness<\/h1>/);
     assert.match(styles, /\.work-card \{[\s\S]*?aspect-ratio: 1 \/ 1/);
 });
 

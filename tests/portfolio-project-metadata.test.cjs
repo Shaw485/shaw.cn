@@ -102,7 +102,7 @@ test('PRD Agent work exposes the deployed frontend as an authorization-gated lin
     assert.doesNotMatch(prdBlock[0], /password|authorization|x-jwt-token|BEGIN PRIVATE KEY/i);
 });
 
-test('portfolio default order prioritizes shipped consumer work and keeps early agents last', () => {
+test('portfolio default order prioritizes shipped consumer work and keeps search work after it', () => {
     assert.match(index, /data-work-sort="featured"[^>]+aria-pressed="true">推荐<\/button>/);
     assert.match(index, /data-work-sort="latest"[^>]+aria-pressed="false">最新<\/button>/);
     assert.match(index, /data-work-sort="popular"[^>]+aria-pressed="false">最热<\/button>/);
@@ -114,7 +114,7 @@ test('portfolio default order prioritizes shipped consumer work and keeps early 
     const fieldsEnd = script.indexOf('];', fieldsStart);
     const fields = script.slice(fieldsStart, fieldsEnd);
     const displayOrders = [...fields.matchAll(/displayOrder: (\d+)/g)].map(match => Number(match[1]));
-    assert.deepEqual(displayOrders, [2, 5, 3, 4, 6, 1, 7]);
+    assert.deepEqual(displayOrders, [2, 5, 3, 4, 6, 1]);
     assert.match(script, /projectType: 'Agent', status: '已上线', statusType: 'online', publishDate: '2026\/9\/1', displayOrder: 4/);
     assert.match(script, /portfolioLog\('cards', 'debug', 'cards-rendered'/);
     assert.match(debugGuide, /卡片排序与状态筛选后的渲染结果可单独用 `cards` 模块排查/);
@@ -157,7 +157,7 @@ test('PRD Agent card uses three privacy-safe screenshots with captions and keybo
 });
 
 test('M037 dual-trial entry uses the current portfolio cache version', () => {
-    assert.match(index, /js\/main\.js\?v=20260904-odd-origin-filing-v1/);
+    assert.match(index, /js\/main\.js\?v=20260905-remove-harness-logo-v1/);
 });
 
 test('Math Alarm PRD, changelog and README open in the same-origin HTML reader', () => {
@@ -223,11 +223,38 @@ test('portfolio uses a project list, detail actions and the agreed project type 
     assert.doesNotMatch(script, />查看作品<\/button>/);
 
     const types = [...script.matchAll(/projectType: '(APP|小程序|GPT|Agent|插件)'/g)].map(match => match[1]);
-    assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件', 'Agent']);
+    assert.deepEqual(types, ['APP', '小程序', 'GPT', 'Agent', 'Agent', '插件']);
     assert.match(styles, /\.work-card-labels\s*\{[\s\S]*?display:\s*flex/);
     assert.match(styles, /\.project-type-tag\s*\{[\s\S]*?white-space:\s*nowrap/);
-    assert.match(index, /styles\.css\?v=20260902-portfolio-compact-v1/);
-    assert.match(index, /main\.js\?v=20260904-odd-origin-filing-v1/);
+    assert.match(index, /styles\.css\?v=20260905-samoyed-logo-v1/);
+    assert.match(index, /main\.js\?v=20260905-remove-harness-logo-v1/);
+});
+
+test('site navigation uses the supplied Samoyed logo instead of the blue mark', () => {
+    const logo = fs.readFileSync(path.join(root, 'assets/shaw-samoyed-logo.png'));
+    const navPages = [
+        'index.html',
+        'ai-growth.html',
+        'blog.html',
+        'contact.html',
+        'agent-harness.html',
+        'search-agent.html',
+        'search-eval.html',
+        'search-owner.html',
+        'search-strategy.html'
+    ];
+
+    assert.deepEqual([...logo.subarray(0, 8)], [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    navPages.forEach(file => {
+        const html = fs.readFileSync(path.join(root, file), 'utf8');
+        assert.match(html, /<img class="logo-mark" src="assets\/shaw-samoyed-logo\.png" alt="" width="24" height="24">/, `${file} should use the supplied logo image`);
+        assert.doesNotMatch(html, /<span class="logo-mark"><\/span>/, `${file} should not use the old blue mark`);
+        assert.match(html, /css\/styles\.css\?v=20260905-samoyed-logo-v1/, `${file} should refresh the shared logo styles`);
+    });
+    const logoStyles = styles.match(/\.logo-mark\s*\{[^}]*\}/)?.[0] || '';
+    assert.match(logoStyles, /object-fit:\s*cover/);
+    assert.match(logoStyles, /object-position:\s*50% 30%/);
+    assert.doesNotMatch(logoStyles, /background:\s*linear-gradient\(135deg, var\(--color-accent\)/);
 });
 
 test('all human-readable project resources use same-origin UTF-8 BOM delivery', () => {
@@ -245,8 +272,7 @@ test('all human-readable project resources use same-origin UTF-8 BOM delivery', 
         ['project-docs/search-full-catalog-baseline.txt', 'search-full-catalog-baseline'],
         ['project-docs/search-agent-evaluation.txt', 'search-agent-evaluation'],
         ['project-docs/pick-memory-readme.txt', 'pick-memory-readme'],
-        ['project-docs/pick-memory-changelog.txt', 'pick-memory-changelog'],
-        ['project-docs/agent-harness-debug.txt', 'agent-harness-debug']
+        ['project-docs/pick-memory-changelog.txt', 'pick-memory-changelog']
     ];
     textResources.forEach(([file, docId]) => {
         const content = fs.readFileSync(path.join(root, file));
@@ -296,7 +322,7 @@ test('all project-card site resources preserve a GitHub Pages base path', () => 
     assert.doesNotMatch(script, /url: '\/(?:handmade-gpt|project-doc|assets|prd-agent|agent-harness|brain-egg)/);
     assert.doesNotMatch(script, /'\/assets\/(?:odd-origin|prd-agent)\//);
     assert.match(script, /href: 'prd-agent-overview\.html'/);
-    assert.match(script, /href: 'agent-harness\.html#integration'/);
+    assert.doesNotMatch(script, /href: 'agent-harness\.html(?:#integration)?'/);
     assert.match(script, /iconImage: 'assets\/odd-origin\/icon\.png'/);
     assert.match(script, /'assets\/prd-agent\/03-multi-item-decision-synthetic-v2\.png'/);
 });
